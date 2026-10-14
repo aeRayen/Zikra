@@ -2,7 +2,7 @@
 # Baseline chosen for a known-compatible set (AGP 8.6 / Kotlin 2.0.21 / Gradle 8.10.2).
 # Upgrades go through Dependabot PRs; targetSdk must be raised to the current
 # Google Play requirement before release (Phase 7).
-agp = "8.6.0"
+agp = "9.4.1"
 kotlin = "2.0.21"
 ksp = "2.0.21-1.0.25"
 compileSdk = "35"
