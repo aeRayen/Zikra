@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#071f1a"/>
+      <stop offset="100%" stop-color="#123d31"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b88b3b"/>
+      <stop offset="50%" stop-color="#f0d79b"/>
+      <stop offset="100%" stop-color="#b88b3b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <circle cx="1020" cy="110" r="190" fill="#d2ad5a" opacity=".06"/>
+  <circle cx="90" cy="730" r="260" fill="#d2ad5a" opacity=".05"/>
+  <g opacity=".18" stroke="#d9bd77" fill="none" stroke-width="2">
+    <path d="M600 55 L650 105 L600 155 L550 105 Z"/>
+    <path d="M600 75 L630 105 L600 135 L570 105 Z"/>
+  </g>
+  <text x="70" y="90" fill="#f3dfad" font-size="22" font-family="Arial, sans-serif" letter-spacing="4">ISLAMIC LIFE OS • CONCEPT DESIGN</text>
+  <text x="70" y="160" fill="#fff8e8" font-size="48" font-weight="700" font-family="Arial, sans-serif">Your day, with purpose</text>
+  <text x="70" y="205" fill="#c7d8cf" font-size="24" font-family="Arial, sans-serif">Prayer • Quran • Focus • Wellbeing</text>
+  
+  <rect x="70" y="250" width="1060" height="430" rx="28" fill="#0a2a23" stroke="#557969" stroke-width="2"/>
+  <text x="110" y="305" fill="#f7e8c3" font-size="28" font-family="Arial">السلام عليكم</text>
+  <text x="110" y="350" fill="#b8cec2" font-size="18" font-family="Arial">YOUR DAILY OVERVIEW</text>
+  <rect x="110" y="385" width="470" height="130" rx="20" fill="#174538"/>
+  <text x="140" y="425" fill="#e7d39b" font-size="20" font-family="Arial">NEXT PRAYER</text>
+  <text x="140" y="475" fill="#fff8e8" font-size="36" font-family="Arial">Maghrib · 18:12</text>
+  <rect x="605" y="385" width="485" height="130" rx="20" fill="#263f32"/>
+  <text x="635" y="425" fill="#e7d39b" font-size="20" font-family="Arial">DAILY QURAN</text>
+  <text x="635" y="475" fill="#fff8e8" font-size="30" font-family="Arial">Continue reading  →</text>
+  <rect x="110" y="540" width="310" height="95" rx="18" fill="#17372e"/>
+  <rect x="440" y="540" width="310" height="95" rx="18" fill="#17372e"/>
+  <rect x="770" y="540" width="320" height="95" rx="18" fill="#17372e"/>
+  <text x="135" y="580" fill="#fff8e8" font-size="20" font-family="Arial">Adhkar</text>
+  <text x="465" y="580" fill="#fff8e8" font-size="20" font-family="Arial">Focus session</text>
+  <text x="795" y="580" fill="#fff8e8" font-size="20" font-family="Arial">Smart alarm</text>
+
+  <text x="70" y="755" fill="#a7c1b4" font-size="16" font-family="Arial, sans-serif">Concept asset — not a production screenshot</text>
+</svg>

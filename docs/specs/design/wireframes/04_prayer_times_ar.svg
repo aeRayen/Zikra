@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="780" viewBox="0 0 360 780" font-family="Noto Sans Arabic, Segoe UI, Tahoma, sans-serif">
+  <title>04 Prayer times — Arabic RTL, light, with exact-alarm warning banner</title>
+  <rect width="360" height="780" fill="#FBF8F1"/>
+
+  <text x="330" y="58" font-size="20" fill="#1B1C19" text-anchor="middle">→</text>
+  <text x="306" y="60" font-size="20" font-weight="700" fill="#1B1C19" direction="rtl" text-anchor="start">مواقيت الصلاة</text>
+
+  <!-- banner: exact alarm denied -->
+  <rect x="16" y="84" width="328" height="76" rx="12" fill="#FFF4DF" stroke="#7A4F00"/>
+  <text x="328" y="108" font-size="13" font-weight="700" fill="#7A4F00" direction="rtl" text-anchor="start">⚠ التنبيه الدقيق غير مسموح</text>
+  <text x="328" y="128" font-size="12" fill="#1B1C19" direction="rtl" text-anchor="start">قد يتأخر الأذان عدة دقائق.</text>
+  <text x="40" y="146" font-size="13" font-weight="700" fill="#0E5A45" text-anchor="start">السماح</text>
+
+  <!-- location + method -->
+  <rect x="16" y="176" width="328" height="72" rx="12" fill="#FFFFFF" stroke="#E4DED0"/>
+  <text x="328" y="204" font-size="15" fill="#1B1C19" direction="rtl" text-anchor="start">[المدينة] · موقع يدوي</text>
+  <text x="328" y="230" font-size="12" fill="#47504A" direction="rtl" text-anchor="start">الطريقة: [اسم الطريقة] · العصر: [المذهب]</text>
+  <text x="40" y="218" font-size="13" fill="#0E5A45" text-anchor="start">تغيير</text>
+
+  <!-- list -->
+  <g font-size="16">
+    <rect x="16" y="264" width="328" height="56" rx="12" fill="#FFFFFF"/>
+    <text x="328" y="298" direction="rtl" text-anchor="start" fill="#1B1C19">الفجر</text>
+    <text x="120" y="298" fill="#47504A" text-anchor="end">٠٤:٥٢</text><text x="40" y="298" fill="#0E5A45">🔔</text>
+
+    <rect x="16" y="326" width="328" height="56" rx="12" fill="#FFFFFF"/>
+    <text x="328" y="360" direction="rtl" text-anchor="start" fill="#47504A">الشروق</text>
+    <text x="120" y="360" fill="#47504A" text-anchor="end">٠٦:١٤</text><text x="40" y="360" fill="#47504A">🔕</text>
+
+    <rect x="16" y="388" width="328" height="56" rx="12" fill="#FFFFFF"/>
+    <text x="328" y="422" direction="rtl" text-anchor="start" fill="#1B1C19">الظهر</text>
+    <text x="120" y="422" fill="#47504A" text-anchor="end">١٢:٠١</text><text x="40" y="422" fill="#0E5A45">🔔</text>
+
+    <rect x="16" y="450" width="328" height="56" rx="12" fill="#CDE8DC" stroke="#0E5A45" stroke-width="2"/>
+    <text x="328" y="476" direction="rtl" text-anchor="start" fill="#002117" font-weight="700">العصر</text>
+    <text x="328" y="496" direction="rtl" text-anchor="start" fill="#002117" font-size="11">القادمة · بعد ١ س ٢٠ د</text>
+    <text x="120" y="484" fill="#002117" text-anchor="end" font-weight="700">١٥:٢٠</text><text x="40" y="484" fill="#0E5A45">🔔</text>
+
+    <rect x="16" y="512" width="328" height="56" rx="12" fill="#FFFFFF"/>
+    <text x="328" y="546" direction="rtl" text-anchor="start" fill="#1B1C19">المغرب</text>
+    <text x="120" y="546" fill="#47504A" text-anchor="end">١٧:٥٠</text><text x="40" y="546" fill="#0E5A45">🔔</text>
+
+    <rect x="16" y="574" width="328" height="56" rx="12" fill="#FFFFFF"/>
+    <text x="328" y="608" direction="rtl" text-anchor="start" fill="#1B1C19">العشاء</text>
+    <text x="120" y="608" fill="#47504A" text-anchor="end">١٩:٠٨</text><text x="40" y="608" fill="#0E5A45">🔔</text>
+  </g>
+
+  <rect x="16" y="648" width="156" height="44" rx="22" fill="none" stroke="#737B75"/>
+  <text x="94" y="675" font-size="13" fill="#0E5A45" text-anchor="middle">الجدول الشهري</text>
+  <rect x="188" y="648" width="156" height="44" rx="22" fill="none" stroke="#737B75"/>
+  <text x="266" y="675" font-size="13" fill="#0E5A45" text-anchor="middle">القبلة</text>
+
+  <text x="344" y="720" font-size="11" fill="#47504A" direction="rtl" text-anchor="start">🔔 اضغط لتعديل تنبيه كل صلاة (أذان / إشعار / صامت)</text>
+  <text x="180" y="770" font-size="9" fill="#47504A" text-anchor="middle">نموذج أولي — الأوقات توضيحية وليست محسوبة</text>
+</svg>

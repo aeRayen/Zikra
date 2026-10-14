@@ -1,0 +1,21 @@
+{
+  "note": "Conceptual editable SVG assets created for this project kit. They are not screenshots from a running app.",
+  "assets": [
+    {
+      "file": "home_dashboard_concept.svg",
+      "purpose": "Home dashboard concept"
+    },
+    {
+      "file": "quran_reader_concept.svg",
+      "purpose": "Quran reader concept; placeholder text is illustrative and must be replaced with verified licensed content"
+    },
+    {
+      "file": "protection_recovery_concept.svg",
+      "purpose": "Protection and recovery concept"
+    },
+    {
+      "file": "smart_alarm_concept.svg",
+      "purpose": "Smart alarm concept"
+    }
+  ]
+}

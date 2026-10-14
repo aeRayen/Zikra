@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#071f1a"/>
+      <stop offset="100%" stop-color="#123d31"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b88b3b"/>
+      <stop offset="50%" stop-color="#f0d79b"/>
+      <stop offset="100%" stop-color="#b88b3b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <circle cx="1020" cy="110" r="190" fill="#d2ad5a" opacity=".06"/>
+  <circle cx="90" cy="730" r="260" fill="#d2ad5a" opacity=".05"/>
+  <g opacity=".18" stroke="#d9bd77" fill="none" stroke-width="2">
+    <path d="M600 55 L650 105 L600 155 L550 105 Z"/>
+    <path d="M600 75 L630 105 L600 135 L570 105 Z"/>
+  </g>
+  <text x="70" y="90" fill="#f3dfad" font-size="22" font-family="Arial, sans-serif" letter-spacing="4">ISLAMIC LIFE OS • CONCEPT DESIGN</text>
+  <text x="70" y="160" fill="#fff8e8" font-size="48" font-weight="700" font-family="Arial, sans-serif">Protection with dignity</text>
+  <text x="70" y="205" fill="#c7d8cf" font-size="24" font-family="Arial, sans-serif">Clear controls • Private progress • Practical support</text>
+  
+  <rect x="80" y="260" width="500" height="390" rx="24" fill="#0b2b23" stroke="#557969" stroke-width="2"/>
+  <circle cx="160" cy="330" r="42" fill="#1b5b43"/>
+  <path d="M160 300 L185 310 L182 340 Q160 365 138 340 L135 310 Z" fill="none" stroke="#e5d29a" stroke-width="4"/>
+  <text x="225" y="320" fill="#fff8e8" font-size="28" font-family="Arial">Protection status</text>
+  <text x="225" y="355" fill="#a9d2b7" font-size="19" font-family="Arial">Active • Last checked just now</text>
+  <rect x="120" y="405" width="420" height="74" rx="14" fill="#173e31"/>
+  <text x="145" y="450" fill="#fff8e8" font-size="22" font-family="Arial">Filtering settings  →</text>
+  <rect x="120" y="495" width="420" height="74" rx="14" fill="#173e31"/>
+  <text x="145" y="540" fill="#fff8e8" font-size="22" font-family="Arial">Recovery plan  →</text>
+  <text x="120" y="610" fill="#c7d8cf" font-size="16" font-family="Arial">Private by default • No shame-based messaging</text>
+  <rect x="620" y="260" width="500" height="390" rx="24" fill="#17392e" stroke="#557969" stroke-width="2"/>
+  <text x="665" y="320" fill="#e5d29a" font-size="24" font-family="Arial">TODAY'S PLAN</text>
+  <text x="665" y="375" fill="#fff8e8" font-size="29" font-family="Arial">Pause. Breathe. Choose.</text>
+  <rect x="665" y="410" width="400" height="16" rx="8" fill="#365a49"/>
+  <rect x="665" y="410" width="245" height="16" rx="8" fill="#d2b76c"/>
+  <text x="665" y="465" fill="#c7d8cf" font-size="18" font-family="Arial">One small step at a time</text>
+  <rect x="665" y="505" width="400" height="65" rx="16" fill="#d0b36b"/>
+  <text x="865" y="545" fill="#10271f" font-size="22" font-weight="700" text-anchor="middle" font-family="Arial">Open quick support</text>
+
+  <text x="70" y="755" fill="#a7c1b4" font-size="16" font-family="Arial, sans-serif">Concept asset — not a production screenshot</text>
+</svg>

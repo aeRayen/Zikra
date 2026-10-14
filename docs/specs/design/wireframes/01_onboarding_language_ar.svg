@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="780" viewBox="0 0 360 780" font-family="Noto Sans Arabic, Noto Sans, Segoe UI, Tahoma, sans-serif">
+  <title>01 Onboarding — language selection (RTL, light)</title>
+  <rect width="360" height="780" fill="#FBF8F1"/>
+  <text x="180" y="18" font-size="11" fill="#47504A" text-anchor="middle">الحالة</text>
+
+  <text x="344" y="78" font-size="22" font-weight="700" fill="#1B1C19" direction="rtl" text-anchor="start">اختر لغتك</text>
+  <text x="344" y="102" font-size="14" fill="#47504A" direction="rtl" text-anchor="start">Choose your language</text>
+
+  <rect x="16" y="120" width="328" height="48" rx="12" fill="#FFFFFF" stroke="#737B75"/>
+  <text x="332" y="149" font-size="14" fill="#47504A" direction="rtl" text-anchor="start">ابحث عن لغة…</text>
+
+  <g font-size="16" fill="#1B1C19">
+    <rect x="16" y="184" width="328" height="56" rx="12" fill="#CDE8DC" stroke="#0E5A45" stroke-width="2"/>
+    <text x="332" y="217" direction="rtl" text-anchor="start" font-weight="700" fill="#002117">العربية</text>
+    <circle cx="40" cy="212" r="10" fill="#0E5A45"/><path d="M35 212 l4 4 l7 -8" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+
+    <rect x="16" y="248" width="328" height="56" rx="12" fill="#FFFFFF"/>
+    <text x="332" y="281" text-anchor="end">English</text>
+    <rect x="16" y="312" width="328" height="56" rx="12" fill="#FFFFFF"/>
+    <text x="332" y="345" direction="rtl" text-anchor="start">اردو</text>
+    <rect x="16" y="376" width="328" height="56" rx="12" fill="#FFFFFF"/>
+    <text x="332" y="409" text-anchor="end">Bahasa Indonesia</text>
+    <rect x="16" y="440" width="328" height="56" rx="12" fill="#FFFFFF"/>
+    <text x="332" y="473" text-anchor="end">Türkçe</text>
+    <rect x="16" y="504" width="328" height="56" rx="12" fill="#FFFFFF"/>
+    <text x="332" y="537" text-anchor="end">Français</text>
+    <rect x="16" y="568" width="328" height="56" rx="12" fill="#FFFFFF"/>
+    <text x="332" y="601" direction="rtl" text-anchor="start">فارسی</text>
+  </g>
+  <text x="344" y="646" font-size="13" fill="#47504A" direction="rtl" text-anchor="start">كل لغة تُعرض باسمها الأصلي · يمكن تغييرها لاحقًا من الإعدادات</text>
+
+  <rect x="16" y="676" width="328" height="52" rx="24" fill="#0E5A45"/>
+  <text x="180" y="708" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">متابعة</text>
+
+  <text x="180" y="764" font-size="10" fill="#47504A" text-anchor="middle">نموذج أولي (Wireframe) — ليس لقطة من التطبيق</text>
+</svg>

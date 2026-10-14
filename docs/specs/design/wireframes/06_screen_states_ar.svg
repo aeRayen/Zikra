@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="780" viewBox="0 0 1080 780" font-family="Noto Sans Arabic, Segoe UI, Tahoma, sans-serif">
+  <title>06 Mandatory screen states — loading, error/offline, permission denied (RTL)</title>
+  <rect width="1080" height="780" fill="#E9E4D8"/>
+
+  <!-- A: loading skeleton -->
+  <g transform="translate(0,0)">
+    <rect x="0" y="0" width="360" height="780" fill="#FBF8F1"/>
+    <text x="344" y="40" font-size="13" fill="#7A5C14" direction="rtl" text-anchor="start">أ) التحميل</text>
+    <rect x="200" y="64" width="144" height="20" rx="6" fill="#F2EDE1"/>
+    <rect x="16" y="104" width="328" height="150" rx="16" fill="#F2EDE1"/>
+    <rect x="16" y="270" width="328" height="84" rx="16" fill="#F2EDE1"/>
+    <rect x="16" y="370" width="328" height="84" rx="16" fill="#F2EDE1"/>
+    <text x="180" y="500" font-size="12" fill="#47504A" text-anchor="middle">هيكل بنفس شكل المحتوى — بلا دوّامة تحميل في وسط الشاشة</text>
+    <text x="180" y="520" font-size="12" fill="#47504A" text-anchor="middle">قارئ الشاشة يعلن: «جارٍ التحميل»</text>
+  </g>
+
+  <!-- B: error + offline -->
+  <g transform="translate(360,0)">
+    <rect x="0" y="0" width="360" height="780" fill="#FBF8F1"/>
+    <line x1="0" y1="0" x2="0" y2="780" stroke="#C9C2B2"/>
+    <text x="344" y="40" font-size="13" fill="#7A5C14" direction="rtl" text-anchor="start">ب) خطأ / بلا اتصال</text>
+    <rect x="16" y="64" width="328" height="44" rx="10" fill="#F2EDE1"/>
+    <text x="328" y="92" font-size="12" fill="#47504A" direction="rtl" text-anchor="start">⦸ بلا اتصال · آخر تحديث [منذ ساعتين]</text>
+    <circle cx="180" cy="260" r="44" fill="#F2EDE1"/>
+    <text x="180" y="272" font-size="34" fill="#B3261E" text-anchor="middle">!</text>
+    <text x="180" y="340" font-size="18" font-weight="700" fill="#1B1C19" text-anchor="middle">تعذّر تحميل المحتوى</text>
+    <text x="180" y="368" font-size="13" fill="#47504A" text-anchor="middle">تحقق من الاتصال ثم أعد المحاولة.</text>
+    <text x="180" y="388" font-size="13" fill="#47504A" text-anchor="middle">المحتوى المحفوظ ما زال متاحًا.</text>
+    <rect x="100" y="414" width="160" height="48" rx="24" fill="#0E5A45"/>
+    <text x="180" y="444" font-size="15" fill="#FFFFFF" text-anchor="middle">إعادة المحاولة</text>
+    <text x="180" y="500" font-size="11" fill="#47504A" text-anchor="middle">الرسالة من كود ثابت يترجمه التطبيق (SYNC_PROTOCOL §8)</text>
+  </g>
+
+  <!-- C: permission denied -->
+  <g transform="translate(720,0)">
+    <rect x="0" y="0" width="360" height="780" fill="#FBF8F1"/>
+    <line x1="0" y1="0" x2="0" y2="780" stroke="#C9C2B2"/>
+    <text x="344" y="40" font-size="13" fill="#7A5C14" direction="rtl" text-anchor="start">ج) رفض الصلاحية</text>
+    <rect x="0" y="380" width="360" height="400" rx="24" fill="#FFFFFF"/>
+    <rect x="160" y="392" width="40" height="4" rx="2" fill="#C9C2B2"/>
+    <text x="328" y="436" font-size="18" font-weight="700" fill="#1B1C19" direction="rtl" text-anchor="start">الإشعارات متوقفة</text>
+    <text x="328" y="466" font-size="13" fill="#47504A" direction="rtl" text-anchor="start">نحتاجها فقط لتنبيهك بالأذان والتذكيرات</text>
+    <text x="328" y="486" font-size="13" fill="#47504A" direction="rtl" text-anchor="start">التي تختارها. لا نرسل إشعارات إعلانية.</text>
+    <text x="328" y="516" font-size="13" fill="#47504A" direction="rtl" text-anchor="start">يمكنك الاستمرار دونها؛ ستظهر المواقيت داخل التطبيق.</text>
+    <rect x="16" y="560" width="328" height="48" rx="24" fill="#0E5A45"/>
+    <text x="180" y="590" font-size="15" fill="#FFFFFF" text-anchor="middle">فتح الإعدادات</text>
+    <rect x="16" y="620" width="328" height="48" rx="24" fill="none" stroke="#737B75"/>
+    <text x="180" y="650" font-size="15" fill="#0E5A45" text-anchor="middle">ليس الآن</text>
+    <text x="180" y="720" font-size="11" fill="#47504A" text-anchor="middle">الشرح يسبق طلب النظام دائمًا؛ ولا يُكرر الطلب بإلحاح</text>
+  </g>
+</svg>

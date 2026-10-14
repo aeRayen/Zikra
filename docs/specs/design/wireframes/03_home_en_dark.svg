@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="780" viewBox="0 0 360 780" font-family="Noto Sans, Segoe UI, Arial, sans-serif">
+  <title>03 Home (Today) — English LTR, dark theme (mirror of 02)</title>
+  <rect width="360" height="780" fill="#0A1F1A"/>
+
+  <text x="16" y="56" font-size="22" font-weight="700" fill="#ECF2EE">Today</text>
+  <text x="16" y="80" font-size="13" fill="#B9C9C0">[Gregorian date] · [Hijri date]</text>
+  <circle cx="324" cy="58" r="16" fill="#1A3A30"/><text x="324" y="63" font-size="14" fill="#B9C9C0" text-anchor="middle">⚙</text>
+
+  <rect x="16" y="100" width="328" height="150" rx="16" fill="#0E5A45"/>
+  <text x="32" y="130" font-size="13" fill="#CDE8DC">Next prayer</text>
+  <text x="32" y="172" font-size="30" font-weight="700" fill="#FFFFFF">Asr</text>
+  <text x="328" y="172" font-size="30" font-weight="700" fill="#FFFFFF" text-anchor="end">3:20 PM</text>
+  <text x="32" y="202" font-size="14" fill="#CDE8DC">in 1 h 20 min</text>
+  <text x="32" y="232" font-size="12" fill="#CDE8DC">[City] · [Calculation method]</text>
+  <text x="328" y="232" font-size="12" fill="#E5CC85" text-anchor="end">All times →</text>
+
+  <rect x="16" y="266" width="328" height="84" rx="16" fill="#0F2620" stroke="#1A3A30"/>
+  <text x="32" y="296" font-size="13" fill="#E5CC85">Continue reading</text>
+  <text x="32" y="326" font-size="17" font-weight="700" fill="#ECF2EE">Surah [name] · Ayah [n]</text>
+  <text x="324" y="320" font-size="22" fill="#7FD3B0" text-anchor="middle">→</text>
+
+  <rect x="16" y="366" width="328" height="84" rx="16" fill="#0F2620" stroke="#1A3A30"/>
+  <text x="32" y="396" font-size="13" fill="#E5CC85">Adhkar for now</text>
+  <text x="32" y="426" font-size="17" font-weight="700" fill="#ECF2EE">Evening adhkar</text>
+  <rect x="264" y="404" width="64" height="28" rx="14" fill="#0E5A45"/>
+  <text x="296" y="423" font-size="12" fill="#CDE8DC" text-anchor="middle">Start</text>
+
+  <rect x="16" y="466" width="328" height="96" rx="16" fill="#0F2620" stroke="#1A3A30"/>
+  <text x="32" y="496" font-size="13" fill="#E5CC85">Today's goal</text>
+  <text x="32" y="524" font-size="16" fill="#ECF2EE">[User-chosen goal]</text>
+  <rect x="32" y="540" width="296" height="8" rx="4" fill="#1A3A30"/>
+  <rect x="32" y="540" width="180" height="8" rx="4" fill="#7FD3B0"/>
+  <text x="328" y="530" font-size="12" fill="#B9C9C0" text-anchor="end">3 / 5</text>
+
+  <rect x="96" y="580" width="168" height="40" rx="20" fill="none" stroke="#8A9C93"/>
+  <text x="180" y="605" font-size="14" fill="#7FD3B0" text-anchor="middle">Customize cards</text>
+  <text x="180" y="644" font-size="11" fill="#B9C9C0" text-anchor="middle">Layout mirrors automatically: start/end, never left/right</text>
+
+  <rect x="0" y="680" width="360" height="80" fill="#0F2620"/>
+  <g font-size="12" text-anchor="middle">
+    <rect x="8" y="692" width="56" height="30" rx="15" fill="#0E5A45"/>
+    <text x="36" y="712" fill="#CDE8DC">◉</text><text x="36" y="742" fill="#ECF2EE" font-weight="700">Today</text>
+    <text x="108" y="712" fill="#B9C9C0">◇</text><text x="108" y="742" fill="#B9C9C0">Worship</text>
+    <text x="180" y="712" fill="#B9C9C0">▭</text><text x="180" y="742" fill="#B9C9C0">Quran</text>
+    <text x="252" y="712" fill="#B9C9C0">☰</text><text x="252" y="742" fill="#B9C9C0">Library</text>
+    <text x="324" y="712" fill="#B9C9C0">⋯</text><text x="324" y="742" fill="#B9C9C0">More</text>
+  </g>
+  <text x="180" y="774" font-size="9" fill="#B9C9C0" text-anchor="middle">Wireframe — times are illustrative, not calculated</text>
+</svg>

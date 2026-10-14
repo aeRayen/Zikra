@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="780" viewBox="0 0 360 780" font-family="Noto Sans Arabic, Segoe UI, Tahoma, sans-serif">
+  <title>05 Quran reader — ayah mode with optional translation (RTL)</title>
+  <rect width="360" height="780" fill="#F7F1E3"/>
+
+  <!-- top bar -->
+  <rect width="360" height="92" fill="#FBF8F1"/>
+  <text x="330" y="56" font-size="20" fill="#1B1C19" text-anchor="middle">→</text>
+  <text x="300" y="50" font-size="18" font-weight="700" fill="#1B1C19" direction="rtl" text-anchor="start">سورة [الاسم]</text>
+  <text x="300" y="74" font-size="12" fill="#47504A" direction="rtl" text-anchor="start">الجزء [ن] · الحزب [ن] · الصفحة [ن]</text>
+  <text x="36" y="56" font-size="16" fill="#47504A" text-anchor="middle">🔍</text>
+
+  <!-- ayah 1 : placeholder bars instead of real Quran text -->
+  <g>
+    <rect x="40" y="120" width="280" height="14" rx="7" fill="#1F3A2E" opacity=".85"/>
+    <rect x="96" y="148" width="224" height="14" rx="7" fill="#1F3A2E" opacity=".85"/>
+    <circle cx="74" cy="155" r="13" fill="none" stroke="#7A5C14" stroke-width="1.5"/>
+    <text x="74" y="160" font-size="12" fill="#7A5C14" text-anchor="middle">١</text>
+    <rect x="16" y="176" width="328" height="58" rx="10" fill="#FFFFFF" opacity=".7"/>
+    <text x="332" y="198" font-size="12" fill="#47504A" direction="rtl" text-anchor="start">ترجمة المعاني بلغة المستخدم (اختيارية)</text>
+    <rect x="32" y="210" width="296" height="8" rx="4" fill="#47504A" opacity=".35"/>
+  </g>
+
+  <!-- ayah 2 (bookmarked) -->
+  <g>
+    <rect x="12" y="250" width="4" height="72" fill="#7A5C14"/>
+    <rect x="40" y="256" width="280" height="14" rx="7" fill="#1F3A2E" opacity=".85"/>
+    <rect x="40" y="284" width="280" height="14" rx="7" fill="#1F3A2E" opacity=".85"/>
+    <rect x="160" y="312" width="160" height="14" rx="7" fill="#1F3A2E" opacity=".85"/>
+    <circle cx="136" cy="319" r="13" fill="none" stroke="#7A5C14" stroke-width="1.5"/>
+    <text x="136" y="324" font-size="12" fill="#7A5C14" text-anchor="middle">٢</text>
+  </g>
+
+  <!-- ayah 3 (selected → action bar) -->
+  <rect x="24" y="344" width="312" height="74" rx="10" fill="#CDE8DC" opacity=".6"/>
+  <rect x="40" y="356" width="280" height="14" rx="7" fill="#1F3A2E" opacity=".85"/>
+  <rect x="120" y="384" width="200" height="14" rx="7" fill="#1F3A2E" opacity=".85"/>
+  <circle cx="96" cy="391" r="13" fill="none" stroke="#7A5C14" stroke-width="1.5"/>
+  <text x="96" y="396" font-size="12" fill="#7A5C14" text-anchor="middle">٣</text>
+
+  <g font-size="12" text-anchor="middle">
+    <rect x="24" y="428" width="312" height="52" rx="26" fill="#0E5A45"/>
+    <text x="300" y="459" fill="#FFFFFF">علامة</text>
+    <text x="236" y="459" fill="#FFFFFF">تفسير</text>
+    <text x="172" y="459" fill="#FFFFFF">استماع</text>
+    <text x="108" y="459" fill="#FFFFFF">نسخ</text>
+    <text x="52" y="459" fill="#FFFFFF">مشاركة</text>
+  </g>
+
+  <text x="180" y="520" font-size="11" fill="#47504A" text-anchor="middle">الأشرطة الداكنة = نص الآية من المصدر المرخّص (لا يُكتب يدويًا)</text>
+
+  <!-- source chip -->
+  <rect x="80" y="540" width="200" height="30" rx="15" fill="#FFFFFF" stroke="#737B75"/>
+  <text x="180" y="560" font-size="11" fill="#47504A" text-anchor="middle">المصدر: [اسم المصدر] · الترخيص ⓘ</text>
+
+  <!-- mini player -->
+  <rect x="0" y="664" width="360" height="56" fill="#FFFFFF"/>
+  <circle cx="324" cy="692" r="16" fill="#0E5A45"/><text x="324" y="697" font-size="12" fill="#FFFFFF" text-anchor="middle">▶</text>
+  <text x="296" y="688" font-size="13" fill="#1B1C19" direction="rtl" text-anchor="start">[القارئ] · آية ٣</text>
+  <rect x="40" y="700" width="250" height="4" rx="2" fill="#F2EDE1"/><rect x="190" y="700" width="100" height="4" rx="2" fill="#0E5A45"/>
+  <text x="28" y="696" font-size="12" fill="#47504A">Aa</text>
+
+  <rect x="0" y="720" width="360" height="60" fill="#FBF8F1"/>
+  <text x="180" y="756" font-size="9" fill="#47504A" text-anchor="middle">نموذج أولي — لا يحتوي نصًا قرآنيًا حقيقيًا عمدًا</text>
+</svg>

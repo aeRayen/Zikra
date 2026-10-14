@@ -1,0 +1,55 @@
+# --- Secrets (never commit) ---
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+!debug.keystore.README
+keystore.properties
+signing.properties
+google-services.json
+service-account*.json
+*.pem
+*.p12
+*.key
+content-signing/
+
+# --- Gradle / Android ---
+.gradle/
+build/
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.ap_
+*.dex
+output-metadata.json
+
+# --- Kotlin ---
+.kotlin/
+*.hprof
+
+# --- IDEs ---
+.idea/
+!.idea/codeStyles/
+*.iml
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.fleet/
+
+# --- Supabase local ---
+supabase/.branches/
+supabase/.temp/
+supabase/.env
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Logs / temp ---
+*.log
+tmp/

@@ -1,0 +1,1031 @@
+openapi: 3.1.0
+info:
+  title: Zikra (ذِكْرَى) API
+  version: 1.0.0-draft.1
+  summary: "Phase 0b draft (ADR-007). NOTE ADR-024: /auth, /me and /sync are implemented as Supabase Auth + api.*_v1 RPC; /content/* as static CDN files. Schemas here remain the reference data shapes."
+  description: |
+    Contract-first API for the Android client (and later iOS).
+
+    Conventions:
+    - User identity is derived ONLY from the validated access token. No endpoint accepts a user id from the client.
+    - Errors use RFC 9457 `application/problem+json` with a stable machine `code`; clients localize by `code`.
+    - Every response carries `X-Correlation-Id`.
+    - Retry-prone writes require `Idempotency-Key`.
+    - `Accept-Language` (BCP 47) selects localized content using the fallback chain in I18N_SPEC_AR.md §2.
+    - Recovery and protection data have NO endpoints in v1 (ADR-011).
+    - Bookmark notes are not synced in v1 (ADR-012).
+  license:
+    name: Proprietary (TBD)
+    identifier: LicenseRef-TBD
+servers:
+  - url: https://api.example.invalid
+    description: Placeholder. Real hostname pending ADR-P02.
+security:
+  - bearerAuth: []
+tags:
+  - name: system
+  - name: auth
+  - name: account
+  - name: sync
+  - name: content
+paths:
+  /health:
+    get:
+      tags: [system]
+      operationId: getHealth
+      security: []
+      summary: Liveness probe (not versioned).
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status:
+                    type: string
+                    enum: [ok]
+
+  /api/v1/app/config:
+    get:
+      tags: [system]
+      operationId: getAppConfig
+      security: []
+      summary: Minimum supported app version and remote feature flags.
+      parameters:
+        - $ref: '#/components/parameters/AppVersion'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppConfig'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/languages:
+    get:
+      tags: [content]
+      operationId: listLanguages
+      security: []
+      summary: Enabled languages and their completeness.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Language'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/auth/nonce:
+    post:
+      tags: [auth]
+      operationId: createAuthNonce
+      security: []
+      summary: Issue a single-use nonce to embed in the Google ID token request.
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [nonce, expiresAt]
+                properties:
+                  nonce:
+                    type: string
+                    minLength: 32
+                    maxLength: 128
+                  expiresAt:
+                    type: string
+                    format: date-time
+        '429':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/auth/google:
+    post:
+      tags: [auth]
+      operationId: signInWithGoogle
+      security: []
+      summary: Exchange a Google ID token (verified server-side) for app tokens.
+      description: |
+        The server verifies signature, `iss`, `aud`, `exp` and that `nonce` was issued
+        by /auth/nonce and not yet consumed. The Google token is not stored.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [idToken, nonce, device]
+              properties:
+                idToken:
+                  type: string
+                  maxLength: 4096
+                nonce:
+                  type: string
+                  maxLength: 128
+                device:
+                  $ref: '#/components/schemas/DeviceInfo'
+      responses:
+        '200':
+          description: Signed in (existing user).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResult'
+        '201':
+          description: Signed in (new user created).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResult'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '429':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/auth/refresh:
+    post:
+      tags: [auth]
+      operationId: refreshTokens
+      security: []
+      summary: Rotate the refresh token. Reuse of an old token revokes the whole session family.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refreshToken]
+              properties:
+                refreshToken:
+                  type: string
+                  maxLength: 512
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenPair'
+        '401':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/auth/logout:
+    post:
+      tags: [auth]
+      operationId: logout
+      summary: Revoke the current session.
+      responses:
+        '204':
+          description: Revoked
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/auth/sessions:
+    get:
+      tags: [auth]
+      operationId: listSessions
+      summary: List the caller's active sessions (devices).
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Session'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/auth/sessions/{sessionId}:
+    delete:
+      tags: [auth]
+      operationId: revokeSession
+      summary: Revoke one of the caller's sessions.
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Revoked
+        '404':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/me:
+    get:
+      tags: [account]
+      operationId: getMe
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Me'
+        default:
+          $ref: '#/components/responses/Problem'
+    patch:
+      tags: [account]
+      operationId: updateMe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                displayName:
+                  type: [string, 'null']
+                  maxLength: 100
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Me'
+        '422':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/me/consents:
+    get:
+      tags: [account]
+      operationId: listConsents
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Consent'
+        default:
+          $ref: '#/components/responses/Problem'
+    put:
+      tags: [account]
+      operationId: setConsent
+      summary: Grant or revoke one consent category. Revoking `sync.*` deletes that category's server data.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [category, granted, policyVersion]
+              properties:
+                category:
+                  $ref: '#/components/schemas/ConsentCategory'
+                granted:
+                  type: boolean
+                policyVersion:
+                  type: string
+                  maxLength: 20
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Consent'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/me/export:
+    post:
+      tags: [account]
+      operationId: requestExport
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          description: Export job accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportJob'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/me/export/{jobId}:
+    get:
+      tags: [account]
+      operationId: getExport
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Job status; `downloadUrl` present when ready (short-lived).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportJob'
+        '404':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/me/deletion:
+    get:
+      tags: [account]
+      operationId: getDeletionStatus
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeletionRequest'
+        '404':
+          description: No pending deletion.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+    post:
+      tags: [account]
+      operationId: requestDeletion
+      summary: Schedule account deletion after a grace period; all sessions are revoked immediately.
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          description: Scheduled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeletionRequest'
+        default:
+          $ref: '#/components/responses/Problem'
+    delete:
+      tags: [account]
+      operationId: cancelDeletion
+      summary: Cancel a pending deletion during the grace period (requires fresh sign-in).
+      responses:
+        '204':
+          description: Cancelled
+        '404':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/sync/push:
+    post:
+      tags: [sync]
+      operationId: syncPush
+      summary: Upload local changes (see SYNC_PROTOCOL_AR.md).
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncPushRequest'
+      responses:
+        '200':
+          description: Per-change results.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncPushResponse'
+        '403':
+          description: Sync consent for a category is not granted.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '413':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/sync/pull:
+    get:
+      tags: [sync]
+      operationId: syncPull
+      parameters:
+        - name: since
+          in: query
+          required: false
+          description: Opaque cursor from the previous pull; omit for a full pull.
+          schema:
+            type: string
+            maxLength: 64
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+            default: 200
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncPullResponse'
+        '410':
+          description: Cursor too old (tombstones purged); client must do a full pull.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/content/catalog:
+    get:
+      tags: [content]
+      operationId: getContentCatalog
+      security: []
+      summary: Latest published content pack per area and language.
+      parameters:
+        - name: area
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/ContentArea'
+        - name: language
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/LanguageTag'
+      responses:
+        '200':
+          description: OK
+          headers:
+            ETag:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PackSummary'
+        '304':
+          description: Not modified.
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /api/v1/content/packs/{packId}/manifest:
+    get:
+      tags: [content]
+      operationId: getPackManifest
+      security: []
+      summary: Signed manifest. Pack files are static and listed inside it (see CONTENT_PACKS_AR.md).
+      parameters:
+        - name: packId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignedManifest'
+        '404':
+          $ref: '#/components/responses/Problem'
+        default:
+          $ref: '#/components/responses/Problem'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        format: uuid
+    AppVersion:
+      name: X-App-Version
+      in: header
+      required: false
+      schema:
+        type: string
+        maxLength: 32
+
+  responses:
+    Problem:
+      description: Error (RFC 9457).
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+
+  schemas:
+    Problem:
+      type: object
+      required: [type, title, status, code, correlationId]
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+          description: English, for developers only. Clients must localize by `code`.
+        status:
+          type: integer
+        code:
+          type: string
+          description: Stable machine code (see ERROR_CODES section in SYNC_PROTOCOL_AR.md §8).
+          pattern: '^[a-z]+(\.[a-z_]+)+$'
+        detail:
+          type: string
+        correlationId:
+          type: string
+        errors:
+          type: array
+          description: Field-level validation errors (422).
+          items:
+            type: object
+            required: [field, code]
+            properties:
+              field:
+                type: string
+              code:
+                type: string
+
+    LanguageTag:
+      type: string
+      description: BCP 47 language tag.
+      pattern: '^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$'
+      maxLength: 35
+
+    Language:
+      type: object
+      required: [tag, nativeName, direction, uiCompleteness]
+      properties:
+        tag:
+          $ref: '#/components/schemas/LanguageTag'
+        nativeName:
+          type: string
+        direction:
+          type: string
+          enum: [rtl, ltr]
+        uiCompleteness:
+          type: integer
+          minimum: 0
+          maximum: 100
+        hasQuranTranslation:
+          type: boolean
+
+    AppConfig:
+      type: object
+      required: [minSupportedVersion, featureFlags]
+      properties:
+        minSupportedVersion:
+          type: string
+        featureFlags:
+          type: object
+          additionalProperties:
+            type: boolean
+
+    DeviceInfo:
+      type: object
+      required: [platform, appVersion]
+      properties:
+        platform:
+          type: string
+          enum: [android, ios]
+        appVersion:
+          type: string
+          maxLength: 32
+        label:
+          type: string
+          maxLength: 80
+          description: User-visible device name, optional.
+
+    TokenPair:
+      type: object
+      required: [accessToken, accessTokenExpiresAt, refreshToken]
+      properties:
+        accessToken:
+          type: string
+        accessTokenExpiresAt:
+          type: string
+          format: date-time
+        refreshToken:
+          type: string
+
+    AuthResult:
+      type: object
+      required: [tokens, me]
+      properties:
+        tokens:
+          $ref: '#/components/schemas/TokenPair'
+        me:
+          $ref: '#/components/schemas/Me'
+
+    Session:
+      type: object
+      required: [id, platform, createdAt, lastUsedAt, current]
+      properties:
+        id:
+          type: string
+          format: uuid
+        platform:
+          type: string
+          enum: [android, ios]
+        label:
+          type: [string, 'null']
+        appVersion:
+          type: [string, 'null']
+        createdAt:
+          type: string
+          format: date-time
+        lastUsedAt:
+          type: string
+          format: date-time
+        current:
+          type: boolean
+
+    Me:
+      type: object
+      required: [id, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        displayName:
+          type: [string, 'null']
+        createdAt:
+          type: string
+          format: date-time
+        pendingDeletion:
+          type: [string, 'null']
+          format: date-time
+          description: Scheduled purge time, if a deletion is pending.
+
+    ConsentCategory:
+      type: string
+      enum:
+        - sync.settings
+        - sync.bookmarks
+        - sync.reading
+        - sync.worship
+        - crash_reports
+
+    Consent:
+      type: object
+      required: [category, granted, policyVersion, updatedAt]
+      properties:
+        category:
+          $ref: '#/components/schemas/ConsentCategory'
+        granted:
+          type: boolean
+        policyVersion:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+
+    ExportJob:
+      type: object
+      required: [id, status, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [queued, running, ready, failed, expired]
+        createdAt:
+          type: string
+          format: date-time
+        downloadUrl:
+          type: [string, 'null']
+          format: uri
+        expiresAt:
+          type: [string, 'null']
+          format: date-time
+
+    DeletionRequest:
+      type: object
+      required: [status, requestedAt, scheduledPurgeAt]
+      properties:
+        status:
+          type: string
+          enum: [pending, cancelled, completed]
+        requestedAt:
+          type: string
+          format: date-time
+        scheduledPurgeAt:
+          type: string
+          format: date-time
+
+    EntityType:
+      type: string
+      enum: [settings, bookmark, reading_position, worship_goal, worship_progress]
+
+    Change:
+      type: object
+      required: [entity, id, op, clientUpdatedAt]
+      properties:
+        entity:
+          $ref: '#/components/schemas/EntityType'
+        id:
+          type: string
+          format: uuid
+          description: Client-generated UUID (settings use the fixed id of the user's settings row).
+        op:
+          type: string
+          enum: [upsert, delete]
+        baseVersion:
+          type: [integer, 'null']
+          format: int64
+          description: server_version the client last saw for this record; null for new records.
+        clientUpdatedAt:
+          type: string
+          format: date-time
+        data:
+          description: Required for upsert; must match the schema of `entity`.
+          oneOf:
+            - $ref: '#/components/schemas/SettingsData'
+            - $ref: '#/components/schemas/BookmarkData'
+            - $ref: '#/components/schemas/ReadingPositionData'
+            - $ref: '#/components/schemas/WorshipGoalData'
+            - $ref: '#/components/schemas/WorshipProgressData'
+
+    SyncPushRequest:
+      type: object
+      required: [changes]
+      properties:
+        changes:
+          type: array
+          maxItems: 200
+          items:
+            $ref: '#/components/schemas/Change'
+
+    SyncPushResponse:
+      type: object
+      required: [results]
+      properties:
+        results:
+          type: array
+          items:
+            type: object
+            required: [id, status]
+            properties:
+              id:
+                type: string
+                format: uuid
+              status:
+                type: string
+                enum: [applied, merged, rejected]
+              serverVersion:
+                type: integer
+                format: int64
+              errorCode:
+                type: string
+              current:
+                description: Server copy after merge, when status is merged.
+                $ref: '#/components/schemas/ServerRecord'
+
+    ServerRecord:
+      type: object
+      required: [entity, id, serverVersion, deleted]
+      properties:
+        entity:
+          $ref: '#/components/schemas/EntityType'
+        id:
+          type: string
+          format: uuid
+        serverVersion:
+          type: integer
+          format: int64
+        deleted:
+          type: boolean
+        updatedAt:
+          type: string
+          format: date-time
+        data:
+          oneOf:
+            - $ref: '#/components/schemas/SettingsData'
+            - $ref: '#/components/schemas/BookmarkData'
+            - $ref: '#/components/schemas/ReadingPositionData'
+            - $ref: '#/components/schemas/WorshipGoalData'
+            - $ref: '#/components/schemas/WorshipProgressData'
+
+    SyncPullResponse:
+      type: object
+      required: [records, cursor, hasMore]
+      properties:
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServerRecord'
+        cursor:
+          type: string
+        hasMore:
+          type: boolean
+
+    SettingsData:
+      type: object
+      additionalProperties: false
+      properties:
+        language:
+          $ref: '#/components/schemas/LanguageTag'
+        theme:
+          type: string
+          enum: [system, light, dark]
+        numeralSystem:
+          type: string
+          enum: [auto, latn, arab, arabext]
+        calculationMethod:
+          type: string
+          maxLength: 40
+        asrMadhab:
+          type: string
+          enum: [standard, hanafi]
+        highLatitudeRule:
+          type: string
+          enum: [none, middle_of_night, seventh_of_night, twilight_angle]
+        hijriOffsetDays:
+          type: integer
+          minimum: -2
+          maximum: 2
+        timezone:
+          type: string
+          maxLength: 64
+          description: IANA zone id.
+        cityId:
+          type: [string, 'null']
+          maxLength: 40
+        latRounded:
+          type: [number, 'null']
+          minimum: -90
+          maximum: 90
+          description: Rounded to 0.1 degree (ADR-018).
+        lonRounded:
+          type: [number, 'null']
+          minimum: -180
+          maximum: 180
+
+    BookmarkData:
+      type: object
+      additionalProperties: false
+      required: [itemType, itemKey]
+      properties:
+        itemType:
+          type: string
+          enum: [quran_ayah, hadith, article, dhikr]
+        itemKey:
+          type: string
+          maxLength: 200
+          description: e.g. "quran:2:255". Notes are never sent (ADR-012).
+
+    ReadingPositionData:
+      type: object
+      additionalProperties: false
+      required: [surah, ayah]
+      properties:
+        surah:
+          type: integer
+          minimum: 1
+          maximum: 114
+        ayah:
+          type: integer
+          minimum: 1
+          maximum: 286
+
+    WorshipGoalData:
+      type: object
+      additionalProperties: false
+      required: [goalType, period]
+      properties:
+        goalType:
+          type: string
+          maxLength: 40
+        title:
+          type: [string, 'null']
+          maxLength: 120
+        targetValue:
+          type: [integer, 'null']
+          minimum: 1
+        period:
+          type: string
+          enum: [daily, weekly]
+        archived:
+          type: boolean
+
+    WorshipProgressData:
+      type: object
+      additionalProperties: false
+      required: [goalId, localDate, value]
+      properties:
+        goalId:
+          type: string
+          format: uuid
+        localDate:
+          type: string
+          format: date
+        value:
+          type: integer
+          minimum: 0
+
+    ContentArea:
+      type: string
+      enum: [quran_text, quran_translation, tafsir, adhkar, hadith, library, blocklist]
+
+    PackSummary:
+      type: object
+      required: [packId, area, version, sizeBytes, publishedAt]
+      properties:
+        packId:
+          type: string
+          format: uuid
+        area:
+          $ref: '#/components/schemas/ContentArea'
+        language:
+          oneOf:
+            - $ref: '#/components/schemas/LanguageTag'
+            - type: 'null'
+        editionCode:
+          type: [string, 'null']
+        title:
+          type: string
+          description: Localized per Accept-Language.
+        version:
+          type: string
+        sizeBytes:
+          type: integer
+          format: int64
+        publishedAt:
+          type: string
+          format: date-time
+
+    SignedManifest:
+      type: object
+      required: [manifest, signature, keyId]
+      properties:
+        manifest:
+          type: string
+          description: Base64 of the exact manifest JSON bytes that were signed.
+        signature:
+          type: string
+          description: Base64 Ed25519 signature over the decoded manifest bytes.
+        keyId:
+          type: string

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="780" viewBox="0 0 360 780" font-family="Noto Sans Arabic, Segoe UI, Tahoma, sans-serif">
+  <title>02 Home (Today) — Arabic RTL, light theme</title>
+  <rect width="360" height="780" fill="#FBF8F1"/>
+
+  <!-- top bar -->
+  <text x="344" y="56" font-size="22" font-weight="700" fill="#1B1C19" direction="rtl" text-anchor="start">اليوم</text>
+  <text x="344" y="80" font-size="13" fill="#47504A" direction="rtl" text-anchor="start">[التاريخ الميلادي] · [التاريخ الهجري]</text>
+  <circle cx="36" cy="58" r="16" fill="#F2EDE1"/><text x="36" y="63" font-size="14" fill="#47504A" text-anchor="middle">⚙</text>
+
+  <!-- hero: next prayer -->
+  <rect x="16" y="100" width="328" height="150" rx="16" fill="#0E5A45"/>
+  <text x="328" y="130" font-size="13" fill="#CDE8DC" direction="rtl" text-anchor="start">الصلاة القادمة</text>
+  <text x="328" y="172" font-size="30" font-weight="700" fill="#FFFFFF" direction="rtl" text-anchor="start">العصر</text>
+  <text x="32" y="172" font-size="30" font-weight="700" fill="#FFFFFF" text-anchor="start">١٥:٢٠</text>
+  <text x="328" y="202" font-size="14" fill="#CDE8DC" direction="rtl" text-anchor="start">بعد ١ ساعة و٢٠ دقيقة</text>
+  <text x="328" y="232" font-size="12" fill="#CDE8DC" direction="rtl" text-anchor="start">[المدينة] · [طريقة الحساب]</text>
+  <text x="32" y="232" font-size="12" fill="#E5CC85" text-anchor="start">← كل المواقيت</text>
+
+  <!-- continue reading -->
+  <rect x="16" y="266" width="328" height="84" rx="16" fill="#FFFFFF" stroke="#E4DED0"/>
+  <text x="328" y="296" font-size="13" fill="#7A5C14" direction="rtl" text-anchor="start">تابع القراءة</text>
+  <text x="328" y="326" font-size="17" font-weight="700" fill="#1B1C19" direction="rtl" text-anchor="start">سورة [الاسم] · آية [رقم]</text>
+  <text x="36" y="320" font-size="22" fill="#0E5A45" text-anchor="middle">←</text>
+
+  <!-- adhkar by time -->
+  <rect x="16" y="366" width="328" height="84" rx="16" fill="#FFFFFF" stroke="#E4DED0"/>
+  <text x="328" y="396" font-size="13" fill="#7A5C14" direction="rtl" text-anchor="start">أذكار حسب الوقت</text>
+  <text x="328" y="426" font-size="17" font-weight="700" fill="#1B1C19" direction="rtl" text-anchor="start">أذكار المساء</text>
+  <rect x="32" y="404" width="64" height="28" rx="14" fill="#CDE8DC"/>
+  <text x="64" y="423" font-size="12" fill="#002117" text-anchor="middle">ابدأ</text>
+
+  <!-- daily goal card (user-chosen) -->
+  <rect x="16" y="466" width="328" height="96" rx="16" fill="#FFFFFF" stroke="#E4DED0"/>
+  <text x="328" y="496" font-size="13" fill="#7A5C14" direction="rtl" text-anchor="start">هدفك اليوم</text>
+  <text x="328" y="524" font-size="16" fill="#1B1C19" direction="rtl" text-anchor="start">[هدف يختاره المستخدم]</text>
+  <rect x="32" y="540" width="296" height="8" rx="4" fill="#F2EDE1"/>
+  <rect x="148" y="540" width="180" height="8" rx="4" fill="#0E5A45"/>
+  <text x="32" y="530" font-size="12" fill="#47504A" text-anchor="start">٣ / ٥</text>
+
+  <!-- customize -->
+  <rect x="96" y="580" width="168" height="40" rx="20" fill="none" stroke="#737B75"/>
+  <text x="180" y="605" font-size="14" fill="#0E5A45" text-anchor="middle">تخصيص البطاقات</text>
+  <text x="180" y="644" font-size="11" fill="#47504A" text-anchor="middle">تظهر بطاقات المنبه والتركيز فقط بعد تنفيذ ميزتيهما (ADR-017)</text>
+
+  <!-- bottom bar (RTL: first item on the right) -->
+  <rect x="0" y="680" width="360" height="80" fill="#FFFFFF"/>
+  <line x1="0" y1="680" x2="360" y2="680" stroke="#E4DED0"/>
+  <g font-size="12" text-anchor="middle">
+    <rect x="296" y="692" width="56" height="30" rx="15" fill="#CDE8DC"/>
+    <text x="324" y="712" fill="#002117">◉</text><text x="324" y="742" fill="#002117" font-weight="700">اليوم</text>
+    <text x="252" y="712" fill="#47504A">◇</text><text x="252" y="742" fill="#47504A">العبادة</text>
+    <text x="180" y="712" fill="#47504A">▭</text><text x="180" y="742" fill="#47504A">القرآن</text>
+    <text x="108" y="712" fill="#47504A">☰</text><text x="108" y="742" fill="#47504A">المكتبة</text>
+    <text x="36" y="712" fill="#47504A">⋯</text><text x="36" y="742" fill="#47504A">المزيد</text>
+  </g>
+  <text x="180" y="774" font-size="9" fill="#47504A" text-anchor="middle">نموذج أولي — الأوقات بيانات توضيحية وليست محسوبة</text>
+</svg>

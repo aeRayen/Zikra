@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  secret-scan:
+    name: Secret scan (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: .gitleaks.toml
+
+  repo-hygiene:
+    name: Repository hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Forbid committed env files and keystores
+        run: |
+          bad=$(git ls-files | grep -E '(^|/)\.env($|\.)|\.jks$|\.keystore$|keystore\.properties$|google-services\.json$' | grep -v '^\.env\.example$' || true)
+          if [ -n "$bad" ]; then echo "Forbidden files tracked:"; echo "$bad"; exit 1; fi
+      - name: Validate JSON files
+        run: |
+          set -e
+          for f in $(git ls-files '*.json'); do python3 -m json.tool "$f" > /dev/null || { echo "Invalid JSON: $f"; exit 1; }; done
+      - name: Protect reference starter kit (read-only)
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch --no-tags --depth=1 origin "${{ github.base_ref }}"
+          changed=$(git diff --name-only "origin/${{ github.base_ref }}" -- docs/reference/ || true)
+          if [ -n "$changed" ]; then echo "docs/reference/ is read-only:"; echo "$changed"; exit 1; fi
+
+  android:
+    name: Android build & checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Detect Android project
+        id: detect
+        run: |
+          if [ -f android/gradlew ]; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; echo "No android/ project yet (added in work package 1.2) — skipping."; fi
+      - uses: actions/setup-java@v4
+        if: steps.detect.outputs.present == 'true'
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        if: steps.detect.outputs.present == 'true'
+      - name: Build, lint and unit tests
+        if: steps.detect.outputs.present == 'true'
+        working-directory: android
+        run: ./gradlew --no-daemon assembleDebug lint testDebugUnitTest
+
+  supabase:
+    name: Supabase migrations & RLS tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Detect Supabase project
+        id: detect
+        run: |
+          if [ -f supabase/config.toml ]; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; echo "No supabase/ project yet (added in work package 1.9) — skipping."; fi
+      - uses: supabase/setup-cli@v1
+        if: steps.detect.outputs.present == 'true'
+        with:
+          version: latest
+      - name: Start local stack, apply migrations, run tests
+        if: steps.detect.outputs.present == 'true'
+        run: |
+          supabase start
+          supabase db reset
+          supabase test db
+          supabase db lint

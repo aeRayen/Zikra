@@ -1,0 +1,175 @@
+{
+  "project": "Islamic Life OS",
+  "platforms": [
+    "Android first",
+    "iOS later"
+  ],
+  "deployment": "self-hosted backend",
+  "architecture": {
+    "android": "Kotlin, Jetpack Compose, modular clean architecture",
+    "backend": "modular monolith",
+    "database": "PostgreSQL server, Room local",
+    "api": "REST + OpenAPI"
+  },
+  "features": [
+    {
+      "id": "authentication",
+      "priority": "P0",
+      "scope": [
+        "Google sign-in",
+        "session lifecycle",
+        "account deletion",
+        "optional sync"
+      ]
+    },
+    {
+      "id": "home",
+      "priority": "P0",
+      "scope": [
+        "daily dashboard",
+        "customizable cards",
+        "RTL",
+        "dark/light mode"
+      ]
+    },
+    {
+      "id": "prayer_times",
+      "priority": "P0",
+      "scope": [
+        "calculation methods",
+        "adhan notifications",
+        "timezone handling",
+        "offline calculation"
+      ]
+    },
+    {
+      "id": "qibla",
+      "priority": "P0",
+      "scope": [
+        "sensor compass",
+        "calibration guidance",
+        "fallback behavior"
+      ]
+    },
+    {
+      "id": "quran",
+      "priority": "P0",
+      "scope": [
+        "verified text",
+        "bookmarks",
+        "audio",
+        "offline access",
+        "source/version tracking"
+      ]
+    },
+    {
+      "id": "dhikr",
+      "priority": "P1",
+      "scope": [
+        "daily adhkar",
+        "optional reminders",
+        "counter"
+      ]
+    },
+    {
+      "id": "hadith_tafsir_seerah",
+      "priority": "P1",
+      "scope": [
+        "sources",
+        "grading where available",
+        "search",
+        "editorial review"
+      ]
+    },
+    {
+      "id": "memorization",
+      "priority": "P1",
+      "scope": [
+        "goals",
+        "review schedule",
+        "progress"
+      ]
+    },
+    {
+      "id": "protection_standard",
+      "priority": "P1",
+      "scope": [
+        "domain filtering",
+        "status indicators",
+        "transparent permissions",
+        "failure alerts"
+      ]
+    },
+    {
+      "id": "protection_managed",
+      "priority": "P2",
+      "scope": [
+        "device policy controller",
+        "managed-device setup",
+        "recovery documentation"
+      ]
+    },
+    {
+      "id": "recovery",
+      "priority": "P1",
+      "scope": [
+        "personal plan",
+        "triggers",
+        "quick intervention",
+        "local-first private data"
+      ]
+    },
+    {
+      "id": "smart_alarm",
+      "priority": "P1",
+      "scope": [
+        "alarm scheduling",
+        "verification tasks",
+        "response analytics",
+        "power/permission handling"
+      ]
+    },
+    {
+      "id": "focus",
+      "priority": "P2",
+      "scope": [
+        "focus sessions",
+        "optional distraction reduction"
+      ]
+    },
+    {
+      "id": "ai_assistant",
+      "priority": "P2",
+      "scope": [
+        "retrieval grounded answers",
+        "citations",
+        "uncertainty handling"
+      ]
+    },
+    {
+      "id": "admin_cms",
+      "priority": "P1",
+      "scope": [
+        "content review",
+        "source/license tracking",
+        "versioning",
+        "audit log"
+      ]
+    },
+    {
+      "id": "ios",
+      "priority": "P3",
+      "scope": [
+        "SwiftUI app",
+        "native Apple integrations",
+        "API reuse"
+      ]
+    }
+  ],
+  "non_goals": [
+    "absolute undeletability on ordinary Android devices",
+    "guaranteed blocking of all explicit content",
+    "secret camera or microphone monitoring",
+    "medical diagnosis of sleep disorders"
+  ]
+}

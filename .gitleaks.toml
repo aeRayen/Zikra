@@ -1,0 +1,23 @@
+title = "Zikra gitleaks config"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "supabase-service-role-jwt"
+description = "Possible Supabase service_role JWT"
+regex = '''eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]*cm9sZSI6InNlcnZpY2Vfcm9sZS[A-Za-z0-9_-]*\.[A-Za-z0-9_-]{10,}'''
+tags = ["supabase", "secret"]
+
+[[rules]]
+id = "supabase-secret-key"
+description = "Supabase secret API key"
+regex = '''sb_secret_[A-Za-z0-9_-]{20,}'''
+tags = ["supabase", "secret"]
+
+[allowlist]
+description = "Placeholders and reference docs"
+paths = [
+  '''^\.env\.example$''',
+  '''^docs/reference/''',
+]
