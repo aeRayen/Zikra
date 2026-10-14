@@ -1,0 +1,5 @@
+# Known false positives: FAKE test fixtures committed in d530c6cb1832657033243808c72b34f58a6f7808 (merged via PR #2),
+# replaced by runtime-assembled values in the next commit. Not real credentials.
+# Format: <commit>:<file>:<rule-id>:<line>
+d530c6cb1832657033243808c72b34f58a6f7808:android/core/common/src/test/kotlin/com/zikra/core/common/logging/RedactorTest.kt:jwt:16
+d530c6cb1832657033243808c72b34f58a6f7808:android/core/common/src/test/kotlin/com/zikra/core/common/logging/RedactorTest.kt:supabase-secret-key:34
