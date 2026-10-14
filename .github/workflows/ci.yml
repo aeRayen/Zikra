@@ -85,7 +85,7 @@ jobs:
         id: detect
         run: |
           if [ -f supabase/config.toml ]; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; echo "No supabase/ project yet (added in work package 1.9) — skipping."; fi
-      - uses: supabase/setup-cli@v1
+      - uses: supabase/setup-cli@v3
         if: steps.detect.outputs.present == 'true'
         with:
           version: latest
