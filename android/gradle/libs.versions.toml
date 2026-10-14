@@ -1,0 +1,55 @@
+[versions]
+# Baseline chosen for a known-compatible set (AGP 8.6 / Kotlin 2.0.21 / Gradle 8.10.2).
+# Upgrades go through Dependabot PRs; targetSdk must be raised to the current
+# Google Play requirement before release (Phase 7).
+agp = "8.6.0"
+kotlin = "2.0.21"
+ksp = "2.0.21-1.0.25"
+compileSdk = "35"
+targetSdk = "35"
+minSdk = "26"
+jvmTarget = "17"
+
+androidx-core = "1.13.1"
+androidx-activity = "1.9.3"
+androidx-lifecycle = "2.8.7"
+compose-bom = "2024.10.01"
+coroutines = "1.9.0"
+junit = "4.13.2"
+detekt = "1.23.7"
+
+[libraries]
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
+compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
+compose-ui = { module = "androidx.compose.ui:ui" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+compose-material3 = { module = "androidx.compose.material3:material3" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+junit = { module = "junit:junit", version.ref = "junit" }
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+
+# build-logic (convention plugins) dependencies
+android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+compose-compiler-gradle-plugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
+detekt-gradle-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+
+# Convention plugins (defined in build-logic)
+zikra-android-application = { id = "zikra.android.application" }
+zikra-android-library = { id = "zikra.android.library" }
+zikra-android-compose = { id = "zikra.android.compose" }
+zikra-jvm-library = { id = "zikra.jvm.library" }
+zikra-detekt = { id = "zikra.detekt" }

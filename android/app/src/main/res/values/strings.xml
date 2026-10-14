@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Launcher label and app name in Latin-script languages (ADR-022). -->
+    <string name="app_name">Zikra</string>
+    <!-- Temporary text shown by the Phase 1 shell until the real Home screen exists (WP 1.6). -->
+    <string name="shell_placeholder">Zikra is under construction.</string>
+</resources>

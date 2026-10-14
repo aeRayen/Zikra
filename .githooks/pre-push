@@ -1,0 +1,14 @@
+#!/bin/sh
+# Blocks direct pushes to main (CONTRIBUTING §1).
+# GitHub branch protection is unavailable for private repos on the Free plan,
+# so this client-side hook enforces the policy. Enable once per clone:
+#   git config core.hooksPath .githooks
+# Emergency bypass (documented in the PR): git push --no-verify
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  if [ "$remote_ref" = "refs/heads/main" ]; then
+    echo "pre-push: direct push to 'main' is not allowed. Push a wp/* branch and open a Pull Request." >&2
+    exit 1
+  fi
+done
+exit 0

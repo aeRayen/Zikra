@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Launcher label without diacritics for legibility at small size (ADR-022). -->
+    <string name="app_name">ذكرى</string>
+    <string name="shell_placeholder">تطبيق ذِكْرَى قيد البناء.</string>
+</resources>

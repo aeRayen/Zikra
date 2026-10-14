@@ -1,0 +1,27 @@
+# Overrides on top of detekt's default config (buildUponDefaultConfig = true).
+build:
+  maxIssues: 0
+
+naming:
+  FunctionNaming:
+    # Composable functions are PascalCase.
+    ignoreAnnotated: ['Composable']
+
+style:
+  MagicNumber:
+    ignorePropertyDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+    excludes: ['**/test/**', '**/androidTest/**', '**/*Theme*.kt', '**/*Tokens*.kt']
+  UnusedPrivateMember:
+    ignoreAnnotated: ['Preview']
+
+complexity:
+  LongParameterList:
+    ignoreAnnotated: ['Composable']
+
+formatting:
+  # ktlint rules through detekt-formatting
+  active: true
+  autoCorrect: false   # CI must fail on formatting; fix locally with: ./gradlew detekt --auto-correct
+  MaximumLineLength:
+    maxLineLength: 120
