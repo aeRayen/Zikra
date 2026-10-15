@@ -50,9 +50,13 @@ jobs:
             mailer_otp_exp: 600,
             mailer_otp_length: 6
           }' > /tmp/auth.json
-          curl -sf -X PATCH "https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_REF/config/auth" \
+          code=$(curl -s -o /tmp/resp.json -w '%{http_code}' -X PATCH \
+            "https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_REF/config/auth" \
             -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" -H "Content-Type: application/json" \
-            --data-binary @/tmp/auth.json > /dev/null
+            --data-binary @/tmp/auth.json)
+          echo "HTTP $code"
+          # The error body explains refused fields; it never contains secrets.
+          if [ "$code" -ge 300 ]; then cat /tmp/resp.json; exit 1; fi
       - name: Show e-mail sign-in settings
         run: |
           curl -sf "https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_REF/config/auth" \
