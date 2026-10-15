@@ -142,6 +142,13 @@
     <string name="qibla_no_compass">لا توجد بوصلة في هذا الهاتف. استخدم الزاوية أعلاه مع خريطة، أو اتجه بمقدارها من الشمال الحقيقي.</string>
     <string name="qibla_dial_description">بوصلة القبلة. %1$s</string>
 
+    <!-- التاريخ الهجري (WP 2.7). -->
+    <string name="settings_hijri_header">التاريخ الهجري</string>
+    <string name="settings_hijri_hint">تقويم أم القرى. يمكنك تعديله حتى يومين ليوافق رؤية الهلال في بلدك.</string>
+    <string name="settings_hijri_preview">اليوم: %1$s</string>
+    <string name="settings_hijri_minus">إرجاع التاريخ الهجري يومًا</string>
+    <string name="settings_hijri_plus">تقديم التاريخ الهجري يومًا</string>
+
     <string name="language_title">لغة التطبيق</string>
     <string name="language_follow_device">لغة الجهاز</string>
 

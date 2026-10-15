@@ -126,6 +126,19 @@ class PrayerSettingsAndMonthViewModelTest {
         vm.uiState.await { it.adjustments[PrayerName.FAJR] == PrayerSettings.MAX_ADJUSTMENT }
     }
 
+    @Test
+    fun hijriAdjustmentStaysWithinTwoDays() = runTest {
+        assumeRenameOverOpenFileWorks()
+        stores()
+        val vm = PrayerSettingsViewModel({ places }, location, prefs, UnconfinedTestDispatcher(testScheduler))
+        for (expected in listOf(1, 2, 2)) {
+            vm.adjustHijri(1)
+            prefs.preferences.await { it.hijriAdjustment == expected }
+        }
+        vm.adjustHijri(-1)
+        prefs.preferences.await { it.hijriAdjustment == 1 }
+    }
+
     // --- Monthly timetable ---
 
     private fun TestScope.month(now: ZonedDateTime) = PrayerMonthViewModel(

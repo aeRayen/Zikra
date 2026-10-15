@@ -17,6 +17,7 @@ import com.zikra.app.adhan.AlertMode
 import com.zikra.app.prayer.MonthDay
 import com.zikra.app.prayer.PrayerMonthUiState
 import com.zikra.app.prayer.PrayerSettingsUiState
+import com.zikra.app.ui.HIJRI_PREVIEW_TAG
 import com.zikra.app.ui.MONTH_NEXT_TAG
 import com.zikra.app.ui.MONTH_PREVIOUS_TAG
 import com.zikra.app.ui.MONTH_TITLE_TAG
@@ -30,6 +31,7 @@ import com.zikra.app.ui.methodTag
 import com.zikra.app.ui.monthRowTag
 import com.zikra.core.designsystem.theme.ZikraTheme
 import com.zikra.core.i18n.Bidi
+import com.zikra.core.i18n.HijriCalendar
 import com.zikra.core.prayer.AsrMadhab
 import com.zikra.core.prayer.CalculationMethodId
 import com.zikra.core.prayer.HighLatitudeRule
@@ -55,14 +57,18 @@ class PrayerSettingsAndMonthScreenTest {
 
     private val events = mutableListOf<String>()
 
-    private val actions = PrayerSettingsActions(
-        onMethod = { events += "method:${it?.id}" },
-        onMadhab = { events += "madhab:${it?.name}" },
-        onHighLatitudeRule = { events += "rule:${it?.name}" },
-        onAdjust = { prayer, delta -> events += "adjust:${prayer.name}:$delta" },
-        onAlert = { prayer, mode -> events += "alert:${prayer.name}:${mode.name}" },
-        onReset = { events += "reset" },
-    )
+    private val actions = object : PrayerSettingsActions {
+        override val onMethod: (CalculationMethodId?) -> Unit = { events += "method:${it?.id}" }
+        override val onMadhab: (AsrMadhab?) -> Unit = { events += "madhab:${it?.name}" }
+        override val onHighLatitudeRule: (HighLatitudeRule?) -> Unit = { events += "rule:${it?.name}" }
+        override val onAdjust: (PrayerName, Int) -> Unit = { prayer, delta -> events += "adjust:${prayer.name}:$delta" }
+        override val onAlert: (
+            PrayerName,
+            AlertMode
+        ) -> Unit = { prayer, mode -> events += "alert:${prayer.name}:${mode.name}" }
+        override val onHijri: (Int) -> Unit = { events += "hijri:$it" }
+        override val onReset: () -> Unit = { events += "reset" }
+    }
 
     private fun settings(state: PrayerSettingsUiState) =
         rule.setContent { ZikraTheme { PrayerSettingsScreen(state, actions, onBack = { events += "back" }) } }
@@ -98,6 +104,17 @@ class PrayerSettingsAndMonthScreenTest {
         rule.onNodeWithTag(alertTag(PrayerName.FAJR, AlertMode.SOUND)).assertIsSelected()
         rule.onNodeWithTag(alertTag(PrayerName.FAJR, AlertMode.SILENT)).performClick()
         assertEquals(listOf("alert:FAJR:SILENT"), events)
+    }
+
+    @Test
+    fun hijriAdjustmentShowsTodayAndSteps() {
+        val today = requireNotNull(HijriCalendar.fromGregorian(LocalDate.of(2026, 2, 18)))
+        settings(PrayerSettingsUiState(loaded = true, hijriToday = today))
+        rule.onNode(hasScrollAction()).performScrollToNode(hasTestTag(HIJRI_PREVIEW_TAG))
+        rule.onNodeWithTag(HIJRI_PREVIEW_TAG).assertTextContains("1447", substring = true)
+        rule.onNodeWithContentDescription(str(R.string.settings_hijri_plus)).performClick()
+        rule.onNodeWithContentDescription(str(R.string.settings_hijri_minus)).performClick()
+        assertEquals(listOf("hijri:1", "hijri:-1"), events)
     }
 
     @Test

@@ -32,13 +32,15 @@ import com.zikra.app.prayer.PrayerTimesUiState
 import com.zikra.core.designsystem.component.EmptyState
 import com.zikra.core.designsystem.theme.ZikraSpacing
 import com.zikra.core.i18n.Bidi
+import com.zikra.core.i18n.HijriCalendar
 import com.zikra.core.i18n.NumeralSystem
 import com.zikra.core.i18n.TimeFormatter
 import com.zikra.core.prayer.AsrMadhab
-import com.zikra.core.prayer.CalculationMethodId
 import com.zikra.core.prayer.PrayerName
 import com.zikra.core.settings.LocationSource
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -93,6 +95,7 @@ fun PrayerTimesScreen(
 @Composable
 private fun ReadyContent(state: PrayerTimesUiState.Ready, onChangeLocation: () -> Unit) {
     val formatTime = rememberTimeFormatter()
+    DateLine(state)
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
             text = locationTitle(state),
@@ -131,6 +134,23 @@ private fun ReadyContent(state: PrayerTimesUiState.Ready, onChangeLocation: () -
             )
         }
     }
+}
+
+/** «Thursday, 15 October 2026 · 4 Jumada I 1448 AH», in the place's calendar day and the user's digits. */
+@Composable
+private fun DateLine(state: PrayerTimesUiState.Ready) {
+    val locale = LocalConfiguration.current.locales[0]
+    val numerals = NumeralSystem.forLanguage(locale.toLanguageTag())
+    val gregorian = numerals.apply(
+        DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(locale).format(state.date)
+    )
+    val hijri = state.hijri?.let { HijriCalendar.format(it, locale, numerals) }
+    Text(
+        text = listOfNotNull(gregorian, hijri).joinToString(" · ") { Bidi.isolate(it) },
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.testTag(PRAYER_DATE_TAG),
+    )
 }
 
 @Composable
@@ -214,34 +234,12 @@ private fun rememberTimeFormatter(): (LocalTime) -> String {
     return { time -> TimeFormatter.format(time, locale, use24Hour, numerals) }
 }
 
-internal fun PrayerName.labelRes(): Int = when (this) {
-    PrayerName.FAJR -> R.string.prayer_fajr
-    PrayerName.SUNRISE -> R.string.prayer_sunrise
-    PrayerName.DHUHR -> R.string.prayer_dhuhr
-    PrayerName.ASR -> R.string.prayer_asr
-    PrayerName.MAGHRIB -> R.string.prayer_maghrib
-    PrayerName.ISHA -> R.string.prayer_isha
-}
-
-internal fun CalculationMethodId.labelRes(): Int = when (this) {
-    CalculationMethodId.MUSLIM_WORLD_LEAGUE -> R.string.method_mwl
-    CalculationMethodId.EGYPTIAN -> R.string.method_egyptian
-    CalculationMethodId.KARACHI -> R.string.method_karachi
-    CalculationMethodId.UMM_AL_QURA -> R.string.method_umm_al_qura
-    CalculationMethodId.DUBAI -> R.string.method_dubai
-    CalculationMethodId.MOONSIGHTING_COMMITTEE -> R.string.method_moonsighting
-    CalculationMethodId.NORTH_AMERICA -> R.string.method_isna
-    CalculationMethodId.KUWAIT -> R.string.method_kuwait
-    CalculationMethodId.QATAR -> R.string.method_qatar
-    CalculationMethodId.SINGAPORE -> R.string.method_singapore
-    CalculationMethodId.TURKEY -> R.string.method_turkey
-}
-
 private const val MINUTES_PER_HOUR = 60L
 internal const val CHOOSE_LOCATION_TAG = "prayer_choose_location"
 internal const val PRAYER_LOCATION_TAG = "prayer_location"
 internal const val PRAYER_METHOD_TAG = "prayer_method"
 internal const val NEXT_PRAYER_TAG = "prayer_next"
+internal const val PRAYER_DATE_TAG = "prayer_date"
 internal const val OPEN_MONTH_TAG = "prayer_open_month"
 internal const val OPEN_QIBLA_TAG = "prayer_open_qibla"
 internal const val OPEN_SETTINGS_TAG = "prayer_open_settings"

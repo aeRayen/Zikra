@@ -2,6 +2,8 @@ package com.zikra.app.prayer
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zikra.core.i18n.HijriCalendar
+import com.zikra.core.i18n.HijriDate
 import com.zikra.core.places.PlaceLookup
 import com.zikra.core.prayer.PrayerCalculator
 import com.zikra.core.prayer.PrayerName
@@ -19,7 +21,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.YearMonth
 
-data class MonthDay(val date: LocalDate, val times: List<LocalTime>)
+data class MonthDay(val date: LocalDate, val times: List<LocalTime>, val hijri: HijriDate? = null)
 
 sealed interface PrayerMonthUiState {
     data object Loading : PrayerMonthUiState
@@ -66,7 +68,8 @@ class PrayerMonthViewModel(
                         val days = (1..shown.lengthOfMonth()).map { d ->
                             val date = shown.atDay(d)
                             val day = PrayerCalculator.compute(ctx.point, date, ctx.zone, ctx.resolved.settings)
-                            MonthDay(date, PrayerName.entries.map { day[it].atZone(ctx.zone).toLocalTime() })
+                            val times = PrayerName.entries.map { day[it].atZone(ctx.zone).toLocalTime() }
+                            MonthDay(date, times, HijriCalendar.fromGregorian(date, prefs.hijriAdjustment))
                         }
                         PrayerMonthUiState.Ready(shown, today, days)
                     }

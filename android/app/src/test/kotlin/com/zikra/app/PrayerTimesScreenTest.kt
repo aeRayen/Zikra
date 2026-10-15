@@ -13,10 +13,12 @@ import com.zikra.app.ui.ALERTS_NOTICE_TAG
 import com.zikra.app.ui.AlertsNotice
 import com.zikra.app.ui.CHOOSE_LOCATION_TAG
 import com.zikra.app.ui.NEXT_PRAYER_TAG
+import com.zikra.app.ui.PRAYER_DATE_TAG
 import com.zikra.app.ui.PRAYER_METHOD_TAG
 import com.zikra.app.ui.PrayerTimesScreen
 import com.zikra.app.ui.prayerRowTag
 import com.zikra.core.designsystem.theme.ZikraTheme
+import com.zikra.core.i18n.HijriCalendar
 import com.zikra.core.places.Place
 import com.zikra.core.prayer.AsrMadhab
 import com.zikra.core.prayer.CalculationMethodId
@@ -130,6 +132,14 @@ class PrayerTimesScreenTest {
         val method = str(R.string.prayer_method_used, str(R.string.method_umm_al_qura))
         rule.onNodeWithTag(PRAYER_METHOD_TAG).assertTextContains(method)
         rule.onNodeWithText(str(R.string.prayer_method_automatic)).performScrollTo().assertIsDisplayed()
+    }
+
+    @Test
+    fun dateLineShowsGregorianAndHijri() {
+        val hijri = HijriCalendar.fromGregorian(LocalDate.of(2026, 6, 1))
+        show(ready().copy(hijri = hijri))
+        rule.onNodeWithTag(PRAYER_DATE_TAG).assertTextContains("2026", substring = true)
+        rule.onNodeWithTag(PRAYER_DATE_TAG).assertTextContains("1447", substring = true)
     }
 
     @Test

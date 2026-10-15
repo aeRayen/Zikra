@@ -156,7 +156,9 @@ private fun DayRow(day: MonthDay, isToday: Boolean, dayWidth: Dp, timeWidth: Dp)
             .testTag(monthRowTag(day.date.dayOfMonth)),
     ) {
         Text(
-            text = numerals.apply("${day.date.dayOfMonth}") + " " + weekday,
+            // Gregorian day and weekday, then the Hijri day of month underneath.
+            text = numerals.apply("${day.date.dayOfMonth}") + " " + weekday +
+                (day.hijri?.let { "\n" + numerals.apply(it.day.toString()) } ?: ""),
             fontWeight = weight,
             style = MaterialTheme.typography.bodySmall,
             textAlign = TextAlign.Center,
