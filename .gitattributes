@@ -16,3 +16,6 @@
 *.db   binary
 *.mp3  binary
 *.opus binary
+
+# Religious content sources must stay byte-identical (pinned SHA-256 in content/sources/SOURCES.lock.json)
+content/sources/** -text -diff

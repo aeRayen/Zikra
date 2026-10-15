@@ -1,0 +1,35 @@
+{
+  "comment": "Pinned religious-content sources (ADR-027). The content pipeline refuses any file whose SHA-256 differs. Update only after re-verifying the new upstream version and recording it in the register.",
+  "sources": [
+    {
+      "id": "tanzil-quran-uthmani",
+      "path": "tanzil/quran-uthmani.txt",
+      "sha256": "4b91f9e6e8ac645d039e4ed85b3be492e795232a31cd22d668ac58238722e26f",
+      "version": "1.1",
+      "publisher": "Tanzil Project",
+      "url": "https://tanzil.net/download/",
+      "license": "CC-BY-3.0 (verbatim copies only; attribution; link to tanzil.net)",
+      "retrieved": "2026-10-15"
+    },
+    {
+      "id": "tanzil-quran-metadata",
+      "path": "tanzil/quran-data.xml",
+      "sha256": "8867c1d88191472adec9db694b3cd9f135b1a2ef580574d32cf888dcb22c5c7a",
+      "version": "1.0",
+      "publisher": "Tanzil Project",
+      "url": "https://tanzil.net/res/text/metadata/quran-data.xml",
+      "license": "CC-BY",
+      "retrieved": "2026-10-15"
+    },
+    {
+      "id": "quranenc-english-saheeh",
+      "path": "quranenc/english_saheeh_v1.1.2.json",
+      "sha256": "5c1fb4e514e5d4ab6ce692908e87bac9cb345dc0a507cdeb077835a95750c09e",
+      "version": "1.1.2",
+      "publisher": "Noor International Center (Saheeh International) via QuranEnc.com",
+      "url": "https://quranenc.com/en/browse/english_saheeh",
+      "license": "QuranEnc terms: no modification; credit publisher, source and version; keep updated; no inappropriate ads",
+      "retrieved": "2026-10-15"
+    }
+  ]
+}
