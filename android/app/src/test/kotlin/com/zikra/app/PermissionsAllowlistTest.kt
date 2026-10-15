@@ -21,6 +21,9 @@ class PermissionsAllowlistTest {
         // WP 1.8 (reviewed): optional account + sync and content packs. Guest mode is enforced by
         // NetworkGate, see GuestModeTest and SupabaseClientTest.guestIsStoppedBeforeTheNetwork.
         "android.permission.INTERNET",
+        // WP 2.1 (reviewed, ADR-018): APPROXIMATE location only, asked on tap, one-shot, kept on device.
+        // ACCESS_FINE_LOCATION and ACCESS_BACKGROUND_LOCATION must never appear here.
+        "android.permission.ACCESS_COARSE_LOCATION",
         // Added by androidx.core for non-exported dynamic receivers; signature-level, app-private.
         "com.zikra.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
     )

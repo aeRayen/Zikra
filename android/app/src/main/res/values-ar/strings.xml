@@ -14,6 +14,23 @@
     <string name="more_title">المزيد</string>
     <string name="settings_language">اللغة</string>
 
+    <!-- الموقع لحساب مواقيت الصلاة (WP 2.1, ADR-018). -->
+    <string name="settings_location">الموقع</string>
+    <string name="location_title">الموقع</string>
+    <string name="location_current_label">الموقع المستخدم لمواقيت الصلاة</string>
+    <string name="location_not_set">لم يُحدَّد موقع بعد. اختر مدينتك لحساب مواقيت الصلاة.</string>
+    <string name="location_place_details">%1$s، %2$s</string>
+    <string name="location_near_city">قرب %1$s</string>
+    <string name="location_approximate">موقعك التقريبي</string>
+    <string name="location_use_device">استخدم موقعي التقريبي</string>
+    <string name="location_use_device_hint">يُستخدم موقعك التقريبي فقط، مرة واحدة، ويبقى على هذا الهاتف.</string>
+    <string name="location_locating">جارٍ تحديد موقعك…</string>
+    <string name="location_denied">لم يُمنح إذن الموقع. يمكنك البحث عن مدينتك بدلًا من ذلك.</string>
+    <string name="location_unavailable">تعذّر تحديد موقعك. شغّل خدمة الموقع، أو ابحث عن مدينتك.</string>
+    <string name="location_search_label">ابحث عن مدينتك</string>
+    <string name="location_no_results">لم نجد مدينة بهذا الاسم. جرّب كتابة أخرى، أو اكتب أول حروف الاسم.</string>
+    <string name="location_attribution">بيانات المدن: GeoNames ‏(geonames.org)، بترخيص CC BY 4.0</string>
+
     <string name="language_title">لغة التطبيق</string>
     <string name="language_follow_device">لغة الجهاز</string>
 

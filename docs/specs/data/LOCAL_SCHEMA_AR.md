@@ -55,7 +55,7 @@ server_version INTEGER NULL  ·  deleted INTEGER (0/1)  ·  dirty INTEGER (0/1)
 | `sync_outbox` | `seq` PK AUTOINCREMENT، و`entity`، و`entity_id`، و`op`، و`idempotency_key`، و`attempts`، و`last_error` | — |
 | `sync_state` | `key` PK، و`value` (المؤشر، ووقت آخر مزامنة) | — |
 
-**الإعدادات** لا تُخزَّن في Room. مكانها Proto DataStore (`settings.pb`)، وتُزامَن ككيان `settings` واحد.
+**الإعدادات** لا تُخزَّن في Room. مكانها DataStore بصيغة JSON (ADR-031)، وتُزامَن ككيان `settings` واحد. الموقع في ملف مستقل `datastore/location.json` مستثنى من النسخ الاحتياطي السحابي.
 
 **ملاحظة الإقلاع المباشر:** جدولة المنبهات تُنسخ إلى ملف صغير في **Device-Protected Storage**، لأن `user.db` العادية غير متاحة قبل أول فتح للقفل.
 

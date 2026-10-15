@@ -67,6 +67,8 @@ dependencies {
     implementation(projects.core.i18n)
     implementation(projects.core.designSystem)
     implementation(projects.core.network)
+    implementation(projects.core.places)
+    implementation(projects.core.settings)
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)

@@ -27,17 +27,26 @@ data class Place(
 
 data class NearestPlace(val place: Place, val distanceKm: Double)
 
+/** City lookups used by the app; [PlaceDirectory] is the bundled implementation. Blocking: call off the main thread. */
+interface PlaceLookup {
+    fun search(query: String, language: String, limit: Int = 20): List<Place>
+
+    fun byId(cityId: Long, language: String): Place?
+
+    fun nearest(latitude: Double, longitude: Double, language: String): NearestPlace?
+}
+
 /**
  * Read-only access to the bundled GeoNames city database (WP 2.1). Works fully offline, so a user who
  * refuses the location permission can still pick a city. All calls do disk I/O: call off the main thread.
  */
-class PlaceDirectory private constructor(private val db: SQLiteDatabase) : Closeable {
+class PlaceDirectory private constructor(private val db: SQLiteDatabase) : PlaceLookup, Closeable {
 
     /**
      * Cities whose name in ANY bundled language starts with [query] (or has a word starting with it),
      * exact matches first, then by population.
      */
-    fun search(query: String, language: String, limit: Int = DEFAULT_LIMIT): List<Place> {
+    override fun search(query: String, language: String, limit: Int): List<Place> {
         val key = SearchNormalizer.normalize(query)
         if (key.isEmpty()) return emptyList()
         val lang = baseLanguage(language)
@@ -51,14 +60,14 @@ class PlaceDirectory private constructor(private val db: SQLiteDatabase) : Close
         return db.rawQuery(sql, arrayOf(key, key, key + MAX_CHAR, lang, lang, lang)).use { it.places() }
     }
 
-    fun byId(cityId: Long, language: String): Place? {
+    override fun byId(cityId: Long, language: String): Place? {
         val lang = baseLanguage(language)
         val sql = "SELECT $COLUMNS FROM city c $JOINS WHERE c.id = ?"
         return db.rawQuery(sql, arrayOf(lang, lang, lang, cityId.toString())).use { it.places().firstOrNull() }
     }
 
     /** The closest bundled city to a (coarse) device location, or null in the middle of nowhere. */
-    fun nearest(latitude: Double, longitude: Double, language: String): NearestPlace? {
+    override fun nearest(latitude: Double, longitude: Double, language: String): NearestPlace? {
         // Only trust a hit closer than the band edge; otherwise a wider band may hold a closer city.
         val (id, km) = SEARCH_WINDOWS_DEG.firstNotNullOfOrNull { window ->
             closestInBand(latitude, longitude, window)?.takeIf { it.second <= window * KM_PER_DEGREE }
@@ -99,7 +108,6 @@ class PlaceDirectory private constructor(private val db: SQLiteDatabase) : Close
 
     companion object {
         const val ASSET = "places.sqlite"
-        private const val DEFAULT_LIMIT = 20
         private const val MAX_LIMIT = 100
         private const val FALLBACK_LANGUAGE = "en"
         private const val MAX_CHAR = "􏿿" // U+10FFFF: upper bound for prefix ranges
