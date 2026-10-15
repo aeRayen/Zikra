@@ -15,6 +15,7 @@ import com.zikra.core.network.SupabaseConfig
 import com.zikra.core.places.PlaceDirectory
 import com.zikra.core.places.PlaceLookup
 import com.zikra.core.settings.LocationStore
+import com.zikra.core.settings.PrayerPreferencesStore
 import java.io.File
 
 /** Manual dependency wiring for the app process (a DI framework can replace it later, ADR-003). */
@@ -35,8 +36,12 @@ class AppContainer(context: Context) {
     val locationStore = LocationStore({ File(context.filesDir, LOCATION_FILE) })
     val deviceLocator: DeviceLocator = AndroidDeviceLocator(context)
 
+    // Prayer choices (method, madhab, adjustments): not location data, so it may be backed up.
+    val prayerPreferences = PrayerPreferencesStore({ File(context.filesDir, PRAYER_FILE) })
+
     private companion object {
         const val LOCATION_FILE = "datastore/${LocationStore.FILE_NAME}"
+        const val PRAYER_FILE = "datastore/${PrayerPreferencesStore.FILE_NAME}"
     }
 }
 

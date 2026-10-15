@@ -50,7 +50,7 @@ data class PrayerSettings(
         }
     }
 
-    private companion object {
+    companion object {
         const val MAX_ADJUSTMENT = 30
     }
 }

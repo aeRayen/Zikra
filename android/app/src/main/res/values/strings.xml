@@ -40,6 +40,57 @@
     <!-- Required attribution (CC BY 4.0, ADR-030). Keep "GeoNames" and the licence name untranslated. -->
     <string name="location_attribution">City data: GeoNames (geonames.org), CC BY 4.0</string>
 
+    <!-- Prayer times (WP 2.3). -->
+    <string name="nav_prayer">Prayer</string>
+    <string name="prayer_title">Prayer times</string>
+    <string name="prayer_fajr">Fajr</string>
+    <!-- Sunrise is shown for reference; it is not a prayer. -->
+    <string name="prayer_sunrise">Sunrise</string>
+    <string name="prayer_dhuhr">Dhuhr</string>
+    <string name="prayer_asr">Asr</string>
+    <string name="prayer_maghrib">Maghrib</string>
+    <string name="prayer_isha">Isha</string>
+    <string name="prayer_next_label">Next prayer</string>
+    <!-- %1$s = prayer name, %2$s = time. -->
+    <string name="prayer_next_at">%1$s at %2$s</string>
+    <string name="prayer_next_tomorrow">%1$s tomorrow at %2$s</string>
+    <!-- %1$s = duration, e.g. "1 hour and 20 minutes". -->
+    <string name="prayer_remaining">in %1$s</string>
+    <!-- %1$s = number already formatted with the user's digits. -->
+    <plurals name="prayer_hours">
+        <item quantity="one">%1$s hour</item>
+        <item quantity="other">%1$s hours</item>
+    </plurals>
+    <plurals name="prayer_minutes">
+        <item quantity="one">%1$s minute</item>
+        <item quantity="other">%1$s minutes</item>
+    </plurals>
+    <string name="prayer_hours_and_minutes">%1$s and %2$s</string>
+    <string name="prayer_no_location_title">Choose your location</string>
+    <string name="prayer_no_location_message">Prayer times are calculated on your phone for your city. No internet is needed.</string>
+    <string name="prayer_choose_location">Choose location</string>
+    <string name="prayer_change_location">Change location</string>
+    <!-- %1$s = calculation method name. -->
+    <string name="prayer_method_used">Calculation method: %1$s</string>
+    <string name="prayer_method_automatic">Chosen automatically for your region. You will be able to change it in prayer settings.</string>
+    <string name="prayer_asr_standard">Asr: standard (Shafi\'i, Maliki, Hanbali)</string>
+    <string name="prayer_asr_hanafi">Asr: Hanafi</string>
+    <!-- %1$s = time zone name, e.g. "Arabia Standard Time". -->
+    <string name="prayer_zone_note">Times are in local time there (%1$s), not your phone\'s time.</string>
+
+    <!-- Calculation method names (shown in full; the authority each method comes from). -->
+    <string name="method_mwl">Muslim World League</string>
+    <string name="method_egyptian">Egyptian General Authority of Survey</string>
+    <string name="method_karachi">University of Islamic Sciences, Karachi</string>
+    <string name="method_umm_al_qura">Umm al-Qura University, Makkah</string>
+    <string name="method_dubai">Dubai (UAE)</string>
+    <string name="method_moonsighting">Moonsighting Committee Worldwide</string>
+    <string name="method_isna">Islamic Society of North America (ISNA)</string>
+    <string name="method_kuwait">Kuwait</string>
+    <string name="method_qatar">Qatar</string>
+    <string name="method_singapore">Majlis Ugama Islam Singapura</string>
+    <string name="method_turkey">Diyanet (Türkiye)</string>
+
     <!-- App language picker. -->
     <string name="language_title">App language</string>
     <!-- Option that follows the phone's language setting. -->

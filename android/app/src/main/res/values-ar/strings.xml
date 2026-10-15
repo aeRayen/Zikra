@@ -31,6 +31,58 @@
     <string name="location_no_results">لم نجد مدينة بهذا الاسم. جرّب كتابة أخرى، أو اكتب أول حروف الاسم.</string>
     <string name="location_attribution">بيانات المدن: GeoNames ‏(geonames.org)، بترخيص CC BY 4.0</string>
 
+    <!-- مواقيت الصلاة (WP 2.3). -->
+    <string name="nav_prayer">الصلاة</string>
+    <string name="prayer_title">مواقيت الصلاة</string>
+    <string name="prayer_fajr">الفجر</string>
+    <string name="prayer_sunrise">الشروق</string>
+    <string name="prayer_dhuhr">الظهر</string>
+    <string name="prayer_asr">العصر</string>
+    <string name="prayer_maghrib">المغرب</string>
+    <string name="prayer_isha">العشاء</string>
+    <string name="prayer_next_label">الصلاة القادمة</string>
+    <string name="prayer_next_at">%1$s في %2$s</string>
+    <string name="prayer_next_tomorrow">%1$s غدًا في %2$s</string>
+    <string name="prayer_remaining">بعد %1$s</string>
+    <plurals name="prayer_hours">
+        <item quantity="zero">%1$s ساعة</item>
+        <item quantity="one">ساعة واحدة</item>
+        <item quantity="two">ساعتين</item>
+        <item quantity="few">%1$s ساعات</item>
+        <item quantity="many">%1$s ساعة</item>
+        <item quantity="other">%1$s ساعة</item>
+    </plurals>
+    <plurals name="prayer_minutes">
+        <item quantity="zero">%1$s دقيقة</item>
+        <item quantity="one">دقيقة واحدة</item>
+        <item quantity="two">دقيقتين</item>
+        <item quantity="few">%1$s دقائق</item>
+        <item quantity="many">%1$s دقيقة</item>
+        <item quantity="other">%1$s دقيقة</item>
+    </plurals>
+    <string name="prayer_hours_and_minutes">%1$s و%2$s</string>
+    <string name="prayer_no_location_title">اختر موقعك</string>
+    <string name="prayer_no_location_message">تُحسب مواقيت الصلاة على هاتفك لمدينتك، دون حاجة إلى الإنترنت.</string>
+    <string name="prayer_choose_location">اختيار الموقع</string>
+    <string name="prayer_change_location">تغيير الموقع</string>
+    <string name="prayer_method_used">طريقة الحساب: %1$s</string>
+    <string name="prayer_method_automatic">اختيرت تلقائيًا حسب منطقتك، وستتمكن من تغييرها من إعدادات الصلاة.</string>
+    <string name="prayer_asr_standard">العصر: مذهب الجمهور (الشافعي والمالكي والحنبلي)</string>
+    <string name="prayer_asr_hanafi">العصر: المذهب الحنفي</string>
+    <string name="prayer_zone_note">المواقيت بالتوقيت المحلي هناك (%1$s)، لا بتوقيت هاتفك.</string>
+
+    <string name="method_mwl">رابطة العالم الإسلامي</string>
+    <string name="method_egyptian">الهيئة المصرية العامة للمساحة</string>
+    <string name="method_karachi">جامعة العلوم الإسلامية، كراتشي</string>
+    <string name="method_umm_al_qura">جامعة أم القرى، مكة المكرمة</string>
+    <string name="method_dubai">دبي (الإمارات)</string>
+    <string name="method_moonsighting">لجنة رؤية الهلال العالمية</string>
+    <string name="method_isna">الجمعية الإسلامية لأمريكا الشمالية (ISNA)</string>
+    <string name="method_kuwait">الكويت</string>
+    <string name="method_qatar">قطر</string>
+    <string name="method_singapore">مجلس الشؤون الإسلامية في سنغافورة</string>
+    <string name="method_turkey">رئاسة الشؤون الدينية التركية (ديانت)</string>
+
     <string name="language_title">لغة التطبيق</string>
     <string name="language_follow_device">لغة الجهاز</string>
 

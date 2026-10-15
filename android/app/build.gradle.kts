@@ -68,6 +68,7 @@ dependencies {
     implementation(projects.core.designSystem)
     implementation(projects.core.network)
     implementation(projects.core.places)
+    implementation(projects.core.prayer)
     implementation(projects.core.settings)
 
     testImplementation(libs.junit)
