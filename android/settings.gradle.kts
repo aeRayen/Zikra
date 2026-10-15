@@ -28,6 +28,7 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
 include(":core:common")
 include(":core:i18n")
+include(":core:design-system")
 include(":tooling:detekt-rules")
 // Further modules are added by their own work packages (BUILD_PLAN §4/§5):
-// core:design-system (1.5), core:database (1.7), ...
+// core:database (1.7), ...

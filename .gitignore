@@ -53,3 +53,7 @@ desktop.ini
 # --- Logs / temp ---
 *.log
 tmp/
+
+# Roborazzi comparison outputs (only the golden images are committed)
+*_actual.png
+*_compare.png

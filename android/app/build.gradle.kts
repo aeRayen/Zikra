@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(projects.core.common)
     implementation(projects.core.i18n)
+    implementation(projects.core.designSystem)
 
     testImplementation(libs.junit)
 }

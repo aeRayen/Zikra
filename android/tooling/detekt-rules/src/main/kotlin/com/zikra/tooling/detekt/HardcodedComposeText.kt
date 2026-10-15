@@ -39,7 +39,10 @@ class HardcodedComposeText(config: Config = Config.empty) : Rule(config) {
 
         expression.valueArguments.forEachIndexed { index, argument ->
             val name = argument.getArgumentName()?.asName?.asString()
-            val isText = if (name != null) name in TEXT_PARAMETERS else index == 0 && callee in TEXT_COMPOSABLES
+            // `label` on animation APIs is a debug name for tooling, not user-visible text.
+            val isAnimationLabel = name == "label" && ANIMATION_CALL.matches(callee)
+            val isText = !isAnimationLabel &&
+                if (name != null) name in TEXT_PARAMETERS else index == 0 && callee in TEXT_COMPOSABLES
             val literal = argument.getArgumentExpression() as? KtStringTemplateExpression
             if (isText && literal != null && literal.hasLetters()) {
                 report(
@@ -65,5 +68,8 @@ class HardcodedComposeText(config: Config = Config.empty) : Rule(config) {
     private companion object {
         val TEXT_COMPOSABLES = setOf("Text", "BasicText")
         val TEXT_PARAMETERS = setOf("text", "label", "placeholder", "title", "contentDescription")
+        val ANIMATION_CALL = Regex(
+            "animate\\w*|remember\\w*Transition|updateTransition|Crossfade|AnimatedContent|AnimatedVisibility",
+        )
     }
 }
