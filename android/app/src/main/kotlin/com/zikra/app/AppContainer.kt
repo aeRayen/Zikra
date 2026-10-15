@@ -3,6 +3,8 @@ package com.zikra.app
 import android.app.Application
 import android.content.Context
 import com.zikra.app.auth.KeystoreTokenStore
+import com.zikra.app.location.AndroidDeviceLocator
+import com.zikra.app.location.DeviceLocator
 import com.zikra.core.network.AuthRepository
 import com.zikra.core.network.GatedTransport
 import com.zikra.core.network.NetworkGate
@@ -10,6 +12,10 @@ import com.zikra.core.network.OkHttpTransport
 import com.zikra.core.network.SessionHolder
 import com.zikra.core.network.SupabaseClient
 import com.zikra.core.network.SupabaseConfig
+import com.zikra.core.places.PlaceDirectory
+import com.zikra.core.places.PlaceLookup
+import com.zikra.core.settings.LocationStore
+import java.io.File
 
 /** Manual dependency wiring for the app process (a DI framework can replace it later, ADR-003). */
 class AppContainer(context: Context) {
@@ -21,6 +27,17 @@ class AppContainer(context: Context) {
 
     val supabase = SupabaseClient(config, GatedTransport(NetworkGate(sessions), OkHttpTransport()))
     val auth = AuthRepository(supabase, KeystoreTokenStore(context.applicationContext), sessions)
+
+    // Opened on first use (copies the bundled database once): always called from an IO dispatcher.
+    val places: PlaceLookup by lazy { PlaceDirectory.open(context) }
+
+    // Own file, excluded from cloud backup (backup_rules.xml): the location stays on this device (ADR-018).
+    val locationStore = LocationStore({ File(context.filesDir, LOCATION_FILE) })
+    val deviceLocator: DeviceLocator = AndroidDeviceLocator(context)
+
+    private companion object {
+        const val LOCATION_FILE = "datastore/${LocationStore.FILE_NAME}"
+    }
 }
 
 class ZikraApplication : Application() {

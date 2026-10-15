@@ -36,9 +36,11 @@ import com.zikra.app.auth.AccountScreen
 import com.zikra.app.auth.SignInScreen
 import com.zikra.app.auth.SignInViewModel
 import com.zikra.app.i18n.AppLocales
+import com.zikra.app.location.LocationDestination
 import com.zikra.app.navigation.AccountRoute
 import com.zikra.app.navigation.HomeRoute
 import com.zikra.app.navigation.LanguageRoute
+import com.zikra.app.navigation.LocationRoute
 import com.zikra.app.navigation.MoreRoute
 import com.zikra.app.navigation.SignInRoute
 import com.zikra.app.navigation.TopLevelDestination
@@ -77,6 +79,7 @@ private fun ZikraNavHost(navController: NavHostController, modifier: Modifier) {
         composable<MoreRoute> {
             MoreScreen(
                 onOpenLanguage = { navController.navigate(LanguageRoute) },
+                onOpenLocation = { navController.navigate(LocationRoute) },
                 onOpenAccount = { navController.navigate(AccountRoute) },
             )
         }
@@ -87,6 +90,7 @@ private fun ZikraNavHost(navController: NavHostController, modifier: Modifier) {
                 onBack = { navController.popBackStack() },
             )
         }
+        composable<LocationRoute> { LocationDestination(onBack = { navController.popBackStack() }) }
         composable<AccountRoute> { AccountDestination(onSignIn = { navController.navigate(SignInRoute) }) }
         composable<SignInRoute> { SignInDestination(onDone = { navController.popBackStack() }) }
     }
@@ -123,7 +127,7 @@ private fun SignInDestination(onDone: () -> Unit) {
 }
 
 @Composable
-private fun appContainer(): AppContainer =
+internal fun appContainer(): AppContainer =
     (LocalContext.current.applicationContext as ZikraApplication).container
 
 @Composable

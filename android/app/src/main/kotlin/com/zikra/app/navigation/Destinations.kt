@@ -18,6 +18,9 @@ data object MoreRoute
 data object LanguageRoute
 
 @Serializable
+data object LocationRoute
+
+@Serializable
 data object AccountRoute
 
 @Serializable

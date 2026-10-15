@@ -19,6 +19,27 @@
     <string name="more_title">More</string>
     <string name="settings_language">Language</string>
 
+    <!-- Location for prayer times (WP 2.1, ADR-018). -->
+    <string name="settings_location">Location</string>
+    <string name="location_title">Location</string>
+    <string name="location_current_label">Location used for prayer times</string>
+    <string name="location_not_set">No location yet. Choose your city to calculate prayer times.</string>
+    <!-- %1$s = region or country, %2$s = country. -->
+    <string name="location_place_details">%1$s, %2$s</string>
+    <!-- Device location: %1$s = nearest city name. -->
+    <string name="location_near_city">Near %1$s</string>
+    <!-- Device location far from any listed city. -->
+    <string name="location_approximate">Your approximate location</string>
+    <string name="location_use_device">Use my approximate location</string>
+    <string name="location_use_device_hint">Only your approximate location is used, once, and it stays on this phone.</string>
+    <string name="location_locating">Finding your location…</string>
+    <string name="location_denied">Location permission was not given. You can search for your city instead.</string>
+    <string name="location_unavailable">Your location could not be found. Turn on location, or search for your city.</string>
+    <string name="location_search_label">Search for your city</string>
+    <string name="location_no_results">No city found. Try another spelling, or type the first letters.</string>
+    <!-- Required attribution (CC BY 4.0, ADR-030). Keep "GeoNames" and the licence name untranslated. -->
+    <string name="location_attribution">City data: GeoNames (geonames.org), CC BY 4.0</string>
+
     <!-- App language picker. -->
     <string name="language_title">App language</string>
     <!-- Option that follows the phone's language setting. -->

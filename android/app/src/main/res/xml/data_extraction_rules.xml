@@ -7,6 +7,8 @@
         <exclude domain="database" path="private.db-wal" />
         <exclude domain="database" path="private.db-shm" />
         <exclude domain="sharedpref" path="secure_session.xml" />
+        <!-- Location for prayer times stays on the device (ADR-018); device transfer keeps it. -->
+        <exclude domain="file" path="datastore/location.json" />
     </cloud-backup>
     <device-transfer>
         <exclude domain="database" path="private.db" />

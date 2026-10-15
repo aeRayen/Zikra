@@ -23,6 +23,7 @@ import com.zikra.core.designsystem.theme.ZikraSpacing
 @Composable
 fun MoreScreen(
     onOpenLanguage: () -> Unit,
+    onOpenLocation: () -> Unit,
     onOpenAccount: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -39,6 +40,11 @@ fun MoreScreen(
             // AutoMirrored: points to the end edge, i.e. left in Arabic.
             trailingContent = { Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null) },
             modifier = Modifier.clickable(role = Role.Button, onClick = onOpenLanguage),
+        )
+        ListItem(
+            headlineContent = { Text(text = stringResource(R.string.settings_location)) },
+            trailingContent = { Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null) },
+            modifier = Modifier.clickable(role = Role.Button, onClick = onOpenLocation),
         )
         ListItem(
             headlineContent = { Text(text = stringResource(R.string.settings_account)) },
