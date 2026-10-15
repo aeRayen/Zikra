@@ -10,6 +10,8 @@ Zikra content pipeline (CONTENT_PACKS_AR.md)
   quran   --sources ../content/sources --out <dir> --private <key> --public <key> --version <v>
   english --sources ../content/sources --out <dir> --private <key> --public <key> --version <v>
   verify  --pack <dir> --public <key>
+  places  --sources ../content/sources --out <places.sqlite>
+  places-extract --sources ../content/sources --alternate-names <GeoNames alternateNamesV2.txt>
 
 Paths are relative to the android/ directory when run with:
   ./gradlew :tooling:content-pipeline:run --args="<command> ..."
@@ -41,6 +43,15 @@ fun main(args: Array<String>) {
                 println(
                     "Built and verified ${manifest.area} ${manifest.editionCode} v${manifest.version} in ${out.path}"
                 )
+            }
+            "places" -> {
+                val places = Pipeline(file("sources")).buildPlaces(file("out"))
+                val counts = "${places.cities.size} cities, ${places.searchKeys.size} search keys"
+                println("Built ${file("out").path}: $counts")
+            }
+            "places-extract" -> {
+                Pipeline(file("sources")).extractPlaceNames(file("alternate-names"))
+                println("Names file regenerated. Update its sha256 in SOURCES.lock.json after review.")
             }
             "verify" -> {
                 val manifest = Pipeline.verify(file("pack"), Signing.loadPublic(file("public")))

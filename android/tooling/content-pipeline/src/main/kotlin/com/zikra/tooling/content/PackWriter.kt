@@ -82,6 +82,41 @@ object PackWriter {
         }
     }
 
+    /**
+     * places.sqlite (WP 2.1): cities with coordinates and IANA time zone, display names per language,
+     * and a prefix-search index of normalized names (every word start of every name, any language).
+     */
+    fun writePlaces(out: File, places: Places, source: PinnedSource) {
+        connect(out) { db ->
+            db.exec(
+                """
+                CREATE TABLE pack_info (key TEXT PRIMARY KEY NOT NULL, value TEXT NOT NULL);
+                CREATE TABLE country (code TEXT PRIMARY KEY NOT NULL, geoname_id INTEGER NOT NULL, name TEXT NOT NULL);
+                CREATE TABLE region (code TEXT PRIMARY KEY NOT NULL, geoname_id INTEGER NOT NULL, name TEXT NOT NULL);
+                CREATE TABLE city (
+                  id INTEGER PRIMARY KEY NOT NULL, name TEXT NOT NULL, country TEXT NOT NULL, region TEXT,
+                  latitude REAL NOT NULL, longitude REAL NOT NULL, timezone TEXT NOT NULL, population INTEGER NOT NULL);
+                CREATE INDEX city_lat ON city (latitude);
+                CREATE TABLE place_name (
+                  geoname_id INTEGER NOT NULL, language TEXT NOT NULL, name TEXT NOT NULL,
+                  PRIMARY KEY (geoname_id, language)) WITHOUT ROWID;
+                CREATE TABLE city_search (
+                  key TEXT NOT NULL, city_id INTEGER NOT NULL, PRIMARY KEY (key, city_id)) WITHOUT ROWID;
+                """,
+            )
+            writeInfo(db, source, mapOf("languages" to PLACE_NAME_LANGUAGES.joinToString(",")))
+            db.batch("INSERT INTO country VALUES (?,?,?)", places.countries) { listOf(it.code, it.geonameId, it.name) }
+            db.batch("INSERT INTO region VALUES (?,?,?)", places.regions) { listOf(it.code, it.geonameId, it.name) }
+            db.batch("INSERT INTO city VALUES (?,?,?,?,?,?,?,?)", places.cities) { c ->
+                listOf(c.id, c.name, c.country, places.regionCode(c), c.latitude, c.longitude, c.timezone, c.population)
+            }
+            db.batch("INSERT INTO place_name VALUES (?,?,?)", places.displayNames) {
+                listOf(it.geonameId, it.language, it.name)
+            }
+            db.batch("INSERT INTO city_search VALUES (?,?)", places.searchKeys) { listOf(it.first, it.second) }
+        }
+    }
+
     private fun writeInfo(db: Connection, source: PinnedSource, extra: Map<String, String>) {
         val info = mapOf(
             "source_id" to source.id,

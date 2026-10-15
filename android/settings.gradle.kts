@@ -32,6 +32,7 @@ include(":core:design-system")
 include(":core:database")
 include(":core:network")
 include(":core:prayer")
+include(":core:places")
 include(":tooling:detekt-rules")
 include(":tooling:content-pipeline")
 // Further modules are added by their own work packages (BUILD_PLAN §4/§5):
