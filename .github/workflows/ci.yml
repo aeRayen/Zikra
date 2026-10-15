@@ -155,11 +155,12 @@ jobs:
       - uses: supabase/setup-cli@v1
         if: steps.detect.outputs.present == 'true'
         with:
-          version: latest
+          version: 2.121.0
+      # Only the database and auth are needed for migrations and RLS tests.
       - name: Start local stack, apply migrations, run tests
         if: steps.detect.outputs.present == 'true'
         run: |
-          supabase start
+          supabase start -x studio,imgproxy,realtime,storage-api,edge-runtime,logflare,vector,mailpit,postgres-meta,supavisor
           supabase db reset
           supabase test db
-          supabase db lint
+          supabase db lint --level error --fail-on error
