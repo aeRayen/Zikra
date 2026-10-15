@@ -66,7 +66,7 @@
     <string name="prayer_choose_location">اختيار الموقع</string>
     <string name="prayer_change_location">تغيير الموقع</string>
     <string name="prayer_method_used">طريقة الحساب: %1$s</string>
-    <string name="prayer_method_automatic">اختيرت تلقائيًا حسب منطقتك، وستتمكن من تغييرها من إعدادات الصلاة.</string>
+    <string name="prayer_method_automatic">اختيرت تلقائيًا حسب منطقتك، ويمكنك تغييرها من إعدادات الصلاة.</string>
     <string name="prayer_asr_standard">العصر: مذهب الجمهور (الشافعي والمالكي والحنبلي)</string>
     <string name="prayer_asr_hanafi">العصر: المذهب الحنفي</string>
     <string name="prayer_zone_note">المواقيت بالتوقيت المحلي هناك (%1$s)، لا بتوقيت هاتفك.</string>
@@ -82,6 +82,30 @@
     <string name="method_qatar">قطر</string>
     <string name="method_singapore">مجلس الشؤون الإسلامية في سنغافورة</string>
     <string name="method_turkey">رئاسة الشؤون الدينية التركية (ديانت)</string>
+
+    <!-- إعدادات الصلاة والجدول الشهري (WP 2.3). -->
+    <string name="prayer_open_settings">إعدادات الصلاة</string>
+    <string name="prayer_open_month">الجدول الشهري</string>
+    <string name="prayer_settings_title">إعدادات الصلاة</string>
+    <string name="settings_method_header">طريقة الحساب</string>
+    <string name="settings_automatic_format">تلقائي (%1$s)</string>
+    <string name="settings_asr_header">وقت العصر</string>
+    <string name="settings_asr_standard">الجمهور: الشافعي والمالكي والحنبلي</string>
+    <string name="settings_asr_hanafi">الحنفي</string>
+    <string name="settings_high_lat_header">البلاد ذات الشفق الطويل</string>
+    <string name="settings_high_lat_hint">يُستخدم فقط في البلاد البعيدة عن خط الاستواء، حيث لا يمكن أحيانًا تحديد وقتي الفجر والعشاء بالطريقة المعتادة في الصيف.</string>
+    <string name="settings_high_lat_auto">تلقائي (مستحسن)</string>
+    <string name="settings_high_lat_middle">منتصف الليل</string>
+    <string name="settings_high_lat_seventh">سُبع الليل</string>
+    <string name="settings_high_lat_angle">زاوية الشفق</string>
+    <string name="settings_adjust_header">تعديل يدوي (بالدقائق)</string>
+    <string name="settings_adjust_hint">لمطابقة مسجدك المحلي إن اختلفت مواقيته قليلًا، بحد أقصى 30 دقيقة تقديمًا أو تأخيرًا.</string>
+    <string name="settings_adjust_minus">تقديم %1$s دقيقة واحدة</string>
+    <string name="settings_adjust_plus">تأخير %1$s دقيقة واحدة</string>
+    <string name="settings_reset">العودة إلى الإعدادات التلقائية</string>
+    <string name="month_previous">الشهر السابق</string>
+    <string name="month_next">الشهر التالي</string>
+    <string name="month_day_column">اليوم</string>
 
     <string name="language_title">لغة التطبيق</string>
     <string name="language_follow_device">لغة الجهاز</string>
@@ -110,4 +134,5 @@
     <string name="error_offline">لا يوجد اتصال بالإنترنت. حاول مرة أخرى عند الاتصال.</string>
     <string name="error_rate_limited">محاولات كثيرة. انتظر قليلًا ثم حاول مرة أخرى.</string>
     <string name="error_generic">حدث خطأ. حاول مرة أخرى.</string>
+    <string name="error_save_failed">تعذّر حفظ اختيارك. تأكد من وجود مساحة فارغة في هاتفك، ثم حاول مرة أخرى.</string>
 </resources>

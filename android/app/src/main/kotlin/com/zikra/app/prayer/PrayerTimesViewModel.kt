@@ -6,10 +6,8 @@ import com.zikra.core.places.Place
 import com.zikra.core.places.PlaceLookup
 import com.zikra.core.prayer.AsrMadhab
 import com.zikra.core.prayer.CalculationMethodId
-import com.zikra.core.prayer.GeoPoint
 import com.zikra.core.prayer.PrayerCalculator
 import com.zikra.core.prayer.PrayerName
-import com.zikra.core.prayer.ResolvedPrayerSettings
 import com.zikra.core.settings.LocationSource
 import com.zikra.core.settings.LocationStore
 import com.zikra.core.settings.PrayerPreferences
@@ -95,17 +93,10 @@ class PrayerTimesViewModel(
     }
 
     private fun ready(saved: SavedLocation, prefs: PrayerPreferences, lang: String): PrayerTimesUiState.Ready {
-        val place = saved.cityId?.let { places().byId(it, lang) }
-        val resolved = ResolvedPrayerSettings.resolve(
-            prefs.methodId,
-            prefs.madhab,
-            prefs.highLatitudeRule,
-            prefs.adjustmentMinutes,
-            place?.countryCode,
-        )
         val phone = clock()
-        val zone = runCatching { ZoneId.of(saved.timeZone) }.getOrElse { phone.zone }
-        val point = GeoPoint(saved.latitude, saved.longitude)
+        val ctx = PrayerContext.of(saved, prefs, places(), lang, phone.zone)
+        val (place, point, zone) = Triple(ctx.place, ctx.point, ctx.zone)
+        val resolved = ctx.resolved
         val now = phone.instant()
         val today = now.atZone(zone).toLocalDate()
         val day = PrayerCalculator.compute(point, today, zone, resolved.settings)

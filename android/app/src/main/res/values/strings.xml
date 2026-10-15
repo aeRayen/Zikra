@@ -72,7 +72,7 @@
     <string name="prayer_change_location">Change location</string>
     <!-- %1$s = calculation method name. -->
     <string name="prayer_method_used">Calculation method: %1$s</string>
-    <string name="prayer_method_automatic">Chosen automatically for your region. You will be able to change it in prayer settings.</string>
+    <string name="prayer_method_automatic">Chosen automatically for your region. You can change it in prayer settings.</string>
     <string name="prayer_asr_standard">Asr: standard (Shafi\'i, Maliki, Hanbali)</string>
     <string name="prayer_asr_hanafi">Asr: Hanafi</string>
     <!-- %1$s = time zone name, e.g. "Arabia Standard Time". -->
@@ -90,6 +90,32 @@
     <string name="method_qatar">Qatar</string>
     <string name="method_singapore">Majlis Ugama Islam Singapura</string>
     <string name="method_turkey">Diyanet (Türkiye)</string>
+
+    <!-- Prayer settings and monthly timetable (WP 2.3). -->
+    <string name="prayer_open_settings">Prayer settings</string>
+    <string name="prayer_open_month">Monthly timetable</string>
+    <string name="prayer_settings_title">Prayer settings</string>
+    <string name="settings_method_header">Calculation method</string>
+    <!-- %1$s = what automatic currently means, e.g. a method name. -->
+    <string name="settings_automatic_format">Automatic (%1$s)</string>
+    <string name="settings_asr_header">Asr time</string>
+    <string name="settings_asr_standard">Standard: Shafi\'i, Maliki, Hanbali</string>
+    <string name="settings_asr_hanafi">Hanafi</string>
+    <string name="settings_high_lat_header">Places with very long twilight</string>
+    <string name="settings_high_lat_hint">Only used far from the equator, where Fajr and Isha cannot always be found the usual way in summer.</string>
+    <string name="settings_high_lat_auto">Automatic (recommended)</string>
+    <string name="settings_high_lat_middle">Middle of the night</string>
+    <string name="settings_high_lat_seventh">One seventh of the night</string>
+    <string name="settings_high_lat_angle">Twilight angle</string>
+    <string name="settings_adjust_header">Manual adjustment (minutes)</string>
+    <string name="settings_adjust_hint">To match your local mosque if its times differ slightly. Up to 30 minutes either way.</string>
+    <!-- %1$s = prayer name. Content descriptions of the − and + buttons. -->
+    <string name="settings_adjust_minus">One minute earlier for %1$s</string>
+    <string name="settings_adjust_plus">One minute later for %1$s</string>
+    <string name="settings_reset">Reset to automatic</string>
+    <string name="month_previous">Previous month</string>
+    <string name="month_next">Next month</string>
+    <string name="month_day_column">Day</string>
 
     <!-- App language picker. -->
     <string name="language_title">App language</string>
@@ -125,4 +151,5 @@
     <string name="error_offline">No internet connection. Try again when you are online.</string>
     <string name="error_rate_limited">Too many attempts. Please wait a little and try again.</string>
     <string name="error_generic">Something went wrong. Please try again.</string>
+    <string name="error_save_failed">Could not save your choice. Check that your phone has free storage, then try again.</string>
 </resources>

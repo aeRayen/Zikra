@@ -168,6 +168,7 @@ private fun DeviceLocationSection(status: LocateStatus, onUseDeviceLocation: () 
             LocateStatus.IDLE, LocateStatus.LOCATING -> null
             LocateStatus.PERMISSION_DENIED -> R.string.location_denied
             LocateStatus.UNAVAILABLE -> R.string.location_unavailable
+            LocateStatus.SAVE_FAILED -> R.string.error_save_failed
         }
         if (status == LocateStatus.LOCATING) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
