@@ -24,6 +24,10 @@ class PermissionsAllowlistTest {
         // WP 2.1 (reviewed, ADR-018): APPROXIMATE location only, asked on tap, one-shot, kept on device.
         // ACCESS_FINE_LOCATION and ACCESS_BACKGROUND_LOCATION must never appear here.
         "android.permission.ACCESS_COARSE_LOCATION",
+        // WP 2.4 (reviewed, ADR-033): re-arm alarms after reboot; on-time prayer alerts. Exact alarms are
+        // user-grantable with an inexact fallback. USE_EXACT_ALARM must never appear here (Play policy).
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.SCHEDULE_EXACT_ALARM",
         // Added by androidx.core for non-exported dynamic receivers; signature-level, app-private.
         "com.zikra.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
     )

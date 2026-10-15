@@ -1,7 +1,12 @@
 package com.zikra.app
 
 import android.app.Application
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import androidx.core.content.ContextCompat
+import androidx.core.os.UserManagerCompat
 import com.zikra.app.auth.KeystoreTokenStore
 import com.zikra.app.location.AndroidDeviceLocator
 import com.zikra.app.location.DeviceLocator
@@ -52,6 +57,27 @@ class ZikraApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         container = AppContainer(this)
+        // After a reboot the process can start BEFORE the first unlock (direct-boot alarm receivers,
+        // ADR-033). Credential-protected storage (session, settings) is unreadable then: wait for unlock.
+        if (UserManagerCompat.isUserUnlocked(this)) {
+            onUserUnlocked()
+        } else {
+            val receiver = object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent) {
+                    unregisterReceiver(this)
+                    onUserUnlocked()
+                }
+            }
+            ContextCompat.registerReceiver(
+                this,
+                receiver,
+                IntentFilter(Intent.ACTION_USER_UNLOCKED),
+                ContextCompat.RECEIVER_NOT_EXPORTED,
+            )
+        }
+    }
+
+    private fun onUserUnlocked() {
         container.auth.restore()
     }
 }

@@ -70,6 +70,7 @@ dependencies {
     implementation(projects.core.places)
     implementation(projects.core.prayer)
     implementation(projects.core.settings)
+    implementation(projects.platform.alarm)
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
