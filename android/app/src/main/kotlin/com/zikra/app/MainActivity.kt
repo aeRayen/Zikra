@@ -1,9 +1,9 @@
 package com.zikra.app
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -15,8 +15,9 @@ import androidx.compose.ui.res.stringResource
 
 /**
  * Phase 1 shell. Replaced by the design system (WP 1.5) and navigation shell (WP 1.6).
+ * Extends AppCompatActivity because per-app language on Android 12 and lower needs it (AppLocales).
  */
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
