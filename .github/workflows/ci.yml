@@ -66,14 +66,32 @@ jobs:
       - name: Build, lint and unit tests
         if: steps.detect.outputs.present == 'true'
         working-directory: android
-        run: ./gradlew --no-daemon assembleDebug assembleRelease lint test detekt verifyRoborazziDebug
-      - name: Upload lint/detekt reports on failure
+        run: ./gradlew --no-daemon assembleDebug assembleRelease lint test detekt
+      # Golden screenshots are recorded on Linux (this runner): font rendering differs on Windows/macOS.
+      - name: Verify golden screenshots
+        id: screenshots
+        if: steps.detect.outputs.present == 'true'
+        working-directory: android
+        run: ./gradlew --no-daemon verifyRoborazziDebug
+      - name: Re-record screenshots on Linux for review (only when they differ)
+        if: failure() && steps.screenshots.outcome == 'failure'
+        working-directory: android
+        run: ./gradlew --no-daemon recordRoborazziDebug
+      - name: Upload Linux screenshots for review
+        if: failure() && steps.screenshots.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-screenshots
+          path: android/**/src/test/screenshots/
+          retention-days: 7
+      - name: Upload lint/detekt/screenshot reports on failure
         if: failure() && steps.detect.outputs.present == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: android-reports
           path: |
             android/**/build/reports/
+            android/**/build/outputs/roborazzi/
           retention-days: 7
 
   supabase:
