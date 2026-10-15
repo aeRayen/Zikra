@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.zikra.android.application)
     alias(libs.plugins.zikra.android.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -31,9 +32,18 @@ android {
         generateLocaleConfig = true
     }
 
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+    }
+
     packaging {
         resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
     }
+}
+
+// UI tests need the debug-only test activity manifest; release adds nothing for unit tests.
+androidComponents {
+    beforeVariants(selector().withBuildType("release")) { it.enableUnitTest = false }
 }
 
 dependencies {
@@ -41,9 +51,16 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.compose.material3.window.size)
+    implementation(libs.compose.material.icons.core)
     implementation(projects.core.common)
     implementation(projects.core.i18n)
     implementation(projects.core.designSystem)
 
     testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.compose.ui.test.junit4)
+    debugImplementation(libs.compose.ui.test.manifest)
 }

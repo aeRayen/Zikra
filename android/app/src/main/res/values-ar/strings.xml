@@ -2,5 +2,18 @@
 <resources>
     <!-- Launcher label without diacritics for legibility at small size (ADR-022). -->
     <string name="app_name">ذكرى</string>
-    <string name="shell_placeholder">تطبيق ذِكْرَى قيد البناء.</string>
+
+    <string name="nav_today">اليوم</string>
+    <string name="nav_more">المزيد</string>
+    <string name="nav_back">رجوع</string>
+
+    <string name="home_title">اليوم</string>
+    <string name="home_empty_title">لا توجد بطاقات بعد</string>
+    <string name="home_empty_message">ستظهر هنا مواقيت الصلاة والقراءة والأذكار عند إضافتها.</string>
+
+    <string name="more_title">المزيد</string>
+    <string name="settings_language">اللغة</string>
+
+    <string name="language_title">لغة التطبيق</string>
+    <string name="language_follow_device">لغة الجهاز</string>
 </resources>

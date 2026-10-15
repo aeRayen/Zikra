@@ -2,6 +2,25 @@
 <resources>
     <!-- Launcher label and app name in Latin-script languages (ADR-022). -->
     <string name="app_name">Zikra</string>
-    <!-- Temporary text shown by the Phase 1 shell until the real Home screen exists (WP 1.6). -->
-    <string name="shell_placeholder">Zikra is under construction.</string>
+
+    <!-- Bottom bar / navigation rail tabs. Keep short (max ~10 characters). -->
+    <string name="nav_today">Today</string>
+    <string name="nav_more">More</string>
+    <!-- Content description of the back arrow in top bars. -->
+    <string name="nav_back">Back</string>
+
+    <!-- Home («Today») screen. -->
+    <string name="home_title">Today</string>
+    <!-- Shown until features add their cards to Home. Must not promise dates. -->
+    <string name="home_empty_title">No cards yet</string>
+    <string name="home_empty_message">Prayer times, reading and adhkar will appear here as they are added.</string>
+
+    <!-- «More» hub. -->
+    <string name="more_title">More</string>
+    <string name="settings_language">Language</string>
+
+    <!-- App language picker. -->
+    <string name="language_title">App language</string>
+    <!-- Option that follows the phone's language setting. -->
+    <string name="language_follow_device">Device language</string>
 </resources>
