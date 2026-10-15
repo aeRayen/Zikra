@@ -9,6 +9,8 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import com.zikra.app.prayer.PrayerTimesUiState
+import com.zikra.app.ui.ALERTS_NOTICE_TAG
+import com.zikra.app.ui.AlertsNotice
 import com.zikra.app.ui.CHOOSE_LOCATION_TAG
 import com.zikra.app.ui.NEXT_PRAYER_TAG
 import com.zikra.app.ui.PRAYER_METHOD_TAG
@@ -71,14 +73,49 @@ class PrayerTimesScreenTest {
         madhab = AsrMadhab.STANDARD,
     )
 
-    private fun show(state: PrayerTimesUiState, onChoose: () -> Unit = {}) {
-        rule.setContent { ZikraTheme { PrayerTimesScreen(state = state, onChooseLocation = onChoose) } }
+    private fun show(
+        state: PrayerTimesUiState,
+        onChoose: () -> Unit = {},
+        notice: AlertsNotice = AlertsNotice.NONE,
+        onFix: () -> Unit = {},
+    ) {
+        rule.setContent {
+            ZikraTheme {
+                PrayerTimesScreen(
+                    state = state,
+                    onChooseLocation = onChoose,
+                    alertsNotice = notice,
+                    onFixAlerts = onFix
+                )
+            }
+        }
+    }
+
+    @Test
+    fun alertsNoticeExplainsAndOffersTheFix() {
+        var fixes = 0
+        show(ready(), notice = AlertsNotice.NEED_NOTIFICATION_PERMISSION, onFix = { fixes++ })
+        rule.onNodeWithText(str(R.string.alerts_permission_message)).assertIsDisplayed()
+        rule.onNodeWithText(str(R.string.alerts_permission_button)).performClick()
+        assertEquals(1, fixes)
+    }
+
+    @Test
+    fun inexactDeliveryIsExplained() {
+        show(ready(), notice = AlertsNotice.INEXACT_DELIVERY)
+        rule.onNodeWithText(str(R.string.alerts_inexact_title)).assertIsDisplayed()
+    }
+
+    @Test
+    fun noNoticeWhenAlertsWork() {
+        show(ready())
+        rule.onNodeWithTag(ALERTS_NOTICE_TAG).assertDoesNotExist()
     }
 
     @Test
     fun withoutLocationOffersToChooseOne() {
         var taps = 0
-        show(PrayerTimesUiState.NoLocation) { taps++ }
+        show(PrayerTimesUiState.NoLocation, onChoose = { taps++ })
         rule.onNodeWithText(str(R.string.prayer_no_location_title)).assertIsDisplayed()
         rule.onNodeWithTag(CHOOSE_LOCATION_TAG).performClick()
         assertEquals(1, taps)

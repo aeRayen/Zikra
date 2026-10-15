@@ -50,6 +50,8 @@ fun PrayerTimesScreen(
     modifier: Modifier = Modifier,
     onOpenSettings: () -> Unit = {},
     onOpenMonth: () -> Unit = {},
+    alertsNotice: AlertsNotice = AlertsNotice.NONE,
+    onFixAlerts: () -> Unit = {},
 ) {
     Column(modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(ZikraSpacing.screenGutter)) {
         Text(
@@ -69,6 +71,7 @@ fun PrayerTimesScreen(
                 }
             }
             is PrayerTimesUiState.Ready -> {
+                AlertsNoticeCard(alertsNotice, onFixAlerts)
                 ReadyContent(state, onChooseLocation)
                 Column(Modifier.padding(top = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(onClick = onOpenMonth, modifier = Modifier.testTag(OPEN_MONTH_TAG)) {

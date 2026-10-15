@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.UserManager
 import androidx.test.core.app.ApplicationProvider
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -109,8 +110,12 @@ class AlarmSchedulerTest {
 
     @Test
     fun firingRemovesTheEntryAndRunsTheHandlerOfItsKind() {
-        val fired = mutableListOf<String>()
-        AlarmRegistrations.register(AlarmKind.ADHAN) { _, key -> fired += key }
+        val fired = java.util.Collections.synchronizedList(mutableListOf<String>())
+        val done = java.util.concurrent.CountDownLatch(1)
+        AlarmRegistrations.register(AlarmKind.ADHAN) { _, key ->
+            fired += key
+            done.countDown()
+        }
         // The receiver uses the process-wide scheduler (device-protected registry), so schedule through it.
         val shared = AlarmScheduler.get(context)
         shared.replaceAll(AlarmKind.ADHAN, mapOf("maghrib" to Instant.now().plusSeconds(60)))
@@ -121,38 +126,42 @@ class AlarmSchedulerTest {
             .putExtra(AlarmScheduler.EXTRA_KIND, entry.kind.name)
             .putExtra(AlarmScheduler.EXTRA_REQUEST_CODE, entry.requestCode)
         AlarmReceiver().onReceive(context, intent)
+        assertTrue(done.await(5, java.util.concurrent.TimeUnit.SECONDS)) // handler runs off the main thread
         assertEquals(listOf("maghrib"), fired)
         assertTrue(shared.scheduled().isEmpty())
         shared.cancelAll(AlarmKind.ADHAN)
     }
 
     @Test
-    fun plannersRunOnlyOnceTheUserHasUnlocked() {
+    fun systemEventsMapToReplanReasons() {
+        assertEquals(ReplanReason.BOOT, AlarmSystemEventsReceiver.reasonFor(Intent.ACTION_LOCKED_BOOT_COMPLETED))
+        assertEquals(ReplanReason.BOOT, AlarmSystemEventsReceiver.reasonFor(Intent.ACTION_BOOT_COMPLETED))
+        assertEquals(
+            ReplanReason.TIME_ZONE_CHANGED,
+            AlarmSystemEventsReceiver.reasonFor(Intent.ACTION_TIMEZONE_CHANGED)
+        )
+        assertEquals(ReplanReason.TIME_CHANGED, AlarmSystemEventsReceiver.reasonFor(Intent.ACTION_TIME_CHANGED))
+        assertEquals(ReplanReason.APP_UPDATED, AlarmSystemEventsReceiver.reasonFor(Intent.ACTION_MY_PACKAGE_REPLACED))
+        assertEquals(
+            ReplanReason.PERMISSION_CHANGED,
+            AlarmSystemEventsReceiver.reasonFor(AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED),
+        )
+        assertNull(AlarmSystemEventsReceiver.reasonFor("some.other.ACTION"))
+    }
+
+    @Test
+    fun plannersRunOnlyOnceTheUserHasUnlocked() = runBlocking {
         val reasons = mutableListOf<ReplanReason>()
         AlarmRegistrations.register(AlarmPlanner { _, reason -> reasons += reason })
         val users = shadowOf(context.getSystemService(UserManager::class.java))
 
         users.setUserUnlocked(false) // LOCKED_BOOT_COMPLETED: settings are not readable yet
-        AlarmSystemEventsReceiver().onReceive(context, Intent(Intent.ACTION_LOCKED_BOOT_COMPLETED))
+        AlarmSystemEventsReceiver.onSystemEvent(context, ReplanReason.BOOT)
         assertTrue(reasons.isEmpty())
 
         users.setUserUnlocked(true)
-        AlarmSystemEventsReceiver().onReceive(context, Intent(Intent.ACTION_BOOT_COMPLETED))
-        AlarmSystemEventsReceiver().onReceive(context, Intent(Intent.ACTION_TIMEZONE_CHANGED))
-        AlarmSystemEventsReceiver().onReceive(context, Intent(Intent.ACTION_TIME_CHANGED))
-        AlarmSystemEventsReceiver().onReceive(
-            context,
-            Intent(AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED)
-        )
-        AlarmSystemEventsReceiver().onReceive(context, Intent("some.other.ACTION"))
-        assertEquals(
-            listOf(
-                ReplanReason.BOOT,
-                ReplanReason.TIME_ZONE_CHANGED,
-                ReplanReason.TIME_CHANGED,
-                ReplanReason.PERMISSION_CHANGED
-            ),
-            reasons,
-        )
+        AlarmSystemEventsReceiver.onSystemEvent(context, ReplanReason.BOOT)
+        AlarmSystemEventsReceiver.onSystemEvent(context, ReplanReason.TIME_ZONE_CHANGED)
+        assertEquals(listOf(ReplanReason.BOOT, ReplanReason.TIME_ZONE_CHANGED), reasons)
     }
 }

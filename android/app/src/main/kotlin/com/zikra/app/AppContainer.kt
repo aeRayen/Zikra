@@ -7,6 +7,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import androidx.core.content.ContextCompat
 import androidx.core.os.UserManagerCompat
+import com.zikra.app.adhan.PrayerAlertNotifier
+import com.zikra.app.adhan.PrayerAlerts
 import com.zikra.app.auth.KeystoreTokenStore
 import com.zikra.app.location.AndroidDeviceLocator
 import com.zikra.app.location.DeviceLocator
@@ -21,6 +23,11 @@ import com.zikra.core.places.PlaceDirectory
 import com.zikra.core.places.PlaceLookup
 import com.zikra.core.settings.LocationStore
 import com.zikra.core.settings.PrayerPreferencesStore
+import com.zikra.platform.alarm.AlarmKind
+import com.zikra.platform.alarm.AlarmRegistrations
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import java.io.File
 
 /** Manual dependency wiring for the app process (a DI framework can replace it later, ADR-003). */
@@ -44,6 +51,10 @@ class AppContainer(context: Context) {
     // Prayer choices (method, madhab, adjustments): not location data, so it may be backed up.
     val prayerPreferences = PrayerPreferencesStore({ File(context.filesDir, PRAYER_FILE) })
 
+    /** Lives as long as the process: observes settings to keep prayer alerts scheduled. */
+    val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    val prayerAlerts = PrayerAlerts({ places }, locationStore, prayerPreferences)
+
     private companion object {
         const val LOCATION_FILE = "datastore/${LocationStore.FILE_NAME}"
         const val PRAYER_FILE = "datastore/${PrayerPreferencesStore.FILE_NAME}"
@@ -57,6 +68,9 @@ class ZikraApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         container = AppContainer(this)
+        // Registered even before unlock: an alert may fire right after a reboot (it needs no settings).
+        AlarmRegistrations.register(AlarmKind.ADHAN, container.prayerAlerts)
+        AlarmRegistrations.register(container.prayerAlerts)
         // After a reboot the process can start BEFORE the first unlock (direct-boot alarm receivers,
         // ADR-033). Credential-protected storage (session, settings) is unreadable then: wait for unlock.
         if (UserManagerCompat.isUserUnlocked(this)) {
@@ -79,5 +93,7 @@ class ZikraApplication : Application() {
 
     private fun onUserUnlocked() {
         container.auth.restore()
+        PrayerAlertNotifier.ensureChannels(this)
+        container.prayerAlerts.observe(this, container.appScope)
     }
 }

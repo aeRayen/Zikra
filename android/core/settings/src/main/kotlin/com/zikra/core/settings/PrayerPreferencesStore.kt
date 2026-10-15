@@ -31,6 +31,8 @@ data class PrayerPreferences(
     val highLatitudeRule: String? = null,
     /** PrayerName -> minutes (±30). */
     val adjustmentMinutes: Map<String, Int> = emptyMap(),
+    /** PrayerName -> AlertMode name ("OFF", "SILENT", "SOUND"); missing = the default for that prayer. */
+    val alerts: Map<String, String> = emptyMap(),
 )
 
 /** prayer.json: not location data, so it may be included in backups. One instance per process. */

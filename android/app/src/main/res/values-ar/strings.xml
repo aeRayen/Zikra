@@ -107,6 +107,27 @@
     <string name="month_next">الشهر التالي</string>
     <string name="month_day_column">اليوم</string>
 
+    <!-- تنبيهات الصلاة (WP 2.5). -->
+    <string name="channel_prayer_sound">مواقيت الصلاة (بصوت)</string>
+    <string name="channel_prayer_sound_description">تنبيه عند دخول وقت كل صلاة بصوت إشعارات الهاتف.</string>
+    <string name="channel_prayer_silent">مواقيت الصلاة (صامت)</string>
+    <string name="channel_prayer_silent_description">تنبيه صامت عند دخول وقت كل صلاة.</string>
+    <string name="alert_prayer_title">حان وقت صلاة %1$s</string>
+    <string name="alert_prayer_text">دخل الوقت في %1$s.</string>
+    <string name="alert_sunrise_title">الشروق</string>
+    <string name="alert_sunrise_text">انتهى وقت صلاة الفجر.</string>
+    <string name="settings_alerts_header">التنبيهات</string>
+    <string name="settings_alerts_hint">يمكن أن تنبّهك كل صلاة بصوت، أو بصمت، أو لا تنبّهك أبدًا.</string>
+    <string name="alert_mode_off">إيقاف</string>
+    <string name="alert_mode_silent">صامت</string>
+    <string name="alert_mode_sound">بصوت</string>
+    <string name="alerts_permission_title">اسمح بتنبيهات الصلاة</string>
+    <string name="alerts_permission_message">يحتاج «ذِكْرَى» إذن الإشعارات لينبّهك عند دخول أوقات الصلاة.</string>
+    <string name="alerts_permission_button">السماح بالإشعارات</string>
+    <string name="alerts_inexact_title">قد تتأخر التنبيهات بضع دقائق</string>
+    <string name="alerts_inexact_message">لتصلك التنبيهات في وقتها بالضبط، اسمح لـ«ذِكْرَى» بإذن «المنبّهات والتذكيرات».</string>
+    <string name="alerts_inexact_button">فتح الإعداد</string>
+
     <string name="language_title">لغة التطبيق</string>
     <string name="language_follow_device">لغة الجهاز</string>
 

@@ -28,6 +28,8 @@ class PermissionsAllowlistTest {
         // user-grantable with an inexact fallback. USE_EXACT_ALARM must never appear here (Play policy).
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.SCHEDULE_EXACT_ALARM",
+        // WP 2.5 (reviewed): prayer-time alerts; asked on Android 13+ with an explanation, never on first launch.
+        "android.permission.POST_NOTIFICATIONS",
         // Added by androidx.core for non-exported dynamic receivers; signature-level, app-private.
         "com.zikra.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
     )
