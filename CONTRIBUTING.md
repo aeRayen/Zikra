@@ -68,3 +68,19 @@ scope: android | supabase | content | docs | ci | <feature>
   1. ادفع التغيير، فيفشل فحص الصور.
   2. يسجّل CI الصور على Linux ويرفعها في ملف `linux-screenshots`.
   3. راجع الصور بعينك، ثم ضعها في المستودع.
+
+## 7. مسار المشروع بلا مسافات
+
+أداة KSP، التي يستخدمها Room، ترفض أي مسار فيه مسافة، مثل `Islamic App`. لذلك ابنِ المشروع من مسار بلا مسافات. على Windows يكفي ربط حرف قرص بالمجلد الأب مرة واحدة بعد كل إعادة تشغيل للجهاز:
+
+```
+subst Z: "C:\Users\Administrator\Desktop\Islamic App"
+cd Z:\zikra\android
+gradlew.bat build
+```
+
+أو انقل المستودع إلى مسار بلا مسافات، مثل `C:\dev\zikra`. CI على GitHub لا يتأثر بهذه المشكلة.
+
+## 8. اختبارات الجهاز (androidTest)
+
+التشفير (SQLCipher) وAndroid Keystore لا يعملان في اختبارات JVM. لذلك تُختبر في `src/androidTest`، وتعمل في CI على محاكي API 34 ضمن وظيفة «Android device tests». ويمكن تشغيلها محليًا على جهاز موصول بالأمر `connectedDebugAndroidTest`.
