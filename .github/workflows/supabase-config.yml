@@ -1,0 +1,30 @@
+name: Configure Supabase Data API
+
+# Sets which schemas the hosted Data API exposes (ADR-024): only "api" (versioned RPC contract).
+# Data tables in "app" stay unreachable. Run manually; idempotent.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  SUPABASE_PROJECT_REF: lehhajmrmqdghmiilqoe
+
+jobs:
+  configure:
+    name: Expose only the api schema
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+    steps:
+      - name: Update PostgREST settings
+        run: |
+          curl -sf -X PATCH "https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_REF/postgrest" \
+            -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" -H "Content-Type: application/json" \
+            -d '{"db_schema":"api","db_extra_search_path":"extensions","max_rows":1000}' > /dev/null
+      - name: Show resulting settings
+        run: |
+          curl -sf "https://api.supabase.com/v1/projects/$SUPABASE_PROJECT_REF/postgrest" \
+            -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" | jq '{db_schema, db_extra_search_path, max_rows}'
