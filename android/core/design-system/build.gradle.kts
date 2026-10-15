@@ -16,7 +16,6 @@ android {
                     "zikra.tokensFile",
                     rootProject.file("../docs/specs/design/tokens.json").absolutePath,
                 )
-                it.systemProperty("robolectric.pixelCopyRenderMode", "hardware")
             }
         }
     }
