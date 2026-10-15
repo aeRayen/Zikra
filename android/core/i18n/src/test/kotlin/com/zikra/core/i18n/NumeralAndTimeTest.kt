@@ -53,4 +53,16 @@ class NumeralAndTimeTest {
         assertTrue("got: $ar", ar.startsWith("٣:٢٠"))
         assertTrue("Arabic day period expected, got: $ar", !ar.contains("PM"))
     }
+
+    @Test
+    fun compactFormatDropsTheDayPeriodOnly() {
+        val t = LocalTime.of(15, 5)
+        assertEquals("3:05", TimeFormatter.formatCompact(t, use24Hour = false, numerals = NumeralSystem.LATN))
+        assertEquals("15:05", TimeFormatter.formatCompact(t, use24Hour = true, numerals = NumeralSystem.LATN))
+        assertEquals("٣:٠٥", TimeFormatter.formatCompact(t, use24Hour = false, numerals = NumeralSystem.ARAB))
+        assertEquals(
+            "۰۴:۱۱",
+            TimeFormatter.formatCompact(LocalTime.of(4, 11), use24Hour = true, numerals = NumeralSystem.ARABEXT)
+        )
+    }
 }

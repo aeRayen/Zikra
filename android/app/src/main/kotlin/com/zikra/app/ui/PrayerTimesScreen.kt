@@ -12,6 +12,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -47,6 +48,8 @@ fun PrayerTimesScreen(
     state: PrayerTimesUiState,
     onChooseLocation: () -> Unit,
     modifier: Modifier = Modifier,
+    onOpenSettings: () -> Unit = {},
+    onOpenMonth: () -> Unit = {},
 ) {
     Column(modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(ZikraSpacing.screenGutter)) {
         Text(
@@ -65,7 +68,17 @@ fun PrayerTimesScreen(
                     Text(text = stringResource(R.string.prayer_choose_location))
                 }
             }
-            is PrayerTimesUiState.Ready -> ReadyContent(state, onChooseLocation)
+            is PrayerTimesUiState.Ready -> {
+                ReadyContent(state, onChooseLocation)
+                Column(Modifier.padding(top = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(onClick = onOpenMonth, modifier = Modifier.testTag(OPEN_MONTH_TAG)) {
+                        Text(text = stringResource(R.string.prayer_open_month))
+                    }
+                    OutlinedButton(onClick = onOpenSettings, modifier = Modifier.testTag(OPEN_SETTINGS_TAG)) {
+                        Text(text = stringResource(R.string.prayer_open_settings))
+                    }
+                }
+            }
         }
     }
 }
@@ -222,4 +235,6 @@ internal const val CHOOSE_LOCATION_TAG = "prayer_choose_location"
 internal const val PRAYER_LOCATION_TAG = "prayer_location"
 internal const val PRAYER_METHOD_TAG = "prayer_method"
 internal const val NEXT_PRAYER_TAG = "prayer_next"
+internal const val OPEN_MONTH_TAG = "prayer_open_month"
+internal const val OPEN_SETTINGS_TAG = "prayer_open_settings"
 internal fun prayerRowTag(prayer: PrayerName) = "prayer_row_${prayer.name}"

@@ -16,6 +16,12 @@ data object HomeRoute
 data object PrayerRoute
 
 @Serializable
+data object PrayerSettingsRoute
+
+@Serializable
+data object PrayerMonthRoute
+
+@Serializable
 data object MoreRoute
 
 @Serializable

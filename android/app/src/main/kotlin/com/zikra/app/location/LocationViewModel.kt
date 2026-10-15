@@ -17,11 +17,13 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.IOException
 
 /** The saved location, with its city resolved in the current language (null if none / not found). */
 data class CurrentLocation(val source: LocationSource, val place: Place?, val latitude: Double, val longitude: Double)
 
-enum class LocateStatus { IDLE, LOCATING, PERMISSION_DENIED, UNAVAILABLE }
+/** [SAVE_FAILED]: the choice could not be written (e.g. storage full); nothing crashes, the user can retry. */
+enum class LocateStatus { IDLE, LOCATING, PERMISSION_DENIED, UNAVAILABLE, SAVE_FAILED }
 
 data class LocationUiState(
     /** null while loading or when nothing is saved yet; see [loaded]. */
@@ -90,7 +92,7 @@ class LocationViewModel(
         searchJob?.cancel()
         state.update { it.copy(query = "", results = emptyList(), searching = false, status = LocateStatus.IDLE) }
         viewModelScope.launch {
-            store.save(
+            saveOrReport(
                 SavedLocation(
                     LocationSource.CITY,
                     place.cityId,
@@ -112,10 +114,7 @@ class LocationViewModel(
         viewModelScope.launch {
             state.update { it.copy(status = LocateStatus.LOCATING) }
             val status = when (val result = locator.approximateLocation()) {
-                is LocateResult.Found -> {
-                    saveDeviceLocation(result)
-                    LocateStatus.IDLE
-                }
+                is LocateResult.Found -> saveDeviceLocation(result)
                 LocateResult.NoPermission -> LocateStatus.PERMISSION_DENIED
                 LocateResult.Unavailable -> LocateStatus.UNAVAILABLE
             }
@@ -123,13 +122,24 @@ class LocationViewModel(
         }
     }
 
-    private suspend fun saveDeviceLocation(fix: LocateResult.Found) {
+    private suspend fun saveDeviceLocation(fix: LocateResult.Found): LocateStatus {
         val nearest = withContext(io) { places().nearest(fix.latitude, fix.longitude, language.value) }
         // The nearest city's zone matches the place; without a city, the phone's own zone is the best guess.
         val zone = nearest?.place?.timeZone?.id ?: systemZone()
-        store.save(
-            SavedLocation(LocationSource.DEVICE, nearest?.place?.cityId, fix.latitude, fix.longitude, zone, clock())
+        return saveOrReport(
+            SavedLocation(LocationSource.DEVICE, nearest?.place?.cityId, fix.latitude, fix.longitude, zone, clock()),
         )
+    }
+
+    private suspend fun saveOrReport(location: SavedLocation): LocateStatus {
+        val status = try {
+            store.save(location)
+            LocateStatus.IDLE
+        } catch (_: IOException) {
+            LocateStatus.SAVE_FAILED // never crash on a failed write
+        }
+        state.update { it.copy(status = status) }
+        return status
     }
 
     private companion object {

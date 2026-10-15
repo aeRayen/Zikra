@@ -21,4 +21,16 @@ object TimeFormatter {
         // Format with Western digits, then substitute: identical output on JVM/Android/iOS.
         return numerals.apply(NumeralSystem.toLatin(formatter.format(time)))
     }
+
+    /**
+     * Compact clock time for dense tables (monthly timetable): 12-hour without the day-period marker
+     * ("4:11"), since the column already says which prayer it is; 24-hour unchanged.
+     */
+    fun formatCompact(time: LocalTime, use24Hour: Boolean, numerals: NumeralSystem): String {
+        val text = if (use24Hour) COMPACT_24.format(time) else COMPACT_12.format(time)
+        return numerals.apply(text)
+    }
+
+    private val COMPACT_24 = DateTimeFormatter.ofPattern("HH:mm", Locale.ROOT)
+    private val COMPACT_12 = DateTimeFormatter.ofPattern("h:mm", Locale.ROOT)
 }

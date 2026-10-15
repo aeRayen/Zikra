@@ -172,6 +172,17 @@ class LocationViewModelTest {
     }
 
     @Test
+    fun aFailedWriteIsReportedInsteadOfCrashing() = runTest {
+        Dispatchers.setMain(UnconfinedTestDispatcher(testScheduler))
+        // The parent "directory" is a regular file, so every write fails like a broken or full disk.
+        val blocker = tmp.newFile("not-a-directory")
+        val broken = LocationStore({ File(blocker, LocationStore.FILE_NAME) }, backgroundScope)
+        val vm = LocationViewModel({ places }, broken, { locate }, UnconfinedTestDispatcher(testScheduler), { "UTC" })
+        vm.onPick(places.place(1, "en"))
+        vm.awaitState { it.status == LocateStatus.SAVE_FAILED }
+    }
+
+    @Test
     fun changingTheLanguageRenamesTheSavedCity() = runTest {
         val (vm, store) = viewModel()
         store.save(SavedLocation(LocationSource.CITY, 3, 1.0, 2.0, "UTC", 1))

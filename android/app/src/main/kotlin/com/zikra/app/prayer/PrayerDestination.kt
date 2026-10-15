@@ -14,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 
 /** Navigation entry of the prayer tab. */
 @Composable
-fun PrayerDestination(onChooseLocation: () -> Unit) {
+fun PrayerDestination(onChooseLocation: () -> Unit, onOpenSettings: () -> Unit, onOpenMonth: () -> Unit) {
     val container = appContainer()
     val viewModel: PrayerTimesViewModel = viewModel(
         factory = viewModelFactory {
@@ -31,5 +31,10 @@ fun PrayerDestination(onChooseLocation: () -> Unit) {
     val state by viewModel.uiState.collectAsState()
     val languageTag = LocalConfiguration.current.locales[0].toLanguageTag()
     LaunchedEffect(languageTag) { viewModel.setLanguage(languageTag) }
-    PrayerTimesScreen(state = state, onChooseLocation = onChooseLocation)
+    PrayerTimesScreen(
+        state = state,
+        onChooseLocation = onChooseLocation,
+        onOpenSettings = onOpenSettings,
+        onOpenMonth = onOpenMonth,
+    )
 }
