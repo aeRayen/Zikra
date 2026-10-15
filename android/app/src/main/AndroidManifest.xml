@@ -9,6 +9,7 @@
          with an in-app rationale (DESIGN_SYSTEM_AR.md, UX rules). -->
 
     <application
+        android:name=".ZikraApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"

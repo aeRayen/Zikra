@@ -16,4 +16,29 @@
 
     <string name="language_title">لغة التطبيق</string>
     <string name="language_follow_device">لغة الجهاز</string>
+
+    <string name="settings_account">الحساب</string>
+    <string name="account_title">الحساب</string>
+    <string name="account_guest_explainer">الحساب اختياري، والتطبيق يعمل كاملًا بدونه. سجّل الدخول فقط إن أردت مزامنة العلامات والأهداف بين أجهزتك.</string>
+    <string name="account_sign_in_email">تسجيل الدخول بالبريد الإلكتروني</string>
+    <string name="account_signed_in_as">مسجّل الدخول باسم %1$s</string>
+    <string name="account_sign_out">تسجيل الخروج</string>
+    <string name="account_unavailable">الحسابات غير متاحة في هذه النسخة.</string>
+
+    <string name="sign_in_title">تسجيل الدخول</string>
+    <string name="sign_in_email_label">البريد الإلكتروني</string>
+    <string name="sign_in_send_code">إرسال الرمز</string>
+    <string name="sign_in_code_sent">أرسلنا رمزًا من 6 أرقام إلى %1$s، وهو صالح لمدة 10 دقائق.</string>
+    <string name="sign_in_code_label">الرمز (6 أرقام)</string>
+    <string name="sign_in_verify">تأكيد</string>
+    <string name="sign_in_change_email">تغيير البريد</string>
+    <string name="sign_in_privacy_note">بيانات التعافي والحماية لا تغادر هاتفك أبدًا، بحساب أو بدونه.</string>
+    <string name="loading">جارٍ التحميل</string>
+
+    <string name="error_invalid_email">أدخل بريدًا إلكترونيًا صحيحًا.</string>
+    <string name="error_invalid_code">الرمز مكوّن من 6 أرقام.</string>
+    <string name="error_wrong_code">الرمز غير صحيح أو انتهت صلاحيته. اطلب رمزًا جديدًا.</string>
+    <string name="error_offline">لا يوجد اتصال بالإنترنت. حاول مرة أخرى عند الاتصال.</string>
+    <string name="error_rate_limited">محاولات كثيرة. انتظر قليلًا ثم حاول مرة أخرى.</string>
+    <string name="error_generic">حدث خطأ. حاول مرة أخرى.</string>
 </resources>

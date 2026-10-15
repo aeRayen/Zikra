@@ -17,6 +17,12 @@ data object MoreRoute
 @Serializable
 data object LanguageRoute
 
+@Serializable
+data object AccountRoute
+
+@Serializable
+data object SignInRoute
+
 /**
  * Tabs of the bottom bar / navigation rail, in reading order (the first one sits at the start edge,
  * i.e. on the right in Arabic). A feature adds its tab only when it is implemented, so the bar never
