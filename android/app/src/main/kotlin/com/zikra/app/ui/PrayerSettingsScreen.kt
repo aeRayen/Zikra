@@ -81,6 +81,7 @@ fun PrayerSettingsScreen(
             madhabSection(state, actions.onMadhab)
             highLatitudeSection(state, actions.onHighLatitudeRule)
             adjustmentSection(state, actions.onAdjust)
+            hijriSection(state, actions.onHijri)
             item {
                 OutlinedButton(
                     onClick = actions.onReset,
@@ -206,7 +207,7 @@ private fun AdjustmentRow(prayer: PrayerName, minutes: Int, onAdjust: (PrayerNam
 
 /** The glyph is visual only; TalkBack reads [spoken] (e.g. «One minute later for Fajr»). */
 @Composable
-private fun StepButton(glyph: String, spoken: String, tag: String, onClick: () -> Unit) {
+internal fun StepButton(glyph: String, spoken: String, tag: String, onClick: () -> Unit) {
     OutlinedIconButton(
         onClick = onClick,
         modifier = Modifier.testTag(tag).semantics { contentDescription = spoken },

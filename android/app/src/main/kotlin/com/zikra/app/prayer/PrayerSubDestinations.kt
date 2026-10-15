@@ -31,14 +31,15 @@ fun PrayerSettingsDestination(onBack: () -> Unit) {
     val state by viewModel.uiState.collectAsState()
     PrayerSettingsScreen(
         state = state,
-        actions = PrayerSettingsActions(
-            onMethod = viewModel::setMethod,
-            onMadhab = viewModel::setMadhab,
-            onHighLatitudeRule = viewModel::setHighLatitudeRule,
-            onAdjust = viewModel::adjust,
-            onAlert = viewModel::setAlert,
-            onReset = viewModel::reset,
-        ),
+        actions = object : PrayerSettingsActions {
+            override val onMethod = viewModel::setMethod
+            override val onMadhab = viewModel::setMadhab
+            override val onHighLatitudeRule = viewModel::setHighLatitudeRule
+            override val onAdjust = viewModel::adjust
+            override val onAlert = viewModel::setAlert
+            override val onHijri = viewModel::adjustHijri
+            override val onReset = viewModel::reset
+        },
         onBack = onBack,
     )
 }

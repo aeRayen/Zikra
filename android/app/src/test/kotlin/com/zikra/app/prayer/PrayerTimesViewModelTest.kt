@@ -1,5 +1,6 @@
 package com.zikra.app.prayer
 
+import com.zikra.core.i18n.HijriCalendar
 import com.zikra.core.places.NearestPlace
 import com.zikra.core.places.Place
 import com.zikra.core.places.PlaceLookup
@@ -111,6 +112,16 @@ class PrayerTimesViewModelTest {
         assertEquals(minutes, state.minutesUntilNext)
         assertEquals(PrayerName.entries, state.times.map { it.first })
         assertFalse(state.zoneDiffersFromDevice)
+    }
+
+    @Test
+    fun todaysHijriDateFollowsTheAdjustment() = runTest {
+        val f = fixture()
+        f.location.saveMakkah()
+        val today = now.atZone(riyadh).toLocalDate()
+        assertEquals(HijriCalendar.fromGregorian(today), f.vm.ready().hijri)
+        f.prefs.update { it.copy(hijriAdjustment = 1) }
+        f.vm.await { (it as? PrayerTimesUiState.Ready)?.hijri == HijriCalendar.fromGregorian(today, 1) }
     }
 
     @Test

@@ -33,6 +33,8 @@ data class PrayerPreferences(
     val adjustmentMinutes: Map<String, Int> = emptyMap(),
     /** PrayerName -> AlertMode name ("OFF", "SILENT", "SOUND"); missing = the default for that prayer. */
     val alerts: Map<String, String> = emptyMap(),
+    /** Days added to the Umm al-Qura date (±2) to follow local moon sighting. */
+    val hijriAdjustment: Int = 0,
 )
 
 /** prayer.json: not location data, so it may be included in backups. One instance per process. */

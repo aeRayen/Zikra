@@ -2,6 +2,8 @@ package com.zikra.app.prayer
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zikra.core.i18n.HijriCalendar
+import com.zikra.core.i18n.HijriDate
 import com.zikra.core.places.Place
 import com.zikra.core.places.PlaceLookup
 import com.zikra.core.prayer.AsrMadhab
@@ -42,6 +44,8 @@ sealed interface PrayerTimesUiState {
         /** The place's zone differs from the phone's: the screen says which clock the times use. */
         val zoneDiffersFromDevice: Boolean,
         val date: LocalDate,
+        /** Today in the Umm al-Qura calendar with the user's adjustment; null outside its range. */
+        val hijri: HijriDate? = null,
         /** Today's six times, in [zone]. */
         val times: List<Pair<PrayerName, LocalTime>>,
         val next: PrayerName,
@@ -108,6 +112,7 @@ class PrayerTimesViewModel(
             zone = zone,
             zoneDiffersFromDevice = zone.rules.getOffset(now) != phone.zone.rules.getOffset(now),
             date = today,
+            hijri = HijriCalendar.fromGregorian(today, prefs.hijriAdjustment),
             times = PrayerName.entries.map { it to day[it].atZone(zone).toLocalTime() },
             next = next.prayer,
             nextTime = next.at.atZone(zone).toLocalTime(),

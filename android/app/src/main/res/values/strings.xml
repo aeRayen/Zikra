@@ -158,6 +158,14 @@
     <!-- Content description of the dial for screen readers. %1$s = turn instruction or «facing». -->
     <string name="qibla_dial_description">Qibla compass. %1$s</string>
 
+    <!-- Hijri date (WP 2.7). -->
+    <string name="settings_hijri_header">Hijri date</string>
+    <string name="settings_hijri_hint">Umm al-Qura calendar. Adjust it by up to two days to match the moon sighting where you live.</string>
+    <!-- %1$s = today's Hijri date as it will be shown. -->
+    <string name="settings_hijri_preview">Today: %1$s</string>
+    <string name="settings_hijri_minus">Hijri date one day back</string>
+    <string name="settings_hijri_plus">Hijri date one day forward</string>
+
     <!-- App language picker. -->
     <string name="language_title">App language</string>
     <!-- Option that follows the phone's language setting. -->
