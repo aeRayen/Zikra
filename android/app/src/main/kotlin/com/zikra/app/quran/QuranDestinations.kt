@@ -15,19 +15,20 @@ import com.zikra.app.appContainer
 import com.zikra.app.ui.AboutQuranTextScreen
 import com.zikra.app.ui.QuranIndexScreen
 import com.zikra.app.ui.QuranReaderScreen
+import com.zikra.app.ui.QuranSearchScreen
 import com.zikra.app.ui.ReaderActions
 import com.zikra.core.quran.QuranIntegrityException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
-fun QuranIndexDestination(onOpen: (Int, Int) -> Unit, onAbout: () -> Unit) {
+fun QuranIndexDestination(onOpen: (Int, Int) -> Unit, onAbout: () -> Unit, onSearch: () -> Unit) {
     val container = appContainer()
     val viewModel: QuranIndexViewModel = viewModel(
         factory = viewModelFactory { initializer { QuranIndexViewModel({ container.quran }, Dispatchers.IO) } },
     )
     val state by viewModel.uiState.collectAsState()
-    QuranIndexScreen(state = state, onOpen = onOpen, onAbout = onAbout)
+    QuranIndexScreen(state = state, onOpen = onOpen, onAbout = onAbout, onSearch = onSearch)
 }
 
 @Composable
@@ -78,4 +79,14 @@ fun AboutQuranTextDestination(onBack: () -> Unit) {
         }
     }
     AboutQuranTextScreen(sourceVersion = info.first, licenseNotice = info.second, onBack = onBack)
+}
+
+@Composable
+fun QuranSearchDestination(onOpen: (Int, Int) -> Unit, onBack: () -> Unit) {
+    val container = appContainer()
+    val viewModel: QuranSearchViewModel = viewModel(
+        factory = viewModelFactory { initializer { QuranSearchViewModel({ container.quran }, Dispatchers.IO) } },
+    )
+    val state by viewModel.uiState.collectAsState()
+    QuranSearchScreen(state = state, onQueryChange = viewModel::onQueryChange, onOpen = onOpen, onBack = onBack)
 }

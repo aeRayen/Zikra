@@ -11,7 +11,12 @@ import java.sql.DriverManager
  */
 object PackWriter {
 
-    fun writeQuranText(out: File, edition: String, text: TanzilText, meta: QuranMetadata, source: PinnedSource) {
+    /**
+     * [simple]: Tanzil «simple-clean» text (modern spelling), used ONLY for the search index so that
+     * «الصلاة» finds the Uthmani «ٱلصَّلَوٰةَ». The displayed column stays the verbatim Uthmani text.
+     */
+    fun writeQuranText(out: File, edition: String, quran: QuranSources, source: PinnedSource) {
+        val (text, meta, simple) = quran
         connect(out) { db ->
             db.exec(
                 """
@@ -53,7 +58,7 @@ object PackWriter {
                 )
             }
             db.batch("INSERT INTO quran_ayah_text VALUES (?,?,?,?,?)", text.ayahs) { a ->
-                listOf(edition, a.surah, a.ayah, a.text, SearchNormalizer.normalize(a.text))
+                listOf(edition, a.surah, a.ayah, a.text, quranSearchText(a.text, simple[a.surah to a.ayah]))
             }
         }
     }
@@ -117,6 +122,12 @@ object PackWriter {
         }
     }
 
+    /** Normalized simple spelling, then the normalized Uthmani text (one per line: no match spans both). */
+    internal fun quranSearchText(uthmani: String, simple: String?): String =
+        listOfNotNull(simple?.let(SearchNormalizer::normalize), SearchNormalizer.normalize(uthmani))
+            .distinct()
+            .joinToString("\n")
+
     private fun writeInfo(db: Connection, source: PinnedSource, extra: Map<String, String>) {
         val info = mapOf(
             "source_id" to source.id,
@@ -155,6 +166,13 @@ object PackWriter {
         }
     }
 }
+
+/** Inputs of a Quran text pack; [simple] (search index only) maps (surah, ayah) to the simple text. */
+data class QuranSources(
+    val text: TanzilText,
+    val meta: QuranMetadata,
+    val simple: Map<Pair<Int, Int>, String> = emptyMap(),
+)
 
 /** Maps each ayah to its juz, hizb quarter, page and sajda using the start markers. */
 private class AyahPositions(private val meta: QuranMetadata) {

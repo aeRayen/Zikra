@@ -177,6 +177,20 @@
     <string name="about_text_license_header">ترخيص النص (كما نُشر)</string>
     <string name="about_text_font">الخط: أميري قرآن من مشروع أميري (aliftype.com)، برخصة SIL Open Font License 1.1.</string>
     <string name="about_text_open_tanzil">زيارة tanzil.net</string>
+    <!-- البحث في القرآن (WP 2.11). -->
+    <string name="quran_search">البحث في القرآن</string>
+    <string name="quran_search_hint">اكتب كلمة عربية، بالتشكيل أو بدونه</string>
+    <plurals name="quran_search_count">
+        <item quantity="zero">لا توجد آيات</item>
+        <item quantity="one">وُجدت آية واحدة</item>
+        <item quantity="two">وُجدت آيتان</item>
+        <item quantity="few">وُجدت %1$s آيات</item>
+        <item quantity="many">وُجدت %1$s آية</item>
+        <item quantity="other">وُجدت %1$s آية</item>
+    </plurals>
+    <string name="quran_search_more">تُعرض أول %1$s من %2$s. اكتب حروفًا أكثر لتضييق البحث.</string>
+    <string name="quran_search_none">لا توجد آية تحتوي هذه الحروف. جرّب حروفًا أقل أو صيغة أخرى للكلمة.</string>
+    <string name="quran_search_result_ref">%1$s · %2$s</string>
 
     <string name="language_title">لغة التطبيق</string>
     <string name="language_follow_device">لغة الجهاز</string>

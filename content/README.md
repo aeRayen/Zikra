@@ -11,6 +11,7 @@
 | الملف | المصدر | الترخيص والشروط |
 |---|---|---|
 | `sources/tanzil/quran-uthmani.txt` | Tanzil Project — https://tanzil.net | CC BY 3.0: نسخ حرفي فقط، وذكر المصدر، ورابط إلى tanzil.net. إشعار الحقوق في آخر الملف |
+| `sources/tanzil/quran-simple-clean.txt` | Tanzil Project — https://tanzil.net | الترخيص نفسه. **للبحث فقط ولا يُعرض أبدًا** (ADR-038) |
 | `sources/tanzil/quran-data.xml` | Tanzil Project | CC BY |
 | `sources/quranenc/english_saheeh_v1.1.2.json` | Noor International Center (Saheeh International) — QuranEnc.com | لا تعديل، وذكر الناشر والمصدر والإصدار، والتحديث، ولا إعلانات غير لائقة |
 

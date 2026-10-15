@@ -43,6 +43,9 @@ tasks.withType<Test>().configureEach {
 dependencies {
     contentTool(projects.tooling.contentPipeline)
 
+    // Queries are normalized exactly like the index (I18N_SPEC §10).
+    implementation(projects.core.i18n)
+
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.test.core)

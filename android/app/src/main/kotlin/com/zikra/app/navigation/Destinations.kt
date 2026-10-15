@@ -35,6 +35,9 @@ data class QuranReaderRoute(val surah: Int, val ayah: Int = 1)
 data object AboutQuranTextRoute
 
 @Serializable
+data object QuranSearchRoute
+
+@Serializable
 data object MoreRoute
 
 @Serializable

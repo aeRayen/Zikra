@@ -197,6 +197,19 @@
     <string name="about_text_license_header">Licence of the text (as published)</string>
     <string name="about_text_font">Font: Amiri Quran by the Amiri Project (aliftype.com), SIL Open Font License 1.1.</string>
     <string name="about_text_open_tanzil">Visit tanzil.net</string>
+    <!-- Quran search (WP 2.11). -->
+    <string name="quran_search">Search the Quran</string>
+    <string name="quran_search_hint">Type an Arabic word, with or without diacritics</string>
+    <!-- %1$s = number of matching ayahs (user's digits). -->
+    <plurals name="quran_search_count">
+        <item quantity="one">%1$s ayah found</item>
+        <item quantity="other">%1$s ayahs found</item>
+    </plurals>
+    <!-- %1$s = shown, %2$s = total. -->
+    <string name="quran_search_more">Showing the first %1$s of %2$s. Type more letters to narrow the search.</string>
+    <string name="quran_search_none">No ayah contains these letters. Try fewer letters or another form of the word.</string>
+    <!-- %1$s = surah name, %2$s = ayah number. -->
+    <string name="quran_search_result_ref">%1$s · %2$s</string>
 
     <!-- App language picker. -->
     <string name="language_title">App language</string>
