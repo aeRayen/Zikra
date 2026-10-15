@@ -3,7 +3,7 @@
 BEGIN;
 CREATE EXTENSION IF NOT EXISTS pgtap WITH SCHEMA extensions;
 SET search_path = extensions, public;
-SELECT plan(18);
+SELECT plan(19);
 
 -- Two users (as the database owner).
 INSERT INTO auth.users (id, instance_id, aud, role, email) VALUES
@@ -52,11 +52,17 @@ SELECT is(
 SELECT is((SELECT theme || ' ' || lat_rounded::text FROM app.settings), 'dark 30.0',
   'newest theme kept; latitude stored rounded to 0.1 degree (ADR-018)');
 
--- Tombstones are pulled as deleted.
-SELECT api.sync_push_v1('[{"entity":"bookmark","id":"11111111-0000-4000-8000-000000000002","op":"delete","clientUpdatedAt":"2026-10-15T13:00:00Z"}]');
+-- A delete older than the stored change is ignored (bookmark 002 was written "now").
+SELECT is(
+  api.sync_push_v1('[{"entity":"bookmark","id":"11111111-0000-4000-8000-000000000002","op":"delete","clientUpdatedAt":"2000-01-01T00:00:00Z"}]')
+    ->'results'->0->>'status',
+  'merged', 'an older delete does not remove a newer bookmark');
+
+-- Tombstones are pulled as deleted (bookmark 001 was written at 10:00, deleted at 13:00).
+SELECT api.sync_push_v1('[{"entity":"bookmark","id":"11111111-0000-4000-8000-000000000001","op":"delete","clientUpdatedAt":"2026-10-15T13:00:00Z"}]');
 SELECT ok(
   (SELECT bool_or((r->>'deleted')::boolean) FROM jsonb_array_elements(api.sync_pull_v1(0, 200)->'records') r
-    WHERE r->>'id' = '11111111-0000-4000-8000-000000000002'),
+    WHERE r->>'id' = '11111111-0000-4000-8000-000000000001'),
   'deleted bookmark is pulled as a tombstone');
 
 -- ===== User B =====
