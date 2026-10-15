@@ -11,6 +11,7 @@ Zikra content pipeline (CONTENT_PACKS_AR.md)
   english --sources ../content/sources --out <dir> --private <key> --public <key> --version <v>
   verify  --pack <dir> --public <key>
   places  --sources ../content/sources --out <places.sqlite>
+  quran-bundle --sources ../content/sources --out <quran.sqlite>
   places-extract --sources ../content/sources --alternate-names <GeoNames alternateNamesV2.txt>
 
 Paths are relative to the android/ directory when run with:
@@ -28,31 +29,8 @@ fun main(args: Array<String>) {
                 val id = Signing.generateKeyPair(file("private"), file("public"))
                 println("Key pair created. keyId=$id. Keep the private key OUT of git.")
             }
-            "quran", "english" -> {
-                val pipeline = Pipeline(file("sources"))
-                val private = Signing.loadPrivate(file("private"))
-                val public = Signing.loadPublic(file("public"))
-                val out = file("out").apply { mkdirs() }
-                val version = options["version"] ?: fail("missing --version")
-                if (command == "quran") {
-                    pipeline.buildQuranText(out, PackKeys(private, public), version)
-                } else {
-                    pipeline.buildEnglishSaheeh(out, PackKeys(private, public), version)
-                }
-                val manifest = Pipeline.verify(out, public)
-                println(
-                    "Built and verified ${manifest.area} ${manifest.editionCode} v${manifest.version} in ${out.path}"
-                )
-            }
-            "places" -> {
-                val places = Pipeline(file("sources")).buildPlaces(file("out"))
-                val counts = "${places.cities.size} cities, ${places.searchKeys.size} search keys"
-                println("Built ${file("out").path}: $counts")
-            }
-            "places-extract" -> {
-                Pipeline(file("sources")).extractPlaceNames(file("alternate-names"))
-                println("Names file regenerated. Update its sha256 in SOURCES.lock.json after review.")
-            }
+            "quran", "english" -> buildSignedPack(command, ::file, options["version"] ?: fail("missing --version"))
+            "places", "quran-bundle", "places-extract" -> buildBundledData(command, ::file)
             "verify" -> {
                 val manifest = Pipeline.verify(file("pack"), Signing.loadPublic(file("public")))
                 println("OK: ${manifest.area} ${manifest.editionCode} v${manifest.version}")
@@ -62,6 +40,40 @@ fun main(args: Array<String>) {
     } catch (e: PipelineException) {
         System.err.println("FAILED: ${e.message}")
         exitProcess(1)
+    }
+}
+
+/** Signed packs for the CDN (WP 1.15). */
+private fun buildSignedPack(command: String, file: (String) -> File, version: String) {
+    val pipeline = Pipeline(file("sources"))
+    val private = Signing.loadPrivate(file("private"))
+    val public = Signing.loadPublic(file("public"))
+    val out = file("out").apply { mkdirs() }
+    if (command == "quran") {
+        pipeline.buildQuranText(out, PackKeys(private, public), version)
+    } else {
+        pipeline.buildEnglishSaheeh(out, PackKeys(private, public), version)
+    }
+    val manifest = Pipeline.verify(out, public)
+    println("Built and verified ${manifest.area} ${manifest.editionCode} v${manifest.version} in ${out.path}")
+}
+
+/** Data bundled in the APK, generated at build time (WP 2.1, 2.9). */
+private fun buildBundledData(command: String, file: (String) -> File) {
+    val pipeline = Pipeline(file("sources"))
+    when (command) {
+        "places" -> {
+            val places = pipeline.buildPlaces(file("out"))
+            println("Built ${file("out").path}: ${places.cities.size} cities, ${places.searchKeys.size} search keys")
+        }
+        "quran-bundle" -> {
+            pipeline.buildQuranBundle(file("out"))
+            println("Built and checked ${file("out").path}")
+        }
+        else -> {
+            pipeline.extractPlaceNames(file("alternate-names"))
+            println("Names file regenerated. Update its sha256 in SOURCES.lock.json after review.")
+        }
     }
 }
 

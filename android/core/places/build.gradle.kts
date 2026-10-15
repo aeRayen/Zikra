@@ -1,4 +1,4 @@
-import com.zikra.buildlogic.GeneratePlacesDatabase
+import com.zikra.buildlogic.GenerateBundledDatabase
 
 // Offline city database for the manual location picker (WP 2.1, ADR-018).
 // places.sqlite is GENERATED at build time from the pinned GeoNames sources in ../content/sources
@@ -19,17 +19,19 @@ val placesTool: Configuration by configurations.creating {
     isCanBeConsumed = false
 }
 
-val generatePlaces = tasks.register<GeneratePlacesDatabase>("generatePlacesDatabase") {
+val generatePlaces = tasks.register<GenerateBundledDatabase>("generatePlacesDatabase") {
     description = "Builds places.sqlite from the pinned GeoNames sources."
     classpath = placesTool
     // The whole sources dir is the input: the lock file pins every file's SHA-256.
     sourcesDir.set(rootProject.layout.projectDirectory.dir("../content/sources"))
+    command.set("places")
+    fileName.set("places.sqlite")
     outputDir.set(layout.buildDirectory.dir("generated/places-assets"))
 }
 
 androidComponents {
     onVariants { variant ->
-        variant.sources.assets?.addGeneratedSourceDirectory(generatePlaces, GeneratePlacesDatabase::outputDir)
+        variant.sources.assets?.addGeneratedSourceDirectory(generatePlaces, GenerateBundledDatabase::outputDir)
     }
     beforeVariants(selector().withBuildType("release")) { it.enableUnitTest = false }
 }
