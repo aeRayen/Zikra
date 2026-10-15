@@ -128,6 +128,20 @@
     <string name="alerts_inexact_message">لتصلك التنبيهات في وقتها بالضبط، اسمح لـ«ذِكْرَى» بإذن «المنبّهات والتذكيرات».</string>
     <string name="alerts_inexact_button">فتح الإعداد</string>
 
+    <!-- القبلة (WP 2.6). -->
+    <string name="prayer_open_qibla">اتجاه القبلة</string>
+    <string name="qibla_title">اتجاه القبلة</string>
+    <string name="qibla_bearing">القبلة على بُعد %1$s° من الشمال الحقيقي</string>
+    <string name="compass_north">ش</string>
+    <string name="qibla_aligned">أنت متجه إلى القبلة</string>
+    <string name="qibla_turn_right">استدر يمينًا %1$s°</string>
+    <string name="qibla_turn_left">استدر يسارًا %1$s°</string>
+    <string name="qibla_hold_flat">أمسك الهاتف أفقيًا، بعيدًا عن المعادن والمغناطيس.</string>
+    <string name="qibla_calibrate">البوصلة تحتاج إلى معايرة: حرّك الهاتف على شكل الرقم 8 عدة مرات.</string>
+    <string name="qibla_interference">يوجد تشويش مغناطيسي: ابتعد عن المعادن والمغناطيس ومكبرات الصوت والحاسوب.</string>
+    <string name="qibla_no_compass">لا توجد بوصلة في هذا الهاتف. استخدم الزاوية أعلاه مع خريطة، أو اتجه بمقدارها من الشمال الحقيقي.</string>
+    <string name="qibla_dial_description">بوصلة القبلة. %1$s</string>
+
     <string name="language_title">لغة التطبيق</string>
     <string name="language_follow_device">لغة الجهاز</string>
 

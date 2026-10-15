@@ -140,6 +140,24 @@
     <string name="alerts_inexact_message">To be alerted exactly on time, allow «Alarms &amp; reminders» for Zikra.</string>
     <string name="alerts_inexact_button">Open setting</string>
 
+    <!-- Qibla (WP 2.6). -->
+    <string name="prayer_open_qibla">Qibla direction</string>
+    <string name="qibla_title">Qibla direction</string>
+    <!-- %1$s = degrees, already formatted with the user's digits. -->
+    <string name="qibla_bearing">The Qibla is %1$s° from true north</string>
+    <!-- One letter on the compass dial. -->
+    <string name="compass_north">N</string>
+    <string name="qibla_aligned">You are facing the Qibla</string>
+    <!-- %1$s = degrees to turn. Right/left are physical directions (clockwise/anticlockwise). -->
+    <string name="qibla_turn_right">Turn right %1$s°</string>
+    <string name="qibla_turn_left">Turn left %1$s°</string>
+    <string name="qibla_hold_flat">Hold the phone flat, away from metal and magnets.</string>
+    <string name="qibla_calibrate">The compass needs calibrating: move the phone in a figure 8 a few times.</string>
+    <string name="qibla_interference">Magnetic interference: move away from metal, magnets, speakers or a laptop.</string>
+    <string name="qibla_no_compass">This phone has no compass. Use the angle above with a map, or face the direction of the angle from true north.</string>
+    <!-- Content description of the dial for screen readers. %1$s = turn instruction or «facing». -->
+    <string name="qibla_dial_description">Qibla compass. %1$s</string>
+
     <!-- App language picker. -->
     <string name="language_title">App language</string>
     <!-- Option that follows the phone's language setting. -->

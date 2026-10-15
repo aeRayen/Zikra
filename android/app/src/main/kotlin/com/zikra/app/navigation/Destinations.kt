@@ -22,6 +22,9 @@ data object PrayerSettingsRoute
 data object PrayerMonthRoute
 
 @Serializable
+data object QiblaRoute
+
+@Serializable
 data object MoreRoute
 
 @Serializable

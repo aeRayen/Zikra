@@ -30,7 +30,12 @@ import kotlinx.coroutines.Dispatchers
 
 /** Navigation entry of the prayer tab. */
 @Composable
-fun PrayerDestination(onChooseLocation: () -> Unit, onOpenSettings: () -> Unit, onOpenMonth: () -> Unit) {
+fun PrayerDestination(
+    onChooseLocation: () -> Unit,
+    onOpenSettings: () -> Unit,
+    onOpenMonth: () -> Unit,
+    onOpenQibla: () -> Unit,
+) {
     val container = appContainer()
     val context = LocalContext.current
     val viewModel: PrayerTimesViewModel = viewModel(
@@ -65,6 +70,7 @@ fun PrayerDestination(onChooseLocation: () -> Unit, onOpenSettings: () -> Unit, 
         onChooseLocation = onChooseLocation,
         onOpenSettings = onOpenSettings,
         onOpenMonth = onOpenMonth,
+        onOpenQibla = onOpenQibla,
         alertsNotice = notice,
         onFixAlerts = {
             when (notice) {

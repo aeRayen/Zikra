@@ -50,6 +50,7 @@ fun PrayerTimesScreen(
     modifier: Modifier = Modifier,
     onOpenSettings: () -> Unit = {},
     onOpenMonth: () -> Unit = {},
+    onOpenQibla: () -> Unit = {},
     alertsNotice: AlertsNotice = AlertsNotice.NONE,
     onFixAlerts: () -> Unit = {},
 ) {
@@ -74,6 +75,9 @@ fun PrayerTimesScreen(
                 AlertsNoticeCard(alertsNotice, onFixAlerts)
                 ReadyContent(state, onChooseLocation)
                 Column(Modifier.padding(top = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(onClick = onOpenQibla, modifier = Modifier.testTag(OPEN_QIBLA_TAG)) {
+                        Text(text = stringResource(R.string.prayer_open_qibla))
+                    }
                     OutlinedButton(onClick = onOpenMonth, modifier = Modifier.testTag(OPEN_MONTH_TAG)) {
                         Text(text = stringResource(R.string.prayer_open_month))
                     }
@@ -239,5 +243,6 @@ internal const val PRAYER_LOCATION_TAG = "prayer_location"
 internal const val PRAYER_METHOD_TAG = "prayer_method"
 internal const val NEXT_PRAYER_TAG = "prayer_next"
 internal const val OPEN_MONTH_TAG = "prayer_open_month"
+internal const val OPEN_QIBLA_TAG = "prayer_open_qibla"
 internal const val OPEN_SETTINGS_TAG = "prayer_open_settings"
 internal fun prayerRowTag(prayer: PrayerName) = "prayer_row_${prayer.name}"

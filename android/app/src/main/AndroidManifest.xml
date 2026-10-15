@@ -9,6 +9,13 @@
     <!-- WP 2.5: prayer-time alerts (Android 13+ asks the user; requested with an explanation). -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <!-- Optional hardware: the app must install on phones without them (city search and the
+         Qibla angle work without location hardware or a compass). Location features would
+         otherwise be implied as required by ACCESS_COARSE_LOCATION. -->
+    <uses-feature android:name="android.hardware.sensor.compass" android:required="false" />
+    <uses-feature android:name="android.hardware.location" android:required="false" />
+    <uses-feature android:name="android.hardware.location.network" android:required="false" />
+
     <!-- Each further permission is added by the work package that needs it,
          with an in-app rationale (DESIGN_SYSTEM_AR.md, UX rules). -->
 
