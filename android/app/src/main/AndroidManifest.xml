@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- WP 2.1 (ADR-018): APPROXIMATE location only, requested when the user taps «Use my approximate location». -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- WP 2.5: prayer-time alerts (Android 13+ asks the user; requested with an explanation). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- Each further permission is added by the work package that needs it,
          with an in-app rationale (DESIGN_SYSTEM_AR.md, UX rules). -->

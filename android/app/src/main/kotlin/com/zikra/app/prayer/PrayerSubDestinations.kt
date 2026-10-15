@@ -32,13 +32,14 @@ fun PrayerSettingsDestination(onBack: () -> Unit) {
     PrayerSettingsScreen(
         state = state,
         actions = PrayerSettingsActions(
-            onBack = onBack,
             onMethod = viewModel::setMethod,
             onMadhab = viewModel::setMadhab,
             onHighLatitudeRule = viewModel::setHighLatitudeRule,
             onAdjust = viewModel::adjust,
+            onAlert = viewModel::setAlert,
             onReset = viewModel::reset,
         ),
+        onBack = onBack,
     )
 }
 

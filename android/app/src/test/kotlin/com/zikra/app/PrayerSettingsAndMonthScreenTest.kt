@@ -7,12 +7,13 @@ import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasScrollAction
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToNode
+import com.zikra.app.adhan.AlertMode
 import com.zikra.app.prayer.MonthDay
 import com.zikra.app.prayer.PrayerMonthUiState
 import com.zikra.app.prayer.PrayerSettingsUiState
@@ -24,6 +25,7 @@ import com.zikra.app.ui.PrayerSettingsActions
 import com.zikra.app.ui.PrayerSettingsScreen
 import com.zikra.app.ui.adjustTag
 import com.zikra.app.ui.adjustValueTag
+import com.zikra.app.ui.alertTag
 import com.zikra.app.ui.methodTag
 import com.zikra.app.ui.monthRowTag
 import com.zikra.core.designsystem.theme.ZikraTheme
@@ -54,24 +56,26 @@ class PrayerSettingsAndMonthScreenTest {
     private val events = mutableListOf<String>()
 
     private val actions = PrayerSettingsActions(
-        onBack = { events += "back" },
         onMethod = { events += "method:${it?.id}" },
         onMadhab = { events += "madhab:${it?.name}" },
         onHighLatitudeRule = { events += "rule:${it?.name}" },
         onAdjust = { prayer, delta -> events += "adjust:${prayer.name}:$delta" },
+        onAlert = { prayer, mode -> events += "alert:${prayer.name}:${mode.name}" },
         onReset = { events += "reset" },
     )
 
     private fun settings(state: PrayerSettingsUiState) =
-        rule.setContent { ZikraTheme { PrayerSettingsScreen(state, actions) } }
+        rule.setContent { ZikraTheme { PrayerSettingsScreen(state, actions, onBack = { events += "back" }) } }
 
     @Test
     fun automaticOptionNamesTheMethodAndIsSelectedByDefault() {
         settings(PrayerSettingsUiState(loaded = true, automaticMethod = CalculationMethodId.UMM_AL_QURA))
+        rule.onNode(hasScrollAction()).performScrollToNode(hasTestTag(methodTag(null)))
         rule.onNodeWithTag(methodTag(null))
             .assertIsSelected()
             .assertTextContains(str(R.string.settings_automatic_format, str(R.string.method_umm_al_qura)))
-        rule.onNodeWithTag(methodTag(CalculationMethodId.EGYPTIAN)).performScrollTo().performClick()
+        rule.onNode(hasScrollAction()).performScrollToNode(hasTestTag(methodTag(CalculationMethodId.EGYPTIAN)))
+        rule.onNodeWithTag(methodTag(CalculationMethodId.EGYPTIAN)).performClick()
         assertEquals(listOf("method:egyptian"), events)
     }
 
@@ -86,6 +90,14 @@ class PrayerSettingsAndMonthScreenTest {
         rule.onNodeWithTag(adjustValueTag(PrayerName.ISHA)).assertTextEquals(Bidi.isolate("+3"))
         assertEquals(listOf("adjust:ISHA:1", "adjust:ISHA:-1"), events)
         rule.onNodeWithTag(adjustTag(PrayerName.FAJR, 1)).assertExists()
+    }
+
+    @Test
+    fun alertModeIsChosenPerPrayer() {
+        settings(PrayerSettingsUiState(loaded = true))
+        rule.onNodeWithTag(alertTag(PrayerName.FAJR, AlertMode.SOUND)).assertIsSelected()
+        rule.onNodeWithTag(alertTag(PrayerName.FAJR, AlertMode.SILENT)).performClick()
+        assertEquals(listOf("alert:FAJR:SILENT"), events)
     }
 
     @Test

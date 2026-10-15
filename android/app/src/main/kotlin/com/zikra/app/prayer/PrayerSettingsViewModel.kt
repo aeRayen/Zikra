@@ -2,6 +2,7 @@ package com.zikra.app.prayer
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zikra.app.adhan.AlertMode
 import com.zikra.core.places.PlaceLookup
 import com.zikra.core.prayer.AsrMadhab
 import com.zikra.core.prayer.CalculationMethodId
@@ -33,6 +34,8 @@ data class PrayerSettingsUiState(
     /** What «automatic» means for the saved location, shown next to the automatic option. */
     val automaticMethod: CalculationMethodId = RegionalDefaults.method(null),
     val automaticMadhab: AsrMadhab = RegionalDefaults.madhab(null),
+    /** Alert mode per prayer (defaults applied). */
+    val alerts: Map<PrayerName, AlertMode> = PrayerName.entries.associateWith { AlertMode.default(it) },
     /** The last change could not be written (e.g. storage full); the screen says so. */
     val saveFailed: Boolean = false,
 )
@@ -60,6 +63,7 @@ class PrayerSettingsViewModel(
                     madhab = AsrMadhab.entries.firstOrNull { it.name == prefs.madhab },
                     highLatitudeRule = HighLatitudeRule.entries.firstOrNull { it.name == prefs.highLatitudeRule },
                     adjustments = PrayerName.entries.associateWith { prefs.adjustmentMinutes[it.name] ?: 0 },
+                    alerts = PrayerName.entries.associateWith { AlertMode.resolve(it, prefs.alerts) },
                     automaticMethod = RegionalDefaults.method(country),
                     automaticMadhab = RegionalDefaults.madhab(country),
                 )
@@ -80,6 +84,10 @@ class PrayerSettingsViewModel(
         val current = prefs.adjustmentMinutes
         val map = if (next == 0) current - prayer.name else current + (prayer.name to next)
         prefs.copy(adjustmentMinutes = map)
+    }
+
+    fun setAlert(prayer: PrayerName, mode: AlertMode) = edit { prefs ->
+        prefs.copy(alerts = prefs.alerts + (prayer.name to mode.name))
     }
 
     /** Back to automatic method and madhab, engine high-latitude rule, no adjustments. */

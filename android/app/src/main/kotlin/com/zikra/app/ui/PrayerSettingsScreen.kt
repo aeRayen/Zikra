@@ -50,12 +50,17 @@ import com.zikra.core.prayer.PrayerName
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PrayerSettingsScreen(state: PrayerSettingsUiState, actions: PrayerSettingsActions, modifier: Modifier = Modifier) {
+fun PrayerSettingsScreen(
+    state: PrayerSettingsUiState,
+    actions: PrayerSettingsActions,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Column(modifier.fillMaxSize()) {
         TopAppBar(
             title = { Text(text = stringResource(R.string.prayer_settings_title)) },
             navigationIcon = {
-                IconButton(onClick = actions.onBack) {
+                IconButton(onClick = onBack) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.nav_back))
                 }
             },
@@ -71,6 +76,7 @@ fun PrayerSettingsScreen(state: PrayerSettingsUiState, actions: PrayerSettingsAc
             )
         }
         LazyColumn(Modifier.fillMaxSize()) {
+            alertSection(state, actions.onAlert)
             methodSection(state, actions.onMethod)
             madhabSection(state, actions.onMadhab)
             highLatitudeSection(state, actions.onHighLatitudeRule)
@@ -86,7 +92,7 @@ fun PrayerSettingsScreen(state: PrayerSettingsUiState, actions: PrayerSettingsAc
 }
 
 private fun LazyListScope.methodSection(state: PrayerSettingsUiState, onMethod: (CalculationMethodId?) -> Unit) {
-    item { SectionHeader(R.string.settings_method_header) }
+    item { SettingsSectionHeader(R.string.settings_method_header) }
     item {
         val auto = stringResource(R.string.settings_automatic_format, stringResource(state.automaticMethod.labelRes()))
         Choice(auto, state.method == null, methodTag(null)) { onMethod(null) }
@@ -97,7 +103,7 @@ private fun LazyListScope.methodSection(state: PrayerSettingsUiState, onMethod: 
 }
 
 private fun LazyListScope.madhabSection(state: PrayerSettingsUiState, onMadhab: (AsrMadhab?) -> Unit) {
-    item { SectionHeader(R.string.settings_asr_header) }
+    item { SettingsSectionHeader(R.string.settings_asr_header) }
     item {
         val auto =
             stringResource(R.string.settings_automatic_format, stringResource(state.automaticMadhab.settingsLabelRes()))
@@ -113,7 +119,7 @@ private fun LazyListScope.madhabSection(state: PrayerSettingsUiState, onMadhab: 
 }
 
 private fun LazyListScope.highLatitudeSection(state: PrayerSettingsUiState, onRule: (HighLatitudeRule?) -> Unit) {
-    item { SectionHeader(R.string.settings_high_lat_header, hint = R.string.settings_high_lat_hint) }
+    item { SettingsSectionHeader(R.string.settings_high_lat_header, hint = R.string.settings_high_lat_hint) }
     item {
         Choice(
             stringResource(R.string.settings_high_lat_auto),
@@ -132,12 +138,12 @@ private fun LazyListScope.highLatitudeSection(state: PrayerSettingsUiState, onRu
 }
 
 private fun LazyListScope.adjustmentSection(state: PrayerSettingsUiState, onAdjust: (PrayerName, Int) -> Unit) {
-    item { SectionHeader(R.string.settings_adjust_header, hint = R.string.settings_adjust_hint) }
+    item { SettingsSectionHeader(R.string.settings_adjust_header, hint = R.string.settings_adjust_hint) }
     items(PrayerName.entries) { prayer -> AdjustmentRow(prayer, state.adjustments[prayer] ?: 0, onAdjust) }
 }
 
 @Composable
-private fun SectionHeader(title: Int, hint: Int? = null) {
+internal fun SettingsSectionHeader(title: Int, hint: Int? = null) {
     Column(
         Modifier.padding(start = ZikraSpacing.screenGutter, end = ZikraSpacing.screenGutter, top = 24.dp, bottom = 8.dp)
     ) {

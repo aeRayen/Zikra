@@ -117,6 +117,29 @@
     <string name="month_next">Next month</string>
     <string name="month_day_column">Day</string>
 
+    <!-- Prayer alerts (WP 2.5). The adhan recording itself is added once licensed audio is available. -->
+    <string name="channel_prayer_sound">Prayer times (with sound)</string>
+    <string name="channel_prayer_sound_description">Alerts at each prayer time with the phone\'s notification sound.</string>
+    <string name="channel_prayer_silent">Prayer times (silent)</string>
+    <string name="channel_prayer_silent_description">Silent alerts at each prayer time.</string>
+    <!-- %1$s = prayer name. Notification title at the prayer time. -->
+    <string name="alert_prayer_title">Time for %1$s</string>
+    <!-- %1$s = time, e.g. 12:18 PM. -->
+    <string name="alert_prayer_text">The prayer time began at %1$s.</string>
+    <string name="alert_sunrise_title">Sunrise</string>
+    <string name="alert_sunrise_text">The time for Fajr has ended.</string>
+    <string name="settings_alerts_header">Alerts</string>
+    <string name="settings_alerts_hint">Each prayer can alert with sound, silently, or not at all.</string>
+    <string name="alert_mode_off">Off</string>
+    <string name="alert_mode_silent">Silent</string>
+    <string name="alert_mode_sound">Sound</string>
+    <string name="alerts_permission_title">Allow prayer alerts</string>
+    <string name="alerts_permission_message">Zikra needs permission to show notifications to alert you at prayer times.</string>
+    <string name="alerts_permission_button">Allow notifications</string>
+    <string name="alerts_inexact_title">Alerts may be a few minutes late</string>
+    <string name="alerts_inexact_message">To be alerted exactly on time, allow «Alarms &amp; reminders» for Zikra.</string>
+    <string name="alerts_inexact_button">Open setting</string>
+
     <!-- App language picker. -->
     <string name="language_title">App language</string>
     <!-- Option that follows the phone's language setting. -->
