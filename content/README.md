@@ -36,3 +36,19 @@ gradlew.bat :tooling:content-pipeline:run --args="verify --pack <dir> --public .
 ```
 
 كل حزمة تتكوّن من `pack.sqlite` و`manifest.signed.json`. **الحزم لا تُحفظ في المستودع**، بل تُرفع إلى CDN (ADR-024).
+
+## قاعدة المدن (GeoNames)
+
+- **المصدر:** GeoNames، بترخيص CC BY 4.0 (ADR-030).
+- **الملفات المثبّتة:** `sources/geonames/cities15000.zip` و`countryInfo.txt` و`admin1CodesASCII.txt`، وهي كما نُشرت بلا تعديل، و`names-waves.tsv` المشتق منها.
+- `places.sqlite` يُبنى تلقائيًا مع التطبيق بالمهمة `:core:places:generatePlacesDatabase`، ولا يُحفظ في المستودع.
+
+**لتحديث المصدر:**
+
+1. نزّل الملفات الأربعة من `https://download.geonames.org/export/dump/`، وفكّ ضغط `alternateNamesV2.zip` خارج المستودع.
+2. انسخ الملفات الثلاثة إلى `sources/geonames/`، وحدّث بصماتها في `SOURCES.lock.json`.
+3. ولّد ملف الأسماء:
+   ```
+   gradlew.bat :tooling:content-pipeline:run --args="places-extract --sources ../content/sources --alternate-names <alternateNamesV2.txt>"
+   ```
+4. راجع الفروق، ثم حدّث بصمة `names-waves.tsv` في `SOURCES.lock.json`.

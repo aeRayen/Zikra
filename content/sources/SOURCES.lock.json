@@ -30,6 +30,46 @@
       "url": "https://quranenc.com/en/browse/english_saheeh",
       "license": "QuranEnc terms: no modification; credit publisher, source and version; keep updated; no inappropriate ads",
       "retrieved": "2026-10-15"
+    },
+    {
+      "id": "geonames-cities15000",
+      "path": "geonames/cities15000.zip",
+      "sha256": "d5cc2af747cdb2defd31f7baa815240fb9cc0145902469de01d059eaceb23011",
+      "version": "2026-10-15",
+      "publisher": "GeoNames",
+      "url": "https://download.geonames.org/export/dump/cities15000.zip",
+      "license": "CC-BY-4.0 (attribution: GeoNames, https://www.geonames.org)",
+      "retrieved": "2026-10-15"
+    },
+    {
+      "id": "geonames-country-info",
+      "path": "geonames/countryInfo.txt",
+      "sha256": "c55f638cfaafb4fe45a9aa15120a0f1f78e8a34a8e1847d7b9320cf740fbc9ab",
+      "version": "2026-10-15",
+      "publisher": "GeoNames",
+      "url": "https://download.geonames.org/export/dump/countryInfo.txt",
+      "license": "CC-BY-4.0 (attribution: GeoNames, https://www.geonames.org)",
+      "retrieved": "2026-10-15"
+    },
+    {
+      "id": "geonames-admin1",
+      "path": "geonames/admin1CodesASCII.txt",
+      "sha256": "1da92a6323a5fec3176f3f743bf4cf4040fd56a876da55e46fbca23c863aa60a",
+      "version": "2026-10-15",
+      "publisher": "GeoNames",
+      "url": "https://download.geonames.org/export/dump/admin1CodesASCII.txt",
+      "license": "CC-BY-4.0 (attribution: GeoNames, https://www.geonames.org)",
+      "retrieved": "2026-10-15"
+    },
+    {
+      "id": "geonames-names-waves",
+      "path": "geonames/names-waves.tsv",
+      "sha256": "84150f2eeeecfbbf3edb7c2f401fbc150e43486c552bc38ec99b089b66427f6c",
+      "version": "2026-10-15",
+      "publisher": "GeoNames (derived: places-extract from alternateNamesV2.zip sha256 8f3e7b963d0bd31c3465df489fc59f2eda4930f1b28d0c0a6a4d0b37bb3dbe51)",
+      "url": "https://download.geonames.org/export/dump/alternateNamesV2.zip",
+      "license": "CC-BY-4.0 (attribution: GeoNames, https://www.geonames.org); adapted: filtered to bundled places and languages",
+      "retrieved": "2026-10-15"
     }
   ]
 }

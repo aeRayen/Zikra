@@ -45,6 +45,30 @@ class Pipeline(private val sourcesDir: File) {
         return seal(outDir, db, PackSpec(AREA_TRANSLATION, "en", EN_SAHEEH_EDITION, packVersion), source, keys)
     }
 
+    /**
+     * Builds places.sqlite. It is bundled in the APK (protected by the APK signature), so it is not a
+     * downloadable signed pack; the sources are still pinned and verified byte for byte.
+     */
+    fun buildPlaces(out: File): Places {
+        val places = Places.assemble(
+            cities = parseGeoCities(lock.verifiedFile(sourcesDir, GEO_CITIES)),
+            countries = parseGeoCountries(lock.verifiedFile(sourcesDir, GEO_COUNTRIES)),
+            admin1 = parseGeoAdmin1(lock.verifiedFile(sourcesDir, GEO_ADMIN1)),
+            names = parseGeoNames(lock.verifiedFile(sourcesDir, GEO_NAMES)),
+        )
+        PackWriter.writePlaces(out, places, lock.source(GEO_CITIES))
+        return places
+    }
+
+    /** Regenerates the pinned names file from upstream alternateNamesV2.txt (run when updating GeoNames). */
+    fun extractPlaceNames(alternateNames: File) {
+        val ids = HashSet<Long>()
+        parseGeoCities(lock.verifiedFile(sourcesDir, GEO_CITIES)).mapTo(ids) { it.id }
+        parseGeoCountries(lock.verifiedFile(sourcesDir, GEO_COUNTRIES)).mapTo(ids) { it.geonameId }
+        parseGeoAdmin1(lock.verifiedFile(sourcesDir, GEO_ADMIN1)).mapTo(ids) { it.geonameId }
+        PlacesExtract.run(alternateNames, ids, File(sourcesDir, lock.source(GEO_NAMES).path))
+    }
+
     private fun seal(outDir: File, db: File, spec: PackSpec, source: PinnedSource, keys: PackKeys): File {
         val manifest = Manifest(
             packId = UUID.randomUUID().toString(),
@@ -71,6 +95,10 @@ class Pipeline(private val sourcesDir: File) {
         const val QURAN_TEXT = "tanzil-quran-uthmani"
         const val QURAN_METADATA = "tanzil-quran-metadata"
         const val EN_SAHEEH = "quranenc-english-saheeh"
+        const val GEO_CITIES = "geonames-cities15000"
+        const val GEO_COUNTRIES = "geonames-country-info"
+        const val GEO_ADMIN1 = "geonames-admin1"
+        const val GEO_NAMES = "geonames-names-waves"
         const val QURAN_EDITION = "ar.hafs.uthmani.tanzil"
         const val EN_SAHEEH_EDITION = "en.saheeh.quranenc"
         const val MIN_APP_VERSION = "0.1.0"
