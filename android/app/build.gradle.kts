@@ -12,6 +12,11 @@ android {
         applicationId = "com.zikra.app"
         versionCode = 1
         versionName = "0.1.0"
+
+        // Public Supabase client values (protected by RLS), from env vars or the git-ignored ../.env.
+        // Empty when absent: account features stay disabled and the app works as a guest.
+        buildConfigField("String", "SUPABASE_URL", "\"${clientValue("SUPABASE_URL")}\"")
+        buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", "\"${clientValue("SUPABASE_PUBLISHABLE_KEY")}\"")
     }
 
     buildTypes {
@@ -58,6 +63,7 @@ dependencies {
     implementation(projects.core.common)
     implementation(projects.core.i18n)
     implementation(projects.core.designSystem)
+    implementation(projects.core.network)
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
@@ -69,4 +75,17 @@ dependencies {
     androidTestImplementation(libs.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.runner)
+}
+
+/** Reads a public client value from the environment, then from the repository's .env file. */
+fun clientValue(name: String): String {
+    System.getenv(name)?.takeIf { it.isNotBlank() }?.let { return it }
+    val envFile = rootProject.file("../.env")
+    if (!envFile.isFile) return ""
+    return envFile.readLines()
+        .map { it.trim() }
+        .firstOrNull { it.startsWith("$name=") }
+        ?.substringAfter('=')
+        ?.trim()
+        .orEmpty()
 }

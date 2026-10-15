@@ -60,8 +60,15 @@ sealed interface AppError {
         const val TOKEN_INVALID = "auth.token_invalid"
         const val TOKEN_EXPIRED = "auth.token_expired"
         const val REFRESH_REUSED = "auth.refresh_reused"
+        const val NOT_SIGNED_IN = "auth.not_signed_in"
 
-        private val AUTH_CODES = setOf(TOKEN_INVALID, TOKEN_EXPIRED, REFRESH_REUSED, "auth.google_token_invalid")
+        private val AUTH_CODES = setOf(
+            TOKEN_INVALID,
+            TOKEN_EXPIRED,
+            REFRESH_REUSED,
+            NOT_SIGNED_IN,
+            "auth.google_token_invalid",
+        )
 
         /** Maps a stable server/backend code to an [AppError]. Unknown codes become [Unexpected]. */
         fun fromCode(code: String): AppError = when (code) {

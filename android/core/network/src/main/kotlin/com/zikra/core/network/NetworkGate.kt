@@ -8,7 +8,10 @@ sealed interface NetworkPurpose {
     /** Public, anonymous content (signed packs from the CDN). Allowed for everyone; carries no user data. */
     data object PublicContent : NetworkPurpose
 
-    /** Sign-in, session refresh, account deletion/export. Only meaningful for an account. */
+    /** Starting a sign-in (request / verify a code, exchange a Google token). Explicit user action. */
+    data object SignIn : NetworkPurpose
+
+    /** Session refresh, sign-out, profile, consent, account deletion/export. Requires an account. */
     data object Account : NetworkPurpose
 
     /** Push/pull of the user's own data in one consent category. */
@@ -16,16 +19,16 @@ sealed interface NetworkPurpose {
 }
 
 /**
- * The single decision point for network access (WP 1.13). Guests never reach the account or sync
- * backend; signed-in users sync only categories they consented to. Recovery and protection data
- * have no purpose here at all: they cannot leave the device (ADR-011).
+ * The single decision point for network access (WP 1.13). Guests never reach account or sync
+ * endpoints (they may only start a sign-in); signed-in users sync only categories they consented
+ * to. Recovery and protection data have no purpose here at all: they cannot leave the device (ADR-011).
  */
 class NetworkGate(private val sessions: SessionHolder) {
 
     fun check(purpose: NetworkPurpose): AppError? {
         val session = sessions.session.value
         return when (purpose) {
-            NetworkPurpose.PublicContent -> null
+            NetworkPurpose.PublicContent, NetworkPurpose.SignIn -> null
             NetworkPurpose.Account -> if (session is Session.SignedIn) null else NOT_SIGNED_IN
             is NetworkPurpose.UserDataSync -> when (session) {
                 Session.Guest -> NOT_SIGNED_IN
@@ -36,11 +39,11 @@ class NetworkGate(private val sessions: SessionHolder) {
     }
 
     private companion object {
-        val NOT_SIGNED_IN = AppError.Unauthenticated("auth.not_signed_in")
+        val NOT_SIGNED_IN = AppError.Unauthenticated(AppError.NOT_SIGNED_IN)
     }
 }
 
-/** Minimal request abstraction; concrete HTTP/Supabase clients implement it (WP 1.8). */
+/** Minimal request abstraction; [OkHttpTransport] is the production implementation. */
 fun interface Transport {
     suspend fun send(request: NetworkRequest): AppResult<ByteArray>
 }
@@ -50,6 +53,7 @@ class NetworkRequest(
     val method: String,
     val url: String,
     val body: ByteArray? = null,
+    val headers: Map<String, String> = emptyMap(),
 )
 
 /**

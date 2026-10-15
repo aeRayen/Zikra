@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- No permissions yet. Each permission is added by the work package that needs it,
+    <!-- Network: optional account + sync (ADR-024) and signed content packs. Every request goes
+         through NetworkGate (core:network): guests never reach account or sync endpoints. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Each further permission is added by the work package that needs it,
          with an in-app rationale (DESIGN_SYSTEM_AR.md, UX rules). -->
 
     <application

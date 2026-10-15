@@ -36,6 +36,13 @@ class GuestModeTest {
     }
 
     @Test
+    fun guestMayStartASignIn() = runTest {
+        val (gated, counting) = transport(Session.Guest)
+        assertTrue(gated.send(NetworkRequest(NetworkPurpose.SignIn, "POST", "x")) is AppResult.Success)
+        assertEquals(1, counting.sent.size)
+    }
+
+    @Test
     fun guestMayDownloadPublicContentOnly() = runTest {
         val (gated, counting) = transport(Session.Guest)
         gated.send(NetworkRequest(NetworkPurpose.PublicContent, "GET", "https://cdn.example.invalid/pack"))
