@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import com.zikra.app.R
 import com.zikra.app.quran.JuzStart
 import com.zikra.app.quran.QuranIndexUiState
+import com.zikra.app.quran.SavedAyah
 import com.zikra.core.designsystem.component.EmptyState
 import com.zikra.core.i18n.Bidi
 import com.zikra.core.i18n.NumeralSystem
@@ -80,6 +81,8 @@ fun QuranIndexScreen(
     onAbout: () -> Unit,
     modifier: Modifier = Modifier,
     onSearch: () -> Unit = {},
+    onBookmarks: () -> Unit = {},
+    continueAt: SavedAyah? = null,
 ) {
     var tab by rememberSaveable { mutableIntStateOf(0) }
     Column(modifier.fillMaxSize()) {
@@ -88,6 +91,9 @@ fun QuranIndexScreen(
             actions = {
                 IconButton(onClick = onSearch, modifier = Modifier.testTag(QURAN_SEARCH_BUTTON_TAG)) {
                     Icon(Icons.Filled.Search, contentDescription = stringResource(R.string.quran_search))
+                }
+                IconButton(onClick = onBookmarks, modifier = Modifier.testTag(QURAN_BOOKMARKS_BUTTON_TAG)) {
+                    Icon(BookmarkOutlineIcon, contentDescription = stringResource(R.string.quran_bookmarks))
                 }
                 IconButton(onClick = onAbout) {
                     Icon(Icons.Filled.Info, contentDescription = stringResource(R.string.about_text_title))
@@ -101,6 +107,11 @@ fun QuranIndexScreen(
                 message = stringResource(R.string.quran_unavailable),
             )
             is QuranIndexUiState.Ready -> {
+                if (continueAt != null) {
+                    Column(
+                        Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    ) { ContinueReadingCard(continueAt, null, onOpen) }
+                }
                 TabRow(selectedTabIndex = tab) {
                     Tab(
                         selected = tab == 0,
@@ -190,5 +201,6 @@ private fun JuzList(juz: List<JuzStart>, onOpen: (Int, Int) -> Unit) {
 
 internal const val SURAH_LIST_TAG = "quran_surah_list"
 internal const val QURAN_SEARCH_BUTTON_TAG = "quran_search_button"
+internal const val QURAN_BOOKMARKS_BUTTON_TAG = "quran_bookmarks_button"
 internal fun surahRowTag(number: Int) = "quran_surah_$number"
 internal fun juzRowTag(number: Int) = "quran_juz_$number"

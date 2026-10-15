@@ -38,6 +38,9 @@ data object AboutQuranTextRoute
 data object QuranSearchRoute
 
 @Serializable
+data object QuranBookmarksRoute
+
+@Serializable
 data object MoreRoute
 
 @Serializable

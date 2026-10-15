@@ -1,7 +1,9 @@
 package com.zikra.app.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,6 +22,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -39,6 +44,7 @@ import com.zikra.core.designsystem.theme.ZikraSpacing
 import com.zikra.core.designsystem.theme.ZikraTheme
 import com.zikra.core.i18n.NumeralSystem
 import com.zikra.core.quran.Ayah
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 /**
  * One surah (WP 2.10). The Quran text is shown VERBATIM from the bundled Tanzil source, always
@@ -47,7 +53,13 @@ import com.zikra.core.quran.Ayah
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QuranReaderScreen(state: ReaderUiState, textScale: Float, night: Boolean, actions: ReaderActions) {
+fun QuranReaderScreen(
+    state: ReaderUiState,
+    textScale: Float,
+    night: Boolean,
+    actions: ReaderActions,
+    bookmarks: Set<Int> = emptySet(),
+) {
     ZikraTheme(darkTheme = night) {
         Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface)) {
             TopAppBar(
@@ -90,7 +102,7 @@ fun QuranReaderScreen(state: ReaderUiState, textScale: Float, night: Boolean, ac
                     title = stringResource(R.string.quran_title),
                     message = stringResource(R.string.quran_unavailable),
                 )
-                is ReaderUiState.Ready -> AyahList(state, textScale)
+                is ReaderUiState.Ready -> AyahList(state, textScale, bookmarks, actions)
             }
         }
     }
@@ -109,8 +121,14 @@ private fun titleOf(arabic: String, transliterated: String): String =
     if (LocalConfiguration.current.locales[0].language == "ar") arabic else transliterated
 
 @Composable
-private fun AyahList(state: ReaderUiState.Ready, textScale: Float) {
+private fun AyahList(state: ReaderUiState.Ready, textScale: Float, bookmarks: Set<Int>, actions: ReaderActions) {
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = state.startIndex)
+    // «Continue reading»: report the ayah at the top whenever scrolling settles on a new one.
+    LaunchedEffect(listState, state) {
+        snapshotFlow { listState.firstVisibleItemIndex }
+            .distinctUntilChanged()
+            .collect { index -> state.ayahs.getOrNull(index)?.let { actions.onRead(it.ayah) } }
+    }
     val uiNumerals = NumeralSystem.forLanguage(LocalConfiguration.current.locales[0].language)
     // The Quran is Arabic: right-to-left even when the app is in English.
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -118,7 +136,7 @@ private fun AyahList(state: ReaderUiState.Ready, textScale: Float) {
             itemsIndexed(state.ayahs, key = { _, a -> a.ayah }) { index, ayah ->
                 val previous = state.ayahs.getOrNull(index - 1)
                 if (previous == null || previous.page != ayah.page) PageMarker(ayah, uiNumerals)
-                AyahText(ayah, textScale)
+                AyahRow(ayah, textScale, ayah.ayah in bookmarks, actions.onToggleBookmark)
             }
         }
     }
@@ -137,6 +155,23 @@ private fun PageMarker(ayah: Ayah, numerals: NumeralSystem) {
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
         )
+    }
+}
+
+@Composable
+private fun AyahRow(ayah: Ayah, textScale: Float, bookmarked: Boolean, onToggle: (Int) -> Unit) {
+    val number = NumeralSystem.forLanguage(LocalConfiguration.current.locales[0].language).apply(ayah.ayah.toString())
+    val label =
+        stringResource(if (bookmarked) R.string.reader_bookmark_remove else R.string.reader_bookmark_add, number)
+    Row(verticalAlignment = Alignment.Top) {
+        Box(Modifier.weight(1f)) { AyahText(ayah, textScale) }
+        IconButton(onClick = { onToggle(ayah.ayah) }, modifier = Modifier.testTag(bookmarkTag(ayah.ayah))) {
+            Icon(
+                if (bookmarked) BookmarkFilledIcon else BookmarkOutlineIcon,
+                contentDescription = label,
+                tint = MaterialTheme.colorScheme.let { if (bookmarked) it.primary else it.onSurfaceVariant },
+            )
+        }
     }
 }
 
@@ -164,3 +199,4 @@ internal const val READER_SMALLER_TAG = "reader_smaller"
 internal const val READER_BIGGER_TAG = "reader_bigger"
 internal const val READER_NIGHT_TAG = "reader_night"
 internal fun ayahTag(ayah: Int) = "quran_ayah_$ayah"
+internal fun bookmarkTag(ayah: Int) = "quran_bookmark_$ayah"

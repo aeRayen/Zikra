@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.zikra.app.R
 import com.zikra.app.ui.ABOUT_NOTICE_TAG
@@ -13,6 +14,7 @@ import com.zikra.app.ui.AboutQuranTextScreen
 import com.zikra.app.ui.QuranReaderScreen
 import com.zikra.app.ui.ReaderActions
 import com.zikra.app.ui.ayahTag
+import com.zikra.core.database.user.UserDatabase
 import com.zikra.core.designsystem.theme.ZikraTheme
 import com.zikra.core.quran.QuranText
 import com.zikra.core.settings.ReaderPreferences
@@ -21,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -49,10 +52,16 @@ class QuranReaderTest {
     val tmp = TemporaryFolder()
 
     private val quran = QuranText.open(ApplicationProvider.getApplicationContext())
+    private val userDb = Room.inMemoryDatabaseBuilder(
+        ApplicationProvider.getApplicationContext(),
+        UserDatabase::class.java,
+    ).allowMainThreadQueries().build()
+    private val userData = QuranUserData(userDb.bookmarkDao(), userDb.readingPositionDao())
 
     @After
     fun tearDown() {
         quran.close()
+        userDb.close()
         Dispatchers.resetMain()
     }
 
@@ -73,7 +82,7 @@ class QuranReaderTest {
     fun readerOpensAtTheRequestedAyahAndScalesInExactSteps() = runTest {
         Dispatchers.setMain(UnconfinedTestDispatcher(testScheduler))
         val prefs = ReaderPreferencesStore({ File(tmp.root, "reader.json") }, backgroundScope)
-        val vm = QuranReaderViewModel({ quran }, prefs, UnconfinedTestDispatcher(testScheduler), 2, 255)
+        val vm = QuranReaderViewModel({ quran }, prefs, userData, UnconfinedTestDispatcher(testScheduler), 2, 255)
         val ready = vm.uiState.await { it is ReaderUiState.Ready } as ReaderUiState.Ready
         assertEquals(286, ready.ayahs.size)
         assertEquals(254, ready.startIndex) // Ayat al-Kursi
@@ -86,11 +95,29 @@ class QuranReaderTest {
         }
     }
 
-    private fun showReader(surah: Int, night: Boolean = false) {
+    private val toggled = mutableListOf<Int>()
+
+    private fun showReader(surah: Int, night: Boolean = false, bookmarked: Set<Int> = emptySet()) {
         val ayahs = quran.ayahs(surah)
         val state = ReaderUiState.Ready(requireNotNull(quran.surah(surah)), ayahs, 0)
-        val actions = ReaderActions({}, {}, {}, {}, {})
-        rule.setContent { QuranReaderScreen(state, textScale = 1f, night = night, actions = actions) }
+        val actions = object : ReaderActions {
+            override val onBack = {}
+            override val onSmaller = {}
+            override val onBigger = {}
+            override val onToggleNight: (Boolean) -> Unit = {}
+            override val onAbout = {}
+            override val onToggleBookmark: (Int) -> Unit = { toggled += it }
+            override val onRead: (Int) -> Unit = {}
+        }
+        rule.setContent {
+            QuranReaderScreen(
+                state,
+                textScale = 1f,
+                night = night,
+                actions = actions,
+                bookmarks = bookmarked
+            )
+        }
     }
 
     @Test
@@ -98,6 +125,28 @@ class QuranReaderTest {
         showReader(1)
         val first = quran.ayahs(1).first()
         rule.onNodeWithTag(ayahTag(1)).assertTextEquals(first.text + " ۝١")
+    }
+
+    @Test
+    fun bookmarkButtonIsSpokenAndReportsTheAyah() {
+        showReader(112, bookmarked = setOf(2))
+        val context = rule.activity
+        rule.onNodeWithContentDescription(context.getString(R.string.reader_bookmark_add, "1")).performClick()
+        rule.onNodeWithContentDescription(context.getString(R.string.reader_bookmark_remove, "2")).assertExists()
+        assertEquals(listOf(1), toggled)
+    }
+
+    @Test
+    fun readerBookmarksAndRemembersTheLastAyah() = runTest {
+        Dispatchers.setMain(UnconfinedTestDispatcher(testScheduler))
+        val prefs = ReaderPreferencesStore({ File(tmp.root, "reader2.json") }, backgroundScope)
+        val vm = QuranReaderViewModel({ quran }, prefs, userData, UnconfinedTestDispatcher(testScheduler), 36, 1)
+        vm.toggleBookmark(12)
+        vm.bookmarks.await { 12 in it }
+        vm.onRead(5)
+        vm.onRead(7) // only the last one counts after scrolling settles
+        advanceTimeBy(1_000)
+        assertEquals(AyahRef(36, 7), userData.lastRead.await { it != null })
     }
 
     @Test

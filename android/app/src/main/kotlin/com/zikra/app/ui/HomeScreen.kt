@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -25,9 +26,11 @@ import androidx.compose.ui.unit.dp
 import com.zikra.app.R
 import com.zikra.app.home.HomeCard
 import com.zikra.app.home.HomeUiState
+import com.zikra.app.quran.SavedAyah
 import com.zikra.core.designsystem.component.EmptyState
 import com.zikra.core.designsystem.theme.ZikraSpacing
 import com.zikra.core.i18n.Bidi
+import com.zikra.core.i18n.NumeralSystem
 
 /**
  * «Today» (WP 2.8). Shows the cards of implemented features only (ADR-017); with none, it says so
@@ -39,6 +42,7 @@ fun HomeScreen(
     onOpenPrayer: () -> Unit = {},
     onChooseLocation: () -> Unit = {},
     modifier: Modifier = Modifier,
+    onContinueReading: (surah: Int, ayah: Int) -> Unit = { _, _ -> },
 ) {
     Column(
         modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(ZikraSpacing.screenGutter),
@@ -59,6 +63,7 @@ fun HomeScreen(
             when (card) {
                 is HomeCard.NextPrayer -> NextPrayerHomeCard(card, onOpenPrayer)
                 HomeCard.ChoosePrayerLocation -> ChooseLocationHomeCard(onChooseLocation)
+                is HomeCard.ContinueReading -> ContinueReadingCard(card.saved, card, onContinueReading)
             }
         }
     }
@@ -110,5 +115,34 @@ private fun ChooseLocationHomeCard(onChooseLocation: () -> Unit) {
         }
     }
 }
+
+/** Shared by Home and the Quran index: the last ayah read, tap to continue. */
+@Composable
+internal fun ContinueReadingCard(saved: SavedAyah, card: HomeCard?, onOpen: (Int, Int) -> Unit) {
+    val language = LocalConfiguration.current.locales[0].language
+    val numerals = NumeralSystem.forLanguage(language)
+    val name = if (language == "ar") saved.surah.nameArabic else saved.surah.nameTransliterated
+    OutlinedCard(
+        Modifier
+            .fillMaxWidth()
+            .clickable(role = Role.Button) { onOpen(saved.surah.number, saved.ayah.ayah) }
+            .semantics(mergeDescendants = true) {}
+            .testTag(card?.let(::homeCardTag) ?: CONTINUE_READING_TAG),
+    ) {
+        Column(Modifier.padding(ZikraSpacing.screenGutter), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(text = stringResource(R.string.quran_continue), style = MaterialTheme.typography.labelLarge)
+            Text(
+                text = stringResource(
+                    R.string.quran_continue_at,
+                    Bidi.isolate(name),
+                    numerals.apply(saved.ayah.ayah.toString())
+                ),
+                style = MaterialTheme.typography.titleMedium,
+            )
+        }
+    }
+}
+
+internal const val CONTINUE_READING_TAG = "quran_continue"
 
 internal fun homeCardTag(card: HomeCard) = "home_card_${card.key}"

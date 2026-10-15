@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.compose.material3.window.size)
     implementation(libs.compose.material.icons.core)
     implementation(projects.core.common)
+    implementation(projects.core.database)
     implementation(projects.core.i18n)
     implementation(projects.core.designSystem)
     implementation(projects.core.network)
@@ -79,6 +80,7 @@ dependencies {
     testImplementation(libs.compose.ui.test.junit4)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.room.testing)
     debugImplementation(libs.compose.ui.test.manifest)
 
     androidTestImplementation(platform(libs.compose.bom))

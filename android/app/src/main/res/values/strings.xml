@@ -187,6 +187,9 @@
     <string name="reader_smaller">Smaller text</string>
     <string name="reader_bigger">Larger text</string>
     <string name="reader_night">Night mode</string>
+    <!-- %1$s = ayah number. Spoken label of the bookmark button. -->
+    <string name="reader_bookmark_add">Bookmark ayah %1$s</string>
+    <string name="reader_bookmark_remove">Remove the bookmark of ayah %1$s</string>
     <!-- Visual size buttons (spoken labels: reader_smaller / reader_bigger). -->
     <string name="reader_smaller_glyph" translatable="false">A−</string>
     <string name="reader_bigger_glyph" translatable="false">A+</string>
@@ -210,6 +213,12 @@
     <string name="quran_search_none">No ayah contains these letters. Try fewer letters or another form of the word.</string>
     <!-- %1$s = surah name, %2$s = ayah number. -->
     <string name="quran_search_result_ref">%1$s · %2$s</string>
+    <!-- Bookmarks and continue reading (WP 2.12). -->
+    <string name="quran_continue">Continue reading</string>
+    <!-- %1$s = surah name, %2$s = ayah number. -->
+    <string name="quran_continue_at">%1$s, ayah %2$s</string>
+    <string name="quran_bookmarks">Bookmarks</string>
+    <string name="quran_bookmarks_empty">No bookmarks yet. Tap the bookmark beside an ayah to save it.</string>
 
     <!-- App language picker. -->
     <string name="language_title">App language</string>

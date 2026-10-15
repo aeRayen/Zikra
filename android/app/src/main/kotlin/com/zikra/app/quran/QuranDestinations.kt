@@ -13,6 +13,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.zikra.app.appContainer
 import com.zikra.app.ui.AboutQuranTextScreen
+import com.zikra.app.ui.QuranBookmarksScreen
 import com.zikra.app.ui.QuranIndexScreen
 import com.zikra.app.ui.QuranReaderScreen
 import com.zikra.app.ui.QuranSearchScreen
@@ -22,13 +23,27 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
-fun QuranIndexDestination(onOpen: (Int, Int) -> Unit, onAbout: () -> Unit, onSearch: () -> Unit) {
+fun QuranIndexDestination(
+    onOpen: (Int, Int) -> Unit,
+    onAbout: () -> Unit,
+    onSearch: () -> Unit,
+    onBookmarks: () -> Unit
+) {
     val container = appContainer()
     val viewModel: QuranIndexViewModel = viewModel(
         factory = viewModelFactory { initializer { QuranIndexViewModel({ container.quran }, Dispatchers.IO) } },
     )
     val state by viewModel.uiState.collectAsState()
-    QuranIndexScreen(state = state, onOpen = onOpen, onAbout = onAbout, onSearch = onSearch)
+    val continueAt by remember { continueReading(container.quranUserData, { container.quran }, Dispatchers.IO) }
+        .collectAsState(initial = null)
+    QuranIndexScreen(
+        state = state,
+        onOpen = onOpen,
+        onAbout = onAbout,
+        onSearch = onSearch,
+        onBookmarks = onBookmarks,
+        continueAt = continueAt,
+    )
 }
 
 @Composable
@@ -41,27 +56,32 @@ fun QuranReaderDestination(surah: Int, ayah: Int, onBack: () -> Unit, onAbout: (
                 QuranReaderViewModel(
                     { container.quran },
                     container.readerPreferences,
+                    container.quranUserData,
                     Dispatchers.IO,
                     surah,
-                    ayah
+                    ayah,
                 )
             }
         },
     )
     val state by viewModel.uiState.collectAsState()
     val display by viewModel.display.collectAsState()
+    val bookmarks by viewModel.bookmarks.collectAsState()
     val night = display.night ?: isSystemInDarkTheme()
     QuranReaderScreen(
         state = state,
         textScale = display.textScale,
         night = night,
-        actions = ReaderActions(
-            onBack = onBack,
-            onSmaller = viewModel::smaller,
-            onBigger = viewModel::bigger,
-            onToggleNight = viewModel::toggleNight,
-            onAbout = onAbout,
-        ),
+        bookmarks = bookmarks,
+        actions = object : ReaderActions {
+            override val onBack = onBack
+            override val onSmaller = viewModel::smaller
+            override val onBigger = viewModel::bigger
+            override val onToggleNight = viewModel::toggleNight
+            override val onAbout = onAbout
+            override val onToggleBookmark = viewModel::toggleBookmark
+            override val onRead = viewModel::onRead
+        },
     )
 }
 
@@ -89,4 +109,16 @@ fun QuranSearchDestination(onOpen: (Int, Int) -> Unit, onBack: () -> Unit) {
     )
     val state by viewModel.uiState.collectAsState()
     QuranSearchScreen(state = state, onQueryChange = viewModel::onQueryChange, onOpen = onOpen, onBack = onBack)
+}
+
+@Composable
+fun QuranBookmarksDestination(onOpen: (Int, Int) -> Unit, onBack: () -> Unit) {
+    val container = appContainer()
+    val viewModel: QuranBookmarksViewModel = viewModel(
+        factory = viewModelFactory {
+            initializer { QuranBookmarksViewModel(container.quranUserData, { container.quran }, Dispatchers.IO) }
+        },
+    )
+    val bookmarks by viewModel.bookmarks.collectAsState()
+    QuranBookmarksScreen(bookmarks = bookmarks, onOpen = onOpen, onRemove = viewModel::remove, onBack = onBack)
 }
