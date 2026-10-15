@@ -94,6 +94,55 @@ jobs:
             android/**/build/outputs/roborazzi/
           retention-days: 7
 
+  android-device-tests:
+    name: Android device tests (emulator)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Detect device tests
+        id: detect
+        run: |
+          if ls android/*/*/src/androidTest >/dev/null 2>&1; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+      # Runs BEFORE setup-java: the hosted tool cache (JDK) must not be deleted.
+      - name: Free disk space (unused toolchains)
+        if: steps.detect.outputs.present == 'true'
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup /usr/local/share/boost
+          df -h /
+      - uses: actions/setup-java@v4
+        if: steps.detect.outputs.present == 'true'
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        if: steps.detect.outputs.present == 'true'
+      - name: Enable KVM (hardware acceleration for the emulator)
+        if: steps.detect.outputs.present == 'true'
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      # SQLCipher (native code) and Android Keystore only exist on a real Android runtime.
+      - name: Run device tests on an API 34 emulator
+        if: steps.detect.outputs.present == 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: default
+          disable-animations: true
+          disk-size: 4096M
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: cd android && ./gradlew --no-daemon connectedDebugAndroidTest
+      - name: Upload device test reports on failure
+        if: failure() && steps.detect.outputs.present == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: device-test-reports
+          path: android/**/build/reports/androidTests/
+          retention-days: 7
+
   supabase:
     name: Supabase migrations & RLS tests
     runs-on: ubuntu-latest

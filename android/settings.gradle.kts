@@ -29,6 +29,7 @@ include(":app")
 include(":core:common")
 include(":core:i18n")
 include(":core:design-system")
+include(":core:database")
 include(":tooling:detekt-rules")
 // Further modules are added by their own work packages (BUILD_PLAN §4/§5):
-// core:database (1.7), ...
+// ...
