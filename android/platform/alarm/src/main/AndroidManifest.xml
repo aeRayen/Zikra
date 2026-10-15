@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shared alarm infrastructure (WP 2.4, ADR-033). Reviewed permissions (see PermissionsAllowlistTest):
+     - RECEIVE_BOOT_COMPLETED: the system drops every alarm on reboot; we re-arm them.
+     - SCHEDULE_EXACT_ALARM: on time prayer alerts. User-grantable; when denied we fall back to
+       inexact delivery and the UI says so. USE_EXACT_ALARM is NOT used (Play reserves it for
+       alarm-clock and calendar apps). -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
+    <application>
+        <!-- Our own alarms: explicit PendingIntents only, so not exported. Direct-boot aware so an
+             alarm still fires after a reboot before the phone is unlocked. -->
+        <receiver
+            android:name="com.zikra.platform.alarm.AlarmReceiver"
+            android:directBootAware="true"
+            android:exported="false" />
+
+        <!-- Protected system broadcasts (only the system can send them), hence exported. -->
+        <receiver
+            android:name="com.zikra.platform.alarm.AlarmSystemEventsReceiver"
+            android:directBootAware="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>
