@@ -16,8 +16,8 @@ class AppContainer(context: Context) {
     val sessions = SessionHolder()
     private val config = SupabaseConfig(BuildConfig.SUPABASE_URL, BuildConfig.SUPABASE_PUBLISHABLE_KEY)
 
-    /** False in builds without Supabase values: the app is then guest-only and hides sign-in. */
-    val accountsAvailable: Boolean = config.isConfigured
+    /** False without Supabase values or while e-mail sign-in is disabled (ADR-029): guest-only, no sign-in button. */
+    val accountsAvailable: Boolean = config.isConfigured && BuildConfig.EMAIL_SIGN_IN_ENABLED
 
     val supabase = SupabaseClient(config, GatedTransport(NetworkGate(sessions), OkHttpTransport()))
     val auth = AuthRepository(supabase, KeystoreTokenStore(context.applicationContext), sessions)
