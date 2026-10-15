@@ -10,15 +10,17 @@ import org.robolectric.annotation.Config
 
 /**
  * Every Android permission in the merged manifest (ours and any a library adds silently) must be
- * reviewed here first. Today the app has NO network permission, so the OS itself guarantees that
- * nothing leaves the device (WP 1.13). INTERNET arrives with content download (Phase 2) and from
- * then on NetworkGate (core:network) enforces guest mode.
+ * reviewed here first. INTERNET was added in WP 1.8; since then guest mode (no account or sync
+ * traffic) is enforced by NetworkGate in core:network rather than by the missing permission.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
 class PermissionsAllowlistTest {
 
     private val reviewed = setOf(
+        // WP 1.8 (reviewed): optional account + sync and content packs. Guest mode is enforced by
+        // NetworkGate, see GuestModeTest and SupabaseClientTest.guestIsStoppedBeforeTheNetwork.
+        "android.permission.INTERNET",
         // Added by androidx.core for non-exported dynamic receivers; signature-level, app-private.
         "com.zikra.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
     )
