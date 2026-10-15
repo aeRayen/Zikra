@@ -12,10 +12,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -25,14 +32,21 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.zikra.app.auth.AccountScreen
+import com.zikra.app.auth.SignInScreen
+import com.zikra.app.auth.SignInViewModel
 import com.zikra.app.i18n.AppLocales
+import com.zikra.app.navigation.AccountRoute
 import com.zikra.app.navigation.HomeRoute
 import com.zikra.app.navigation.LanguageRoute
 import com.zikra.app.navigation.MoreRoute
+import com.zikra.app.navigation.SignInRoute
 import com.zikra.app.navigation.TopLevelDestination
 import com.zikra.app.ui.HomeScreen
 import com.zikra.app.ui.LanguageScreen
 import com.zikra.app.ui.MoreScreen
+import com.zikra.core.network.Session
+import kotlinx.coroutines.launch
 
 /**
  * App shell: bottom bar on phones (compact width), navigation rail on tablets/foldables.
@@ -60,7 +74,12 @@ fun ZikraApp(
 private fun ZikraNavHost(navController: NavHostController, modifier: Modifier) {
     NavHost(navController = navController, startDestination = HomeRoute, modifier = modifier) {
         composable<HomeRoute> { HomeScreen() }
-        composable<MoreRoute> { MoreScreen(onOpenLanguage = { navController.navigate(LanguageRoute) }) }
+        composable<MoreRoute> {
+            MoreScreen(
+                onOpenLanguage = { navController.navigate(LanguageRoute) },
+                onOpenAccount = { navController.navigate(AccountRoute) },
+            )
+        }
         composable<LanguageRoute> {
             LanguageScreen(
                 selected = AppLocales.current(),
@@ -68,8 +87,44 @@ private fun ZikraNavHost(navController: NavHostController, modifier: Modifier) {
                 onBack = { navController.popBackStack() },
             )
         }
+        composable<AccountRoute> { AccountDestination(onSignIn = { navController.navigate(SignInRoute) }) }
+        composable<SignInRoute> { SignInDestination(onDone = { navController.popBackStack() }) }
     }
 }
+
+@Composable
+private fun AccountDestination(onSignIn: () -> Unit) {
+    val container = appContainer()
+    val session by container.sessions.session.collectAsState()
+    val scope = rememberCoroutineScope()
+    AccountScreen(
+        signedInEmail = if (session is Session.SignedIn) container.auth.currentEmail() else null,
+        accountsAvailable = container.accountsAvailable,
+        onSignIn = onSignIn,
+        onSignOut = { scope.launch { container.auth.signOut() } },
+    )
+}
+
+@Composable
+private fun SignInDestination(onDone: () -> Unit) {
+    val container = appContainer()
+    val viewModel: SignInViewModel =
+        viewModel(factory = viewModelFactory { initializer { SignInViewModel(container.auth) } })
+    val state by viewModel.uiState.collectAsState()
+    LaunchedEffect(state.step) { if (state.step == SignInViewModel.Step.Done) onDone() }
+    SignInScreen(
+        state = state,
+        onEmailChange = viewModel::onEmailChange,
+        onCodeChange = viewModel::onCodeChange,
+        onSendCode = viewModel::sendCode,
+        onVerify = viewModel::verify,
+        onChangeEmail = viewModel::changeEmail,
+    )
+}
+
+@Composable
+private fun appContainer(): AppContainer =
+    (LocalContext.current.applicationContext as ZikraApplication).container
 
 @Composable
 private fun TabBar(current: NavDestination?, onTab: (TopLevelDestination) -> Unit) {

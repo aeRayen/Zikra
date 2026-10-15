@@ -7,7 +7,7 @@ dependencies {
     api(projects.core.common)
     api(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.okhttp)
+    api(libs.okhttp) // OkHttpTransport exposes OkHttpClient in its constructor
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
