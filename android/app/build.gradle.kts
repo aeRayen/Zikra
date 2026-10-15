@@ -17,6 +17,8 @@ android {
         // Empty when absent: account features stay disabled and the app works as a guest.
         buildConfigField("String", "SUPABASE_URL", "\"${clientValue("SUPABASE_URL")}\"")
         buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", "\"${clientValue("SUPABASE_PUBLISHABLE_KEY")}\"")
+        // E-mail code sign-in needs a custom SMTP provider on Supabase (ADR-029). Off unless explicitly enabled.
+        buildConfigField("boolean", "EMAIL_SIGN_IN_ENABLED", clientValue("ZIKRA_EMAIL_SIGN_IN").ifBlank { "false" })
     }
 
     buildTypes {
