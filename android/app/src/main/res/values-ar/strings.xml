@@ -149,6 +149,35 @@
     <string name="settings_hijri_minus">إرجاع التاريخ الهجري يومًا</string>
     <string name="settings_hijri_plus">تقديم التاريخ الهجري يومًا</string>
 
+    <!-- القرآن (WP 2.10). نص القرآن نفسه لا يوضع في الموارد أبدًا: يأتي كما هو من المصدر المضمّن. -->
+    <string name="nav_quran">القرآن</string>
+    <string name="quran_title">القرآن الكريم</string>
+    <string name="quran_tab_surahs">السور</string>
+    <string name="quran_tab_juz">الأجزاء</string>
+    <string name="quran_meccan">مكية</string>
+    <string name="quran_medinan">مدنية</string>
+    <plurals name="quran_ayahs">
+        <item quantity="zero">%1$s آية</item>
+        <item quantity="one">آية واحدة</item>
+        <item quantity="two">آيتان</item>
+        <item quantity="few">%1$s آيات</item>
+        <item quantity="many">%1$s آية</item>
+        <item quantity="other">%1$s آية</item>
+    </plurals>
+    <string name="quran_juz_label">الجزء %1$s</string>
+    <string name="quran_page_label">الصفحة %1$s</string>
+    <string name="quran_juz_starts">يبدأ من %1$s، الآية %2$s</string>
+    <string name="quran_unavailable">تعذّر التحقق من نص القرآن على هذا الهاتف، لذلك لا يُعرض. يُرجى إعادة تثبيت التطبيق.</string>
+    <string name="reader_smaller">تصغير الخط</string>
+    <string name="reader_bigger">تكبير الخط</string>
+    <string name="reader_night">الوضع الليلي</string>
+    <string name="about_text_title">عن هذا النص</string>
+    <string name="about_text_source">النص: مشروع تنزيل (tanzil.net)، بالرسم العثماني، الإصدار %1$s.</string>
+    <string name="about_text_verbatim">يُعرض كما نُشر تمامًا، حرفًا بحرف. يتحقق منه التطبيق آليًا قبل كل إصدار، وفي كل مرة يفتحه.</string>
+    <string name="about_text_license_header">ترخيص النص (كما نُشر)</string>
+    <string name="about_text_font">الخط: أميري قرآن من مشروع أميري (aliftype.com)، برخصة SIL Open Font License 1.1.</string>
+    <string name="about_text_open_tanzil">زيارة tanzil.net</string>
+
     <string name="language_title">لغة التطبيق</string>
     <string name="language_follow_device">لغة الجهاز</string>
 

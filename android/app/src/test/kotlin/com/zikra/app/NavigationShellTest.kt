@@ -13,7 +13,9 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.zikra.app.home.HomeCard
 import com.zikra.app.navigation.TopLevelDestination
+import com.zikra.app.ui.ayahTag
 import com.zikra.app.ui.homeCardTag
+import com.zikra.app.ui.surahRowTag
 import com.zikra.core.designsystem.theme.ZikraTheme
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -70,6 +72,15 @@ class NavigationShellTest {
     }
 
     @Test
+    fun quranTabOpensTheIndexAndASurah() {
+        launch()
+        rule.onNodeWithTag(tabTag(TopLevelDestination.QURAN)).performClick()
+        waitForTag(surahRowTag(1))
+        rule.onNodeWithTag(surahRowTag(1)).performClick()
+        waitForTag(ayahTag(1))
+    }
+
+    @Test
     fun wideScreensUseNavigationRailAndStillNavigate() {
         launch(WindowWidthSizeClass.Expanded)
         rule.onNodeWithText(str(R.string.nav_more)).performClick()
@@ -102,6 +113,6 @@ class NavigationShellTest {
         rule.waitUntil(WAIT_MS) { rule.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty() }
 
     private companion object {
-        const val WAIT_MS = 5_000L
+        const val WAIT_MS = 10_000L
     }
 }

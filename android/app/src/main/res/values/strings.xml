@@ -166,6 +166,38 @@
     <string name="settings_hijri_minus">Hijri date one day back</string>
     <string name="settings_hijri_plus">Hijri date one day forward</string>
 
+    <!-- Quran (WP 2.10). The Quran text itself is never a string resource: it comes verbatim from the bundled source. -->
+    <string name="nav_quran">Quran</string>
+    <string name="quran_title">The Holy Quran</string>
+    <string name="quran_tab_surahs">Surahs</string>
+    <string name="quran_tab_juz">Juz</string>
+    <string name="quran_meccan">Meccan</string>
+    <string name="quran_medinan">Medinan</string>
+    <!-- %1$s = number, already formatted with the user's digits. -->
+    <plurals name="quran_ayahs">
+        <item quantity="one">%1$s ayah</item>
+        <item quantity="other">%1$s ayahs</item>
+    </plurals>
+    <!-- %1$s = juz number. -->
+    <string name="quran_juz_label">Juz %1$s</string>
+    <string name="quran_page_label">Page %1$s</string>
+    <!-- %1$s = surah name, %2$s = ayah number. -->
+    <string name="quran_juz_starts">Starts at %1$s, ayah %2$s</string>
+    <string name="quran_unavailable">The Quran text could not be checked on this phone, so it is not shown. Please reinstall the app.</string>
+    <string name="reader_smaller">Smaller text</string>
+    <string name="reader_bigger">Larger text</string>
+    <string name="reader_night">Night mode</string>
+    <!-- Visual size buttons (spoken labels: reader_smaller / reader_bigger). -->
+    <string name="reader_smaller_glyph" translatable="false">A−</string>
+    <string name="reader_bigger_glyph" translatable="false">A+</string>
+    <string name="about_text_title">About this text</string>
+    <!-- %1$s = source version. Keep «Tanzil» and tanzil.net as they are. -->
+    <string name="about_text_source">Text: Tanzil Project (tanzil.net), Uthmani script, version %1$s.</string>
+    <string name="about_text_verbatim">Shown exactly as published, letter by letter. The app checks it automatically before every release and each time it opens it.</string>
+    <string name="about_text_license_header">Licence of the text (as published)</string>
+    <string name="about_text_font">Font: Amiri Quran by the Amiri Project (aliftype.com), SIL Open Font License 1.1.</string>
+    <string name="about_text_open_tanzil">Visit tanzil.net</string>
+
     <!-- App language picker. -->
     <string name="language_title">App language</string>
     <!-- Option that follows the phone's language setting. -->
