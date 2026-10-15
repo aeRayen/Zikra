@@ -202,7 +202,7 @@ private fun PrayerRow(prayer: PrayerName, time: String, isNext: Boolean) {
 }
 
 @Composable
-private fun locationTitle(state: PrayerTimesUiState.Ready): String {
+internal fun locationTitle(state: PrayerTimesUiState.Ready): String {
     val place = state.place
     return when {
         place == null -> stringResource(R.string.location_approximate)
@@ -213,7 +213,7 @@ private fun locationTitle(state: PrayerTimesUiState.Ready): String {
 
 /** "1 hour and 20 minutes"; hours or minutes alone when the other is zero. Digits follow the language. */
 @Composable
-private fun remaining(totalMinutes: Long): String {
+internal fun remaining(totalMinutes: Long): String {
     val numerals = NumeralSystem.forLanguage(LocalConfiguration.current.locales[0].toLanguageTag())
     val hours = (totalMinutes / MINUTES_PER_HOUR).toInt()
     val minutes = (totalMinutes % MINUTES_PER_HOUR).toInt()
@@ -227,7 +227,7 @@ private fun remaining(totalMinutes: Long): String {
 }
 
 @Composable
-private fun rememberTimeFormatter(): (LocalTime) -> String {
+internal fun rememberTimeFormatter(): (LocalTime) -> String {
     val locale: Locale = LocalConfiguration.current.locales[0]
     val use24Hour = android.text.format.DateFormat.is24HourFormat(LocalContext.current)
     val numerals = NumeralSystem.forLanguage(locale.toLanguageTag())

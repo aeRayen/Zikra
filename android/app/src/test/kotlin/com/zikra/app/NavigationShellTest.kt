@@ -5,12 +5,15 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import com.zikra.app.home.HomeCard
 import com.zikra.app.navigation.TopLevelDestination
+import com.zikra.app.ui.homeCardTag
 import com.zikra.core.designsystem.theme.ZikraTheme
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -33,9 +36,11 @@ class NavigationShellTest {
     }
 
     @Test
-    fun startsOnTodayWithHonestEmptyState() {
+    fun startsOnTodayWithTheOnlyImplementedCard() {
         launch()
-        rule.onNodeWithText(str(R.string.home_empty_title)).assertIsDisplayed()
+        // No location yet: the prayer feature asks for one; nothing else is shown (no sample data).
+        waitForTag(homeCardTag(HomeCard.ChoosePrayerLocation))
+        rule.onNodeWithText(str(R.string.home_empty_title)).assertDoesNotExist()
     }
 
     @Test
@@ -50,7 +55,7 @@ class NavigationShellTest {
         rule.onNodeWithText(str(R.string.settings_language)).assertIsDisplayed()
 
         rule.onNodeWithText(str(R.string.nav_today)).performClick()
-        rule.onNodeWithText(str(R.string.home_empty_title)).assertIsDisplayed()
+        waitForTag(homeCardTag(HomeCard.ChoosePrayerLocation))
     }
 
     @Test
@@ -92,6 +97,9 @@ class NavigationShellTest {
         val more = tabLeft(TopLevelDestination.MORE)
         assertTrue("Today ($today) should be left of More ($more) in LTR", today < more)
     }
+
+    private fun waitForTag(tag: String) =
+        rule.waitUntil(WAIT_MS) { rule.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty() }
 
     private companion object {
         const val WAIT_MS = 5_000L
