@@ -45,11 +45,13 @@ import com.zikra.app.navigation.MoreRoute
 import com.zikra.app.navigation.PrayerMonthRoute
 import com.zikra.app.navigation.PrayerRoute
 import com.zikra.app.navigation.PrayerSettingsRoute
+import com.zikra.app.navigation.QiblaRoute
 import com.zikra.app.navigation.SignInRoute
 import com.zikra.app.navigation.TopLevelDestination
 import com.zikra.app.prayer.PrayerDestination
 import com.zikra.app.prayer.PrayerMonthDestination
 import com.zikra.app.prayer.PrayerSettingsDestination
+import com.zikra.app.qibla.QiblaDestination
 import com.zikra.app.ui.HomeScreen
 import com.zikra.app.ui.LanguageScreen
 import com.zikra.app.ui.MoreScreen
@@ -87,10 +89,17 @@ private fun ZikraNavHost(navController: NavHostController, modifier: Modifier) {
                 onChooseLocation = { navController.navigate(LocationRoute) },
                 onOpenSettings = { navController.navigate(PrayerSettingsRoute) },
                 onOpenMonth = { navController.navigate(PrayerMonthRoute) },
+                onOpenQibla = { navController.navigate(QiblaRoute) },
             )
         }
         composable<PrayerSettingsRoute> { PrayerSettingsDestination(onBack = { navController.popBackStack() }) }
         composable<PrayerMonthRoute> { PrayerMonthDestination(onBack = { navController.popBackStack() }) }
+        composable<QiblaRoute> {
+            QiblaDestination(
+                onBack = { navController.popBackStack() },
+                onChooseLocation = { navController.navigate(LocationRoute) },
+            )
+        }
         composable<MoreRoute> {
             MoreScreen(
                 onOpenLanguage = { navController.navigate(LanguageRoute) },
