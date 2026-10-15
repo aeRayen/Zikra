@@ -59,3 +59,12 @@ scope: android | supabase | content | docs | ci | <feature>
 3. لا `left/right` في التخطيط. يُستخدم `start/end`.
 4. لا بيانات تعافٍ أو حماية تغادر الجهاز.
 5. لا أزرار أو بيانات وهمية في نسخة الإنتاج.
+
+## 6. صور الشاشة المرجعية (Screenshot tests)
+
+- الصور المرجعية في `android/**/src/test/screenshots/` **تُسجَّل على Linux**، أي على بيئة CI نفسها، لأن رسم الخطوط على Windows وmacOS يختلف قليلًا.
+- على جهاز التطوير شغّل `test` فقط، و**لا تشغّل `verifyRoborazziDebug` على Windows**.
+- عند تغيير تصميم مقصود:
+  1. ادفع التغيير، فيفشل فحص الصور.
+  2. يسجّل CI الصور على Linux ويرفعها في ملف `linux-screenshots`.
+  3. راجع الصور بعينك، ثم ضعها في المستودع.
