@@ -11,7 +11,7 @@ style:
   MagicNumber:
     ignorePropertyDeclaration: true
     ignoreCompanionObjectPropertyDeclaration: true
-    excludes: ['**/test/**', '**/androidTest/**', '**/*Theme*.kt', '**/*Tokens*.kt']
+    excludes: ['**/test/**', '**/androidTest/**', '**/designsystem/theme/**']
   UnusedPrivateMember:
     ignoreAnnotated: ['Preview']
 

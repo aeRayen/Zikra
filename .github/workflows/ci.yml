@@ -66,7 +66,7 @@ jobs:
       - name: Build, lint and unit tests
         if: steps.detect.outputs.present == 'true'
         working-directory: android
-        run: ./gradlew --no-daemon assembleDebug assembleRelease lint test detekt
+        run: ./gradlew --no-daemon assembleDebug assembleRelease lint test detekt verifyRoborazziDebug
       - name: Upload lint/detekt reports on failure
         if: failure() && steps.detect.outputs.present == 'true'
         uses: actions/upload-artifact@v4

@@ -54,6 +54,23 @@ class HardcodedComposeTextTest {
     }
 
     @Test
+    fun ignoresDebugLabelsOfAnimationApis() {
+        val code = """
+            fun Screen() {
+                val t = rememberInfiniteTransition(label = "skeleton")
+                val a by t.animateFloat(0f, 1f, spec, label = "alpha")
+                val c by animateColorAsState(target, label = "tint")
+            }
+        """.trimIndent()
+        assertEquals(0, findings(code).size)
+    }
+
+    @Test
+    fun stillFlagsLabelOnNonAnimationCalls() {
+        assertEquals(1, findings("""fun Screen() { Chip(label = "Hello") }""").size)
+    }
+
+    @Test
     fun ignoresNonTextFirstArgumentsOfOtherCalls() {
         assertEquals(0, findings("""fun f() { log("Hello"); require(x) { "message" } }""").size)
     }
