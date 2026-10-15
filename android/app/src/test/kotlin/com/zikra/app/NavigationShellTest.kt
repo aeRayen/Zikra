@@ -5,6 +5,7 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -53,6 +54,17 @@ class NavigationShellTest {
     }
 
     @Test
+    fun prayerTabWithoutLocationLeadsToTheLocationPicker() {
+        launch()
+        rule.onNodeWithTag(tabTag(TopLevelDestination.PRAYER)).performClick()
+        rule.waitUntil(
+            WAIT_MS
+        ) { rule.onAllNodesWithText(str(R.string.prayer_no_location_title)).fetchSemanticsNodes().isNotEmpty() }
+        rule.onNodeWithText(str(R.string.prayer_choose_location)).performClick()
+        rule.onNodeWithText(str(R.string.location_title)).assertIsDisplayed()
+    }
+
+    @Test
     fun wideScreensUseNavigationRailAndStillNavigate() {
         launch(WindowWidthSizeClass.Expanded)
         rule.onNodeWithText(str(R.string.nav_more)).performClick()
@@ -79,5 +91,9 @@ class NavigationShellTest {
         val today = tabLeft(TopLevelDestination.TODAY)
         val more = tabLeft(TopLevelDestination.MORE)
         assertTrue("Today ($today) should be left of More ($more) in LTR", today < more)
+    }
+
+    private companion object {
+        const val WAIT_MS = 5_000L
     }
 }

@@ -42,8 +42,10 @@ import com.zikra.app.navigation.HomeRoute
 import com.zikra.app.navigation.LanguageRoute
 import com.zikra.app.navigation.LocationRoute
 import com.zikra.app.navigation.MoreRoute
+import com.zikra.app.navigation.PrayerRoute
 import com.zikra.app.navigation.SignInRoute
 import com.zikra.app.navigation.TopLevelDestination
+import com.zikra.app.prayer.PrayerDestination
 import com.zikra.app.ui.HomeScreen
 import com.zikra.app.ui.LanguageScreen
 import com.zikra.app.ui.MoreScreen
@@ -76,6 +78,7 @@ fun ZikraApp(
 private fun ZikraNavHost(navController: NavHostController, modifier: Modifier) {
     NavHost(navController = navController, startDestination = HomeRoute, modifier = modifier) {
         composable<HomeRoute> { HomeScreen() }
+        composable<PrayerRoute> { PrayerDestination(onChooseLocation = { navController.navigate(LocationRoute) }) }
         composable<MoreRoute> {
             MoreScreen(
                 onOpenLanguage = { navController.navigate(LanguageRoute) },
