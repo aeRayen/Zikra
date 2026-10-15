@@ -25,3 +25,10 @@ formatting:
   autoCorrect: false   # CI must fail on formatting; fix locally with: ./gradlew detekt --auto-correct
   MaximumLineLength:
     maxLineLength: 120
+
+# Project rules from :tooling:detekt-rules
+zikra:
+  active: true
+  HardcodedComposeText:
+    active: true
+    excludes: ['**/test/**', '**/androidTest/**']

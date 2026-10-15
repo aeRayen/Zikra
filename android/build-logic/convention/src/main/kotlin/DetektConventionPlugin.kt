@@ -30,6 +30,8 @@ class DetektConventionPlugin : Plugin<Project> {
             }
             dependencies {
                 add("detektPlugins", libs.findLibrary("detekt-formatting").get())
+                // Project rules (e.g. HardcodedComposeText, I18N_SPEC_AR.md §3).
+                add("detektPlugins", project(mapOf("path" to ":tooling:detekt-rules")))
             }
         }
     }
