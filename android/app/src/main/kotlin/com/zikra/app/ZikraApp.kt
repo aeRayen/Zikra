@@ -35,6 +35,7 @@ import androidx.navigation.compose.rememberNavController
 import com.zikra.app.auth.AccountScreen
 import com.zikra.app.auth.SignInScreen
 import com.zikra.app.auth.SignInViewModel
+import com.zikra.app.home.HomeDestination
 import com.zikra.app.i18n.AppLocales
 import com.zikra.app.location.LocationDestination
 import com.zikra.app.navigation.AccountRoute
@@ -52,7 +53,6 @@ import com.zikra.app.prayer.PrayerDestination
 import com.zikra.app.prayer.PrayerMonthDestination
 import com.zikra.app.prayer.PrayerSettingsDestination
 import com.zikra.app.qibla.QiblaDestination
-import com.zikra.app.ui.HomeScreen
 import com.zikra.app.ui.LanguageScreen
 import com.zikra.app.ui.MoreScreen
 import com.zikra.core.network.Session
@@ -83,7 +83,12 @@ fun ZikraApp(
 @Composable
 private fun ZikraNavHost(navController: NavHostController, modifier: Modifier) {
     NavHost(navController = navController, startDestination = HomeRoute, modifier = modifier) {
-        composable<HomeRoute> { HomeScreen() }
+        composable<HomeRoute> {
+            HomeDestination(
+                onOpenPrayer = { navController.navigateToTab(TopLevelDestination.PRAYER) },
+                onChooseLocation = { navController.navigate(LocationRoute) },
+            )
+        }
         composable<PrayerRoute> {
             PrayerDestination(
                 onChooseLocation = { navController.navigate(LocationRoute) },

@@ -9,7 +9,9 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.zikra.app.home.HomeCard
 import com.zikra.app.ui.CURRENT_LOCATION_TAG
+import com.zikra.app.ui.homeCardTag
 import com.zikra.app.ui.RESULT_TAG
 import com.zikra.app.ui.SEARCH_FIELD_TAG
 import org.junit.AfterClass
@@ -32,7 +34,11 @@ class OfflineLaunchTest {
 
     @Test
     fun guestUsesTheAppWithoutAnyNetwork() {
-        rule.onNodeWithText(str(R.string.home_empty_title)).assertIsDisplayed()
+        // Today shows the prayer card: «choose a location», or the next prayer if a city was chosen earlier.
+        rule.waitUntil(SEARCH_TIMEOUT_MS) {
+            rule.onAllNodesWithTag(homeCardTag(HomeCard.ChoosePrayerLocation)).fetchSemanticsNodes().isNotEmpty() ||
+                rule.onAllNodesWithTag("home_card_prayer.next").fetchSemanticsNodes().isNotEmpty()
+        }
         rule.onNodeWithText(str(R.string.nav_more)).performClick()
         rule.onNodeWithText(str(R.string.settings_language)).performClick()
         rule.onNodeWithText(str(R.string.language_follow_device)).assertIsDisplayed()

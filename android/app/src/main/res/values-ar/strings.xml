@@ -9,7 +9,7 @@
 
     <string name="home_title">اليوم</string>
     <string name="home_empty_title">لا توجد بطاقات بعد</string>
-    <string name="home_empty_message">ستظهر هنا مواقيت الصلاة والقراءة والأذكار عند إضافتها.</string>
+    <string name="home_empty_message">تظهر هنا صلاتك القادمة وقراءتك وأذكارك.</string>
 
     <string name="more_title">المزيد</string>
     <string name="settings_language">اللغة</string>

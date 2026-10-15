@@ -10,8 +10,11 @@ import androidx.core.os.UserManagerCompat
 import com.zikra.app.adhan.PrayerAlertNotifier
 import com.zikra.app.adhan.PrayerAlerts
 import com.zikra.app.auth.KeystoreTokenStore
+import com.zikra.app.home.HomeCardProvider
+import com.zikra.app.home.PrayerHomeCards
 import com.zikra.app.location.AndroidDeviceLocator
 import com.zikra.app.location.DeviceLocator
+import com.zikra.app.prayer.PrayerTimesSource
 import com.zikra.core.network.AuthRepository
 import com.zikra.core.network.GatedTransport
 import com.zikra.core.network.NetworkGate
@@ -54,6 +57,11 @@ class AppContainer(context: Context) {
     /** Lives as long as the process: observes settings to keep prayer alerts scheduled. */
     val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     val prayerAlerts = PrayerAlerts({ places }, locationStore, prayerPreferences)
+
+    /** Home cards of every implemented feature (WP 2.8). Add a provider here when a feature lands. */
+    fun homeCardProviders(): List<HomeCardProvider> = listOf(
+        PrayerHomeCards(PrayerTimesSource({ places }, locationStore, prayerPreferences, Dispatchers.IO)),
+    )
 
     private companion object {
         const val LOCATION_FILE = "datastore/${LocationStore.FILE_NAME}"

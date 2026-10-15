@@ -19,11 +19,12 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 import java.time.Clock
 import java.time.Duration
@@ -60,41 +61,28 @@ sealed interface PrayerTimesUiState {
 }
 
 /**
- * Today's prayer times for the saved location (WP 2.3). Fully offline: the engine runs on the
- * device. Recomputed when the location, the preferences or the language change, and on every [ticker]
- * tick (each minute) so the countdown and the day rollover stay correct.
+ * Computes the prayer-times state from the saved location and preferences, recomputed on every
+ * [ticker] tick (each minute) so countdown and day rollover stay right. Shared by the prayer tab and
+ * the «next prayer» card on Home (WP 2.8), so both always agree.
  */
-class PrayerTimesViewModel(
+class PrayerTimesSource(
     private val places: () -> PlaceLookup,
-    locationStore: LocationStore,
-    preferencesStore: PrayerPreferencesStore,
+    private val locationStore: LocationStore,
+    private val preferencesStore: PrayerPreferencesStore,
     private val io: CoroutineDispatcher,
     /** Phone time and zone; the zone is only used to tell the user when the place's clock differs. */
     private val clock: () -> Clock = Clock::systemDefaultZone,
-    ticker: Flow<Unit> = everyMinute(),
-) : ViewModel() {
-
-    private val state = MutableStateFlow<PrayerTimesUiState>(PrayerTimesUiState.Loading)
-    val uiState: StateFlow<PrayerTimesUiState> = state.asStateFlow()
-
-    private val language = MutableStateFlow("en")
-
-    init {
-        viewModelScope.launch {
-            combine(locationStore.location, preferencesStore.preferences, language, ticker) { loc, prefs, lang, _ ->
-                Triple(loc, prefs, lang)
-            }.collect { (loc, prefs, lang) ->
-                state.value = when (loc) {
-                    null -> PrayerTimesUiState.NoLocation
-                    else -> withContext(io) { ready(loc, prefs, lang) }
-                }
+    private val ticker: Flow<Unit> = everyMinute(),
+) {
+    fun states(language: Flow<String>): Flow<PrayerTimesUiState> =
+        combine(locationStore.location, preferencesStore.preferences, language, ticker) { loc, prefs, lang, _ ->
+            Triple(loc, prefs, lang)
+        }.map { (loc, prefs, lang) ->
+            when (loc) {
+                null -> PrayerTimesUiState.NoLocation
+                else -> withContext(io) { ready(loc, prefs, lang) }
             }
         }
-    }
-
-    fun setLanguage(tag: String) {
-        language.value = tag
-    }
 
     private fun ready(saved: SavedLocation, prefs: PrayerPreferences, lang: String): PrayerTimesUiState.Ready {
         val phone = clock()
@@ -135,5 +123,27 @@ class PrayerTimesViewModel(
                 delay(MS_PER_MINUTE - now() % MS_PER_MINUTE)
             }
         }
+    }
+}
+
+/** Today's prayer times for the saved location (WP 2.3). Fully offline. */
+class PrayerTimesViewModel(
+    places: () -> PlaceLookup,
+    locationStore: LocationStore,
+    preferencesStore: PrayerPreferencesStore,
+    io: CoroutineDispatcher,
+    clock: () -> Clock = Clock::systemDefaultZone,
+    ticker: Flow<Unit> = PrayerTimesSource.everyMinute(),
+) : ViewModel() {
+
+    private val language = MutableStateFlow("en")
+
+    val uiState: StateFlow<PrayerTimesUiState> =
+        PrayerTimesSource(places, locationStore, preferencesStore, io, clock, ticker)
+            .states(language)
+            .stateIn(viewModelScope, SharingStarted.Eagerly, PrayerTimesUiState.Loading)
+
+    fun setLanguage(tag: String) {
+        language.value = tag
     }
 }

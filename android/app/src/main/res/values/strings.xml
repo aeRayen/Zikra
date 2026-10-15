@@ -13,7 +13,7 @@
     <string name="home_title">Today</string>
     <!-- Shown until features add their cards to Home. Must not promise dates. -->
     <string name="home_empty_title">No cards yet</string>
-    <string name="home_empty_message">Prayer times, reading and adhkar will appear here as they are added.</string>
+    <string name="home_empty_message">Your next prayer, reading and adhkar appear here.</string>
 
     <!-- «More» hub. -->
     <string name="more_title">More</string>
