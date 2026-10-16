@@ -125,3 +125,38 @@ data class SyncStateEntity(
     @PrimaryKey val key: String,
     val value: String,
 )
+
+/** The memorization plan (WP 3.9): a single row with [id] = [CURRENT]. */
+@Entity(tableName = "memorization_plan")
+data class MemorizationPlanEntity(
+    @PrimaryKey val id: String = CURRENT,
+    /** FROM_START or FROM_END. */
+    val direction: String,
+    /** HALF_PAGE, ONE_PAGE or TWO_PAGES. */
+    val pace: String,
+    @ColumnInfo(name = "client_updated_at") val clientUpdatedAt: Long,
+    @ColumnInfo(name = "server_version") val serverVersion: Long? = null,
+    val dirty: Boolean = true,
+) {
+    companion object {
+        const val CURRENT = "current"
+    }
+}
+
+/** A memorized mushaf page and its spaced-review state (WP 3.9). Dates are ISO local dates. */
+@Entity(tableName = "memorized_page")
+data class MemorizedPageEntity(
+    @PrimaryKey val page: Int,
+    @ColumnInfo(name = "memorized_on") val memorizedOn: String,
+    val due: String,
+    @ColumnInfo(name = "interval_days") val intervalDays: Int,
+    @ColumnInfo(name = "ease_percent") val easePercent: Int,
+    val streak: Int,
+    val lapses: Int,
+    @ColumnInfo(name = "last_reviewed") val lastReviewed: String?,
+    @ColumnInfo(name = "before_plan") val beforePlan: Boolean,
+    @ColumnInfo(name = "client_updated_at") val clientUpdatedAt: Long,
+    @ColumnInfo(name = "server_version") val serverVersion: Long? = null,
+    val deleted: Boolean = false,
+    val dirty: Boolean = true,
+)

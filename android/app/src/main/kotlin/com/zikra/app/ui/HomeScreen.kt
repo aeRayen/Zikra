@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
@@ -44,6 +45,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     onContinueReading: (surah: Int, ayah: Int) -> Unit = { _, _ -> },
     onOpenAdhkar: (chapter: Int) -> Unit = {},
+    onOpenMemorization: () -> Unit = {},
 ) {
     Column(
         modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(ZikraSpacing.screenGutter),
@@ -66,6 +68,7 @@ fun HomeScreen(
                 HomeCard.ChoosePrayerLocation -> ChooseLocationHomeCard(onChooseLocation)
                 is HomeCard.ContinueReading -> ContinueReadingCard(card.saved, card, onContinueReading)
                 is HomeCard.DailyAdhkar -> DailyAdhkarHomeCard(card, onOpenAdhkar)
+                is HomeCard.MemorizationToday -> MemorizationHomeCard(card, onOpenMemorization)
             }
         }
     }
@@ -166,6 +169,36 @@ private fun DailyAdhkarHomeCard(card: HomeCard.DailyAdhkar, onOpen: (Int) -> Uni
                 ),
                 style = MaterialTheme.typography.bodyMedium,
             )
+        }
+    }
+}
+
+@Composable
+private fun MemorizationHomeCard(card: HomeCard.MemorizationToday, onOpen: () -> Unit) {
+    val numerals = NumeralSystem.forLanguage(LocalConfiguration.current.locales[0].language)
+    OutlinedCard(
+        Modifier
+            .fillMaxWidth()
+            .clickable(role = Role.Button, onClick = onOpen)
+            .semantics(mergeDescendants = true) {}
+            .testTag(homeCardTag(card)),
+    ) {
+        Column(Modifier.padding(ZikraSpacing.screenGutter), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(text = stringResource(R.string.memorization_home_label), style = MaterialTheme.typography.labelLarge)
+            Text(
+                text = pluralStringResource(
+                    R.plurals.memorization_due,
+                    card.reviews,
+                    numerals.apply(card.reviews.toString()),
+                ),
+                style = MaterialTheme.typography.titleMedium,
+            )
+            if (card.newPages > 0) {
+                Text(
+                    text = stringResource(R.string.memorization_new_today),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
         }
     }
 }

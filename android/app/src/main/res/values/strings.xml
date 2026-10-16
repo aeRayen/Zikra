@@ -310,4 +310,39 @@
     <string name="adhkar_reminder_sleep_text">It is time for the adhkar before sleep.</string>
     <string name="channel_adhkar">Adhkar reminders</string>
     <string name="channel_adhkar_description">Reminders for the morning, evening and sleep adhkar you turned on.</string>
+    <!-- Memorization (WP 3.9) -->
+    <string name="memorization_title">Memorization</string>
+    <string name="memorization_subtitle">A memorization plan with spaced review</string>
+    <string name="memorization_progress">%1$s of %2$s pages memorized</string>
+    <string name="memorization_new_today">New today</string>
+    <string name="memorization_review_today">Review today</string>
+    <string name="memorization_page">Page %1$s · %2$s</string>
+    <string name="memorization_done">Memorized</string>
+    <string name="memorization_open">Open</string>
+    <string name="memorization_no_new">Nothing new today.</string>
+    <string name="memorization_finished">You have memorized the whole mushaf.</string>
+    <string name="memorization_no_reviews">No review due today.</string>
+    <string name="memorization_review_hint">Recite it from memory, then choose how it went:</string>
+    <string name="recall_forgot">Forgot</string>
+    <string name="recall_hard">Hard</string>
+    <string name="recall_good">Good</string>
+    <string name="recall_easy">Easy</string>
+    <string name="memorization_plan">My plan</string>
+    <string name="memorization_direction_start">From the start (al-Fatiha)</string>
+    <string name="memorization_direction_end">From the end (juz\' \'Amma)</string>
+    <string name="memorization_pace_half">One page every two days</string>
+    <string name="memorization_pace_one">One page a day</string>
+    <string name="memorization_pace_two">Two pages a day</string>
+    <string name="memorization_start">Start the plan</string>
+    <string name="memorization_save_plan">Save the plan</string>
+    <string name="memorization_before">Memorized before</string>
+    <string name="memorization_before_hint">Mark the juz\' you already know: their review is spread over two weeks.</string>
+    <string name="memorization_juz">Juz\' %1$s</string>
+    <string name="memorization_juz_progress">%1$s of %2$s pages</string>
+    <string name="memorization_mark_juz">I know it all</string>
+    <string name="memorization_home_label">Memorization review</string>
+    <plurals name="memorization_due">
+        <item quantity="one">%1$s page to review today</item>
+        <item quantity="other">%1$s pages to review today</item>
+    </plurals>
 </resources>

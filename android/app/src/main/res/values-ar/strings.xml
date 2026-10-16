@@ -288,4 +288,43 @@
     <string name="adhkar_reminder_sleep_text">حان وقت أذكار النوم.</string>
     <string name="channel_adhkar">تذكيرات الأذكار</string>
     <string name="channel_adhkar_description">تذكيرات أذكار الصباح والمساء والنوم التي فعّلتها.</string>
+    <!-- الحفظ والمراجعة (الحزمة 3.9) -->
+    <string name="memorization_title">الحفظ والمراجعة</string>
+    <string name="memorization_subtitle">خطة حفظ ومراجعة متباعدة</string>
+    <string name="memorization_progress">حفظت %1$s من %2$s صفحة</string>
+    <string name="memorization_new_today">حفظ جديد اليوم</string>
+    <string name="memorization_review_today">مراجعة اليوم</string>
+    <string name="memorization_page">الصفحة %1$s · %2$s</string>
+    <string name="memorization_done">حفظتها</string>
+    <string name="memorization_open">افتح</string>
+    <string name="memorization_no_new">لا حفظ جديد اليوم.</string>
+    <string name="memorization_finished">أتممت حفظ المصحف كله.</string>
+    <string name="memorization_no_reviews">لا مراجعة اليوم.</string>
+    <string name="memorization_review_hint">سمّعها من حفظك، ثم اختر كيف كانت:</string>
+    <string name="recall_forgot">نسيت</string>
+    <string name="recall_hard">صعبة</string>
+    <string name="recall_good">جيدة</string>
+    <string name="recall_easy">سهلة</string>
+    <string name="memorization_plan">خطتي</string>
+    <string name="memorization_direction_start">من أول المصحف (الفاتحة)</string>
+    <string name="memorization_direction_end">من آخر المصحف (جزء عمّ)</string>
+    <string name="memorization_pace_half">صفحة كل يومين</string>
+    <string name="memorization_pace_one">صفحة في اليوم</string>
+    <string name="memorization_pace_two">صفحتان في اليوم</string>
+    <string name="memorization_start">ابدأ الخطة</string>
+    <string name="memorization_save_plan">احفظ الخطة</string>
+    <string name="memorization_before">حفظته من قبل</string>
+    <string name="memorization_before_hint">علّم الأجزاء التي تحفظها، فتدخل المراجعة موزّعة على أسبوعين.</string>
+    <string name="memorization_juz">الجزء %1$s</string>
+    <string name="memorization_juz_progress">%1$s من %2$s صفحة</string>
+    <string name="memorization_mark_juz">أحفظه كله</string>
+    <string name="memorization_home_label">مراجعة الحفظ</string>
+    <plurals name="memorization_due">
+        <item quantity="zero">%1$s صفحة للمراجعة اليوم</item>
+        <item quantity="one">صفحة واحدة للمراجعة اليوم</item>
+        <item quantity="two">صفحتان للمراجعة اليوم</item>
+        <item quantity="few">%1$s صفحات للمراجعة اليوم</item>
+        <item quantity="many">%1$s صفحة للمراجعة اليوم</item>
+        <item quantity="other">%1$s صفحة للمراجعة اليوم</item>
+    </plurals>
 </resources>

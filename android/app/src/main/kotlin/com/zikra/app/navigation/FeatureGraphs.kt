@@ -7,6 +7,7 @@ import androidx.navigation.toRoute
 import com.zikra.app.adhkar.AdhkarChapterDestination
 import com.zikra.app.adhkar.AdhkarIndexDestination
 import com.zikra.app.adhkar.AdhkarRemindersDestination
+import com.zikra.app.memorization.MemorizationDestination
 import com.zikra.app.prayer.PrayerDestination
 import com.zikra.app.prayer.PrayerMonthDestination
 import com.zikra.app.prayer.PrayerSettingsDestination
@@ -45,6 +46,7 @@ fun NavGraphBuilder.quranGraph(navController: NavHostController) {
             onAbout = { navController.navigate(AboutQuranTextRoute) },
             onSearch = { navController.navigate(QuranSearchRoute) },
             onBookmarks = { navController.navigate(QuranBookmarksRoute) },
+            onMemorization = { navController.navigate(MemorizationRoute) },
         )
     }
     composable<QuranBookmarksRoute> {
@@ -69,6 +71,12 @@ fun NavGraphBuilder.quranGraph(navController: NavHostController) {
         )
     }
     composable<AboutQuranTextRoute> { AboutQuranTextDestination(onBack = { navController.popBackStack() }) }
+    composable<MemorizationRoute> {
+        MemorizationDestination(
+            onBack = { navController.popBackStack() },
+            onOpenPage = { surah, ayah -> navController.navigate(QuranReaderRoute(surah, ayah)) },
+        )
+    }
 }
 
 /** Adhkar tab and its chapters (WP 2.14b). */

@@ -31,6 +31,11 @@ sealed interface HomeCard {
         override val key = "adhkar.daily"
     }
 
+    /** Today's memorization: new pages and pages due for review (WP 3.9). */
+    data class MemorizationToday(val newPages: Int, val reviews: Int) : HomeCard {
+        override val key = "memorization.today"
+    }
+
     /** Prayer times are implemented but need a location first. */
     data object ChoosePrayerLocation : HomeCard {
         override val key = "prayer.location"
