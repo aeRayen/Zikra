@@ -4,6 +4,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.zikra.app.adhkar.AdhkarChapterDestination
+import com.zikra.app.adhkar.AdhkarIndexDestination
 import com.zikra.app.prayer.PrayerDestination
 import com.zikra.app.prayer.PrayerMonthDestination
 import com.zikra.app.prayer.PrayerSettingsDestination
@@ -66,4 +68,17 @@ fun NavGraphBuilder.quranGraph(navController: NavHostController) {
         )
     }
     composable<AboutQuranTextRoute> { AboutQuranTextDestination(onBack = { navController.popBackStack() }) }
+}
+
+/** Adhkar tab and its chapters (WP 2.14b). */
+fun NavGraphBuilder.adhkarGraph(navController: NavHostController) {
+    composable<AdhkarRoute> {
+        AdhkarIndexDestination(onOpen = { navController.navigate(AdhkarChapterRoute(it)) })
+    }
+    composable<AdhkarChapterRoute> { entry ->
+        AdhkarChapterDestination(
+            chapter = entry.toRoute<AdhkarChapterRoute>().chapter,
+            onBack = { navController.popBackStack() },
+        )
+    }
 }

@@ -13,7 +13,12 @@ import com.zikra.app.ui.HomeScreen
 
 /** Navigation entry of «Today». */
 @Composable
-fun HomeDestination(onOpenPrayer: () -> Unit, onChooseLocation: () -> Unit, onContinueReading: (Int, Int) -> Unit) {
+fun HomeDestination(
+    onOpenPrayer: () -> Unit,
+    onChooseLocation: () -> Unit,
+    onContinueReading: (Int, Int) -> Unit,
+    onOpenAdhkar: (Int) -> Unit,
+) {
     val container = appContainer()
     val viewModel: HomeViewModel = viewModel(
         factory = viewModelFactory { initializer { HomeViewModel(container.homeCardProviders()) } },
@@ -26,5 +31,6 @@ fun HomeDestination(onOpenPrayer: () -> Unit, onChooseLocation: () -> Unit, onCo
         onOpenPrayer = onOpenPrayer,
         onChooseLocation = onChooseLocation,
         onContinueReading = onContinueReading,
+        onOpenAdhkar = onOpenAdhkar,
     )
 }

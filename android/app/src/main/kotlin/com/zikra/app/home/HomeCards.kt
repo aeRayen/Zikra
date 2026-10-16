@@ -26,6 +26,11 @@ sealed interface HomeCard {
         override val key = "quran.continue"
     }
 
+    /** Morning and evening adhkar with today's progress (WP 2.14b). */
+    data class DailyAdhkar(val chapter: com.zikra.core.adhkar.AdhkarChapter, val done: Int) : HomeCard {
+        override val key = "adhkar.daily"
+    }
+
     /** Prayer times are implemented but need a location first. */
     data object ChoosePrayerLocation : HomeCard {
         override val key = "prayer.location"

@@ -241,4 +241,37 @@
     <string name="error_rate_limited">محاولات كثيرة. انتظر قليلًا ثم حاول مرة أخرى.</string>
     <string name="error_generic">حدث خطأ. حاول مرة أخرى.</string>
     <string name="error_save_failed">تعذّر حفظ اختيارك. تأكد من وجود مساحة فارغة في هاتفك، ثم حاول مرة أخرى.</string>
+    <!-- الأذكار (الحزمة 2.14-ب) -->
+    <string name="nav_adhkar">الأذكار</string>
+    <string name="adhkar_title">أذكار حصن المسلم</string>
+    <string name="adhkar_daily">كل يوم</string>
+    <string name="adhkar_all">كل الأبواب</string>
+    <string name="adhkar_search_hint">ابحث في عناوين الأبواب</string>
+    <string name="adhkar_no_match">لا يوجد باب في عنوانه هذه الكلمة.</string>
+    <string name="adhkar_unavailable">تعذّر التحقق من الأذكار على هذا الهاتف، لذلك لا تُعرض. يُرجى إعادة تثبيت التطبيق.</string>
+    <plurals name="adhkar_count">
+        <item quantity="zero">%1$s ذكر</item>
+        <item quantity="one">ذكر واحد</item>
+        <item quantity="two">ذكران</item>
+        <item quantity="few">%1$s أذكار</item>
+        <item quantity="many">%1$s ذكرًا</item>
+        <item quantity="other">%1$s ذكر</item>
+    </plurals>
+    <plurals name="adhkar_times">
+        <item quantity="zero">%1$s مرة</item>
+        <item quantity="one">مرة واحدة</item>
+        <item quantity="two">مرتان</item>
+        <item quantity="few">%1$s مرات</item>
+        <item quantity="many">%1$s مرة</item>
+        <item quantity="other">%1$s مرة</item>
+    </plurals>
+    <string name="adhkar_progress">تم %1$s من %2$s اليوم</string>
+    <string name="adhkar_count_description">العدّ: %1$s من %2$s</string>
+    <string name="adhkar_done">تم</string>
+    <string name="adhkar_reset">ابدأ من جديد</string>
+    <string name="adhkar_reference_show">المرجع</string>
+    <string name="adhkar_reference_hide">إخفاء المرجع</string>
+    <string name="adhkar_save_failed">تعذّر حفظ هذا العدّ. تأكد من وجود مساحة فارغة في هاتفك.</string>
+    <string name="adhkar_sources">النص: موقع حصن المسلم hisnmuslim.com. المراجع: حواشي المؤلف نفسه (المكتبة الشاملة، الكتاب 31307). الآيات: النص العثماني من Tanzil.</string>
+    <string name="adhkar_home_label">أذكار اليوم</string>
 </resources>
