@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -78,12 +79,16 @@ fun QuranIndexScreen(
     onOpen: (surah: Int, ayah: Int) -> Unit,
     onAbout: () -> Unit,
     modifier: Modifier = Modifier,
+    onSearch: () -> Unit = {},
 ) {
     var tab by rememberSaveable { mutableIntStateOf(0) }
     Column(modifier.fillMaxSize()) {
         TopAppBar(
             title = { Text(text = stringResource(R.string.quran_title)) },
             actions = {
+                IconButton(onClick = onSearch, modifier = Modifier.testTag(QURAN_SEARCH_BUTTON_TAG)) {
+                    Icon(Icons.Filled.Search, contentDescription = stringResource(R.string.quran_search))
+                }
                 IconButton(onClick = onAbout) {
                     Icon(Icons.Filled.Info, contentDescription = stringResource(R.string.about_text_title))
                 }
@@ -184,5 +189,6 @@ private fun JuzList(juz: List<JuzStart>, onOpen: (Int, Int) -> Unit) {
 }
 
 internal const val SURAH_LIST_TAG = "quran_surah_list"
+internal const val QURAN_SEARCH_BUTTON_TAG = "quran_search_button"
 internal fun surahRowTag(number: Int) = "quran_surah_$number"
 internal fun juzRowTag(number: Int) = "quran_juz_$number"

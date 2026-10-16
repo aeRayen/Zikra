@@ -34,6 +34,12 @@ class Pipeline(private val sourcesDir: File) {
 
     private fun writeVerifiedQuranText(db: File) {
         val text = parseTanzilText(lock.verifiedFile(sourcesDir, QURAN_TEXT))
+        val simple = parseTanzilText(lock.verifiedFile(sourcesDir, QURAN_SIMPLE))
+        QuranValidation.checkAyahSequence(
+            positions = simple.ayahs.map { it.surah to it.ayah },
+            texts = simple.ayahs.map { it.text },
+            what = "Quran simple text (search index)",
+        )
         val meta = parseQuranMetadata(lock.verifiedFile(sourcesDir, QURAN_METADATA))
         QuranValidation.checkMetadata(meta)
         QuranValidation.checkAyahSequence(
@@ -41,7 +47,8 @@ class Pipeline(private val sourcesDir: File) {
             texts = text.ayahs.map { it.text },
             what = "Quran text",
         )
-        PackWriter.writeQuranText(db, QURAN_EDITION, text, meta, lock.source(QURAN_TEXT))
+        val searchSource = simple.ayahs.associate { (it.surah to it.ayah) to it.text }
+        PackWriter.writeQuranText(db, QURAN_EDITION, QuranSources(text, meta, searchSource), lock.source(QURAN_TEXT))
     }
 
     fun buildEnglishSaheeh(outDir: File, keys: PackKeys, packVersion: String): File {
@@ -106,6 +113,7 @@ class Pipeline(private val sourcesDir: File) {
     companion object {
         const val QURAN_TEXT = "tanzil-quran-uthmani"
         const val QURAN_METADATA = "tanzil-quran-metadata"
+        const val QURAN_SIMPLE = "tanzil-quran-simple-clean"
         const val EN_SAHEEH = "quranenc-english-saheeh"
         const val GEO_CITIES = "geonames-cities15000"
         const val GEO_COUNTRIES = "geonames-country-info"

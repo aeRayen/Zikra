@@ -11,10 +11,14 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import com.zikra.app.home.HomeCard
 import com.zikra.app.navigation.TopLevelDestination
+import com.zikra.app.ui.QURAN_SEARCH_BUTTON_TAG
+import com.zikra.app.ui.QURAN_SEARCH_FIELD_TAG
 import com.zikra.app.ui.ayahTag
 import com.zikra.app.ui.homeCardTag
+import com.zikra.app.ui.searchResultTag
 import com.zikra.app.ui.surahRowTag
 import com.zikra.core.designsystem.theme.ZikraTheme
 import org.junit.Assert.assertTrue
@@ -23,6 +27,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import org.robolectric.shadows.ShadowLooper
+import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -81,6 +87,18 @@ class NavigationShellTest {
     }
 
     @Test
+    fun quranSearchFindsAnAyahAndOpensItInTheReader() {
+        launch()
+        rule.onNodeWithTag(tabTag(TopLevelDestination.QURAN)).performClick()
+        waitForTag(QURAN_SEARCH_BUTTON_TAG)
+        rule.onNodeWithTag(QURAN_SEARCH_BUTTON_TAG).performClick()
+        rule.onNodeWithTag(QURAN_SEARCH_FIELD_TAG).performTextInput("وأقيموا الصلاة")
+        waitForTag(searchResultTag(2, 43))
+        rule.onNodeWithTag(searchResultTag(2, 43)).performClick()
+        waitForTag(ayahTag(43))
+    }
+
+    @Test
     fun wideScreensUseNavigationRailAndStillNavigate() {
         launch(WindowWidthSizeClass.Expanded)
         rule.onNodeWithText(str(R.string.nav_more)).performClick()
@@ -109,10 +127,15 @@ class NavigationShellTest {
         assertTrue("Today ($today) should be left of More ($more) in LTR", today < more)
     }
 
+    /** Robolectric's main-looper clock only moves when told to: advance it so debounces (delay) can finish. */
     private fun waitForTag(tag: String) =
-        rule.waitUntil(WAIT_MS) { rule.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty() }
+        rule.waitUntil(WAIT_MS) {
+            ShadowLooper.idleMainLooper(LOOPER_STEP_MS, TimeUnit.MILLISECONDS)
+            rule.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty()
+        }
 
     private companion object {
         const val WAIT_MS = 10_000L
+        const val LOOPER_STEP_MS = 50L
     }
 }

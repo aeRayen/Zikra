@@ -12,6 +12,16 @@
       "retrieved": "2026-10-15"
     },
     {
+      "id": "tanzil-quran-simple-clean",
+      "path": "tanzil/quran-simple-clean.txt",
+      "sha256": "228df2a717671aeb9d2ff573002bd28d6b3f973f4bc7153554e3a81663d67610",
+      "version": "1.1",
+      "publisher": "Tanzil Project",
+      "url": "https://tanzil.net/download/",
+      "license": "CC-BY-3.0 (verbatim copies only; attribution; link to tanzil.net). Used ONLY to build the search index; never displayed",
+      "retrieved": "2026-10-16"
+    },
+    {
       "id": "tanzil-quran-metadata",
       "path": "tanzil/quran-data.xml",
       "sha256": "8867c1d88191472adec9db694b3cd9f135b1a2ef580574d32cf888dcb22c5c7a",

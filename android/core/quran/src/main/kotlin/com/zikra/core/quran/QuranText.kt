@@ -30,6 +30,9 @@ data class Ayah(
     val sajda: String?,
 )
 
+/** [ayahs]: the first matches in mushaf order; [total]: all matches. */
+data class QuranSearchResult(val ayahs: List<Ayah>, val total: Int)
+
 /** Thrown when the bundled text does not have the structure every copy of the Quran must have. */
 class QuranIntegrityException(message: String) : IllegalStateException(message)
 
@@ -80,6 +83,7 @@ class QuranText private constructor(internal val db: SQLiteDatabase) : Closeable
 
     companion object {
         const val ASSET = "quran.sqlite"
+        const val SEARCH_LIMIT = 200
         const val SURAH_COUNT = 114
         const val AYAH_COUNT = 6236
         const val PAGE_COUNT = 604
@@ -130,6 +134,8 @@ private fun Cursor.surah() = Surah(
     revelationPlace = string("revelation_place"),
     revelationOrder = int("revelation_order"),
 )
+
+internal fun Cursor.ayahs(): List<Ayah> = list { ayah() }
 
 private fun Cursor.ayah() = Ayah(
     surah = int("surah"),

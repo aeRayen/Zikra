@@ -73,6 +73,37 @@ class QuranTextTest {
     }
 
     @Test
+    fun searchFindsTheSameAyahsWithOrWithoutTashkeel() {
+        // WP 2.11 acceptance: «الرحمن» finds results with or without diacritics.
+        val plain = quran.search("الرحمن")
+        val voweled = quran.search("الرَّحْمَٰنِ")
+        val uthmani = quran.search("ٱلرَّحْمَٰنِ")
+        assertTrue("found ${plain.total}", plain.total > 50) // includes the basmala opening 112 surahs
+        assertEquals(plain.total, voweled.total)
+        assertEquals(plain.total, uthmani.total)
+        assertEquals(1 to 1, plain.ayahs.first().let { it.surah to it.ayah })
+        // Results are always the verbatim Uthmani text, never the search spelling.
+        assertEquals(quran.ayahs(1).first().text, plain.ayahs.first().text)
+    }
+
+    @Test
+    fun modernSpellingFindsTheUthmaniWord() {
+        // Uthmani «ٱلصَّلَوٰةَ» is found by the modern spelling users type.
+        val result = quran.search("الصلاة")
+        assertTrue(result.ayahs.any { it.surah == 2 && it.ayah == 43 })
+        assertTrue(quran.search("الصلوة").total > 0) // and by the Uthmani spelling without marks
+    }
+
+    @Test
+    fun shortOrWildcardQueriesAreSafe() {
+        assertEquals(0, quran.search("ا").total)
+        assertEquals(0, quran.search("   ").total)
+        assertEquals(0, quran.search("%%").total) // not a LIKE wildcard
+        assertEquals(0, quran.search("__").total)
+        assertTrue(quran.search("الله", limit = 5).let { it.ayahs.size == 5 && it.total > 5 })
+    }
+
+    @Test
     fun tanzilNoticeAndVersionTravelWithTheText() {
         assertTrue(quran.licenseNotice().contains("Tanzil", ignoreCase = true))
         assertTrue(quran.sourceVersion().isNotBlank())
