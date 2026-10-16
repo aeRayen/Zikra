@@ -47,7 +47,9 @@ import java.time.LocalTime
 import java.time.ZoneId
 
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [34])
+// A bare Application: ZikraApplication would start its own observers that update the same widget from
+// another thread at the same time (a race that made this test flaky on CI).
+@Config(sdk = [34], application = Application::class)
 class PrayerWidgetTest {
 
     @get:Rule
