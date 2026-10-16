@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
@@ -26,6 +27,7 @@ fun MoreScreen(
     onOpenLocation: () -> Unit,
     onOpenAccount: () -> Unit,
     modifier: Modifier = Modifier,
+    onOpenHadith: () -> Unit = {},
 ) {
     Column(modifier.fillMaxSize()) {
         Text(
@@ -34,6 +36,12 @@ fun MoreScreen(
             modifier = Modifier
                 .padding(ZikraSpacing.screenGutter)
                 .semantics { heading() },
+        )
+        ListItem(
+            headlineContent = { Text(text = stringResource(R.string.hadith_title)) },
+            supportingContent = { Text(text = stringResource(R.string.hadith_subtitle)) },
+            trailingContent = { Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null) },
+            modifier = Modifier.clickable(role = Role.Button, onClick = onOpenHadith).testTag(MORE_HADITH_TAG),
         )
         ListItem(
             headlineContent = { Text(text = stringResource(R.string.settings_language)) },
@@ -53,3 +61,4 @@ fun MoreScreen(
         )
     }
 }
+internal const val MORE_HADITH_TAG = "more_hadith"

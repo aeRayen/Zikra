@@ -327,4 +327,30 @@
         <item quantity="many">%1$s صفحة للمراجعة اليوم</item>
         <item quantity="other">%1$s صفحة للمراجعة اليوم</item>
     </plurals>
+    <!-- الحديث (الحزمة 3.4-ج) -->
+    <string name="hadith_title">الحديث الشريف</string>
+    <string name="hadith_subtitle">الكتب الستة مع أحكام العلماء</string>
+    <string name="hadith_download">تنزيل</string>
+    <string name="hadith_downloading">جارٍ التنزيل…</string>
+    <string name="hadith_retry">أعد المحاولة</string>
+    <string name="hadith_failed_offline">لا يوجد اتصال. حاول حين تتصل بالإنترنت.</string>
+    <string name="hadith_failed_integrity">لم يجتز الملف المنزَّل الفحص، فلم يُثبَّت.</string>
+    <string name="hadith_failed_storage">تعذّر حفظ الكتاب. تأكد من وجود مساحة فارغة في هاتفك.</string>
+    <string name="hadith_chapter">الكتاب %1$s</string>
+    <string name="hadith_number">الحديث %1$s</string>
+    <string name="hadith_grade_line">%1$s: %2$s</string>
+    <string name="hadith_search">ابحث في الأحاديث</string>
+    <string name="hadith_search_hint">ابحث في الكتب المنزّلة</string>
+    <string name="hadith_search_none">لا يوجد حديث فيه هذه الكلمات.</string>
+    <string name="hadith_search_needs_books">نزّل كتابًا أولًا لتبحث فيه.</string>
+    <string name="hadith_titles_note">أسماء الأبواب بالإنجليزية في المصدر.</string>
+    <string name="hadith_source">النصوص والأحكام من fawazahmed0/hadith-api (ملكية عامة)، ويُتحقق منها على الهاتف قبل استخدامها.</string>
+    <plurals name="hadith_count">
+        <item quantity="zero">%1$s حديث</item>
+        <item quantity="one">حديث واحد</item>
+        <item quantity="two">حديثان</item>
+        <item quantity="few">%1$s أحاديث</item>
+        <item quantity="many">%1$s حديثًا</item>
+        <item quantity="other">%1$s حديث</item>
+    </plurals>
 </resources>
