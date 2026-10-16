@@ -31,6 +31,7 @@ import androidx.core.net.toUri
 import com.zikra.app.R
 import com.zikra.core.designsystem.theme.ZikraSpacing
 import com.zikra.core.i18n.Bidi
+import com.zikra.core.quran.TranslationInfo
 
 /**
  * «About this text» (WP 2.10, Tanzil licence): source, version, the licence notice as published
@@ -38,7 +39,12 @@ import com.zikra.core.i18n.Bidi
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AboutQuranTextScreen(sourceVersion: String, licenseNotice: String, onBack: () -> Unit) {
+fun AboutQuranTextScreen(
+    sourceVersion: String,
+    licenseNotice: String,
+    onBack: () -> Unit,
+    translation: TranslationInfo? = null,
+) {
     val context = LocalContext.current
     Column(Modifier.fillMaxSize()) {
         TopAppBar(
@@ -75,6 +81,34 @@ fun AboutQuranTextScreen(sourceVersion: String, licenseNotice: String, onBack: (
                 )
             }
             Text(text = stringResource(R.string.about_text_font))
+            translation?.let { TranslationSection(it) }
+        }
+    }
+}
+
+/** Each translation shows its source and terms (WP 2.13 acceptance). */
+@Composable
+private fun TranslationSection(info: TranslationInfo) {
+    val context = LocalContext.current
+    Text(
+        text = stringResource(R.string.about_translation_header),
+        style = MaterialTheme.typography.titleMedium,
+        modifier = Modifier.semantics { heading() },
+    )
+    Text(
+        text = stringResource(
+            R.string.about_translation_body,
+            Bidi.isolate(info.title),
+            Bidi.isolate(info.version),
+            Bidi.isolate(info.publisher),
+            Bidi.isolate(info.license),
+        ),
+        modifier = Modifier.testTag(ABOUT_TRANSLATION_TAG),
+    )
+    Text(text = stringResource(R.string.about_translation_note), style = MaterialTheme.typography.bodySmall)
+    if (info.sourceUrl.startsWith("https://")) {
+        TextButton(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, info.sourceUrl.toUri())) }) {
+            Text(text = stringResource(R.string.about_translation_open))
         }
     }
 }
@@ -82,3 +116,4 @@ fun AboutQuranTextScreen(sourceVersion: String, licenseNotice: String, onBack: (
 private const val TANZIL_URL = "https://tanzil.net"
 internal const val ABOUT_SOURCE_TAG = "about_text_source"
 internal const val ABOUT_NOTICE_TAG = "about_text_notice"
+internal const val ABOUT_TRANSLATION_TAG = "about_translation"

@@ -14,6 +14,8 @@ data class ReaderPreferences(
     val textScale: Float = 1f,
     /** true = night colours in the reader; null = follow the phone's dark theme. */
     val night: Boolean? = null,
+    /** Show the translation under each ayah; null = on when the UI language has a bundled translation. */
+    val showTranslation: Boolean? = null,
 ) {
     companion object {
         const val MIN_SCALE = 0.8f

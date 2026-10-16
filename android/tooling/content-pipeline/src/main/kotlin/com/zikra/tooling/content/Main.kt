@@ -12,6 +12,7 @@ Zikra content pipeline (CONTENT_PACKS_AR.md)
   verify  --pack <dir> --public <key>
   places  --sources ../content/sources --out <places.sqlite>
   quran-bundle --sources ../content/sources --out <quran.sqlite>
+  translation-bundle --sources ../content/sources --out <translation-en.sqlite>
   places-extract --sources ../content/sources --alternate-names <GeoNames alternateNamesV2.txt>
 
 Paths are relative to the android/ directory when run with:
@@ -30,7 +31,7 @@ fun main(args: Array<String>) {
                 println("Key pair created. keyId=$id. Keep the private key OUT of git.")
             }
             "quran", "english" -> buildSignedPack(command, ::file, options["version"] ?: fail("missing --version"))
-            "places", "quran-bundle", "places-extract" -> buildBundledData(command, ::file)
+            "places", "quran-bundle", "translation-bundle", "places-extract" -> buildBundledData(command, ::file)
             "verify" -> {
                 val manifest = Pipeline.verify(file("pack"), Signing.loadPublic(file("public")))
                 println("OK: ${manifest.area} ${manifest.editionCode} v${manifest.version}")
@@ -68,6 +69,10 @@ private fun buildBundledData(command: String, file: (String) -> File) {
         }
         "quran-bundle" -> {
             pipeline.buildQuranBundle(file("out"))
+            println("Built and checked ${file("out").path}")
+        }
+        "translation-bundle" -> {
+            pipeline.buildTranslationBundle(file("out"))
             println("Built and checked ${file("out").path}")
         }
         else -> {

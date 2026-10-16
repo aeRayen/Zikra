@@ -28,9 +28,19 @@ val generateQuran = tasks.register<GenerateBundledDatabase>("generateQuranDataba
     outputDir.set(layout.buildDirectory.dir("generated/quran-assets"))
 }
 
+val generateTranslation = tasks.register<GenerateBundledDatabase>("generateTranslationDatabase") {
+    description = "Builds translation-en.sqlite (Saheeh International via QuranEnc) from the pinned source."
+    classpath = contentTool
+    sourcesDir.set(rootProject.layout.projectDirectory.dir("../content/sources"))
+    command.set("translation-bundle")
+    fileName.set("translation-en.sqlite")
+    outputDir.set(layout.buildDirectory.dir("generated/translation-assets"))
+}
+
 androidComponents {
     onVariants { variant ->
         variant.sources.assets?.addGeneratedSourceDirectory(generateQuran, GenerateBundledDatabase::outputDir)
+        variant.sources.assets?.addGeneratedSourceDirectory(generateTranslation, GenerateBundledDatabase::outputDir)
     }
     beforeVariants(selector().withBuildType("release")) { it.enableUnitTest = false }
 }

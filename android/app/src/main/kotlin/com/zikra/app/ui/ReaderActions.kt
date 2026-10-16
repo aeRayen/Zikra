@@ -13,4 +13,7 @@ interface ReaderActions {
 
     /** The ayah at the top of the screen, for «continue reading». */
     val onRead: (Int) -> Unit
+
+    /** Receives whether the translation is currently shown. */
+    val onToggleTranslation: (Boolean) -> Unit
 }

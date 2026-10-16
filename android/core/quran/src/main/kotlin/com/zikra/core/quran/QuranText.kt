@@ -4,7 +4,6 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import java.io.Closeable
-import java.io.File
 
 /** A surah as given by the Tanzil metadata. Names are shown as published; never machine-translated. */
 data class Surah(
@@ -97,18 +96,8 @@ class QuranText private constructor(internal val db: SQLiteDatabase) : Closeable
          * compressed assets). It lives in noBackupFilesDir: app data, restored from the APK, not backed up.
          */
         fun open(context: Context): QuranText {
-            val app = context.applicationContext
-            val stamp = app.packageManager.getPackageInfo(app.packageName, 0).lastUpdateTime
-            val dir = File(app.noBackupFilesDir, "quran").apply { mkdirs() }
-            val target = File(dir, "quran-$stamp.sqlite")
-            if (!target.isFile) {
-                val tmp = File(dir, "${target.name}.tmp")
-                app.assets.open(ASSET).use { input -> tmp.outputStream().use { input.copyTo(it) } }
-                check(tmp.renameTo(target)) { "Cannot install the Quran text" }
-                dir.listFiles()?.filter { it != target }?.forEach { it.delete() }
-            }
-            val flags = SQLiteDatabase.OPEN_READONLY or SQLiteDatabase.NO_LOCALIZED_COLLATORS
-            val text = QuranText(SQLiteDatabase.openDatabase(target.path, null, flags))
+            val (db, target) = BundledDatabase.open(context, ASSET, "quran")
+            val text = QuranText(db)
             try {
                 verifyStructure(text.db)
             } catch (e: QuranIntegrityException) {

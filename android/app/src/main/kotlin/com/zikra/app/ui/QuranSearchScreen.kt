@@ -35,11 +35,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zikra.app.R
 import com.zikra.app.quran.QuranSearchUiState
+import com.zikra.app.quran.SearchHit
 import com.zikra.core.designsystem.theme.ZikraSpacing
 import com.zikra.core.i18n.Bidi
 import com.zikra.core.i18n.NumeralSystem
-import com.zikra.core.quran.Ayah
-import com.zikra.core.quran.Surah
 
 /** Quran search (WP 2.11). Results show the verbatim Uthmani ayah; tap opens it in the reader. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -93,10 +92,7 @@ fun QuranSearchScreen(
                     )
                 }
                 LazyColumn(Modifier.fillMaxSize()) {
-                    items(
-                        results,
-                        key = { (_, a) -> a.surah * AYAH_KEY + a.ayah }
-                    ) { (surah, ayah) -> Result(surah, ayah, onOpen) }
+                    items(results, key = { it.ayah.surah * AYAH_KEY + it.ayah.ayah }) { hit -> Result(hit, onOpen) }
                 }
             }
         }
@@ -116,7 +112,8 @@ private fun Status(text: String, tag: String? = null) {
 }
 
 @Composable
-private fun Result(surah: Surah, ayah: Ayah, onOpen: (Int, Int) -> Unit) {
+private fun Result(hit: SearchHit, onOpen: (Int, Int) -> Unit) {
+    val (surah, ayah) = hit.surah to hit.ayah
     val language = LocalConfiguration.current.locales[0].language
     val numerals = NumeralSystem.forLanguage(language)
     val name = if (language == "ar") surah.nameArabic else surah.nameTransliterated
