@@ -41,6 +41,23 @@ data class SourceLock(val comment: String = "", val sources: List<PinnedSource>)
         return file
     }
 
+    /**
+     * For a pinned FOLDER (path ending in "/"): checks the SHA-256 of all its files concatenated in
+     * natural order (1.json, 2.json, ..., 132.json), and returns those files in that order.
+     */
+    fun verifiedDirectory(sourcesDir: File, id: String): List<File> {
+        val pinned = source(id)
+        ensure(pinned.path.endsWith("/")) { "Source '$id' is not a folder" }
+        val dir = File(sourcesDir, pinned.path)
+        val files = naturalOrder(dir)
+        ensure(files.isNotEmpty()) { "Missing source folder ${dir.path}" }
+        val actual = directorySha256(files)
+        if (actual != pinned.sha256) {
+            throw PipelineException("SHA-256 mismatch for '$id': pinned ${pinned.sha256}, actual $actual")
+        }
+        return files
+    }
+
     companion object {
         private val json = Json { ignoreUnknownKeys = false }
 
@@ -55,4 +72,15 @@ fun sha256Hex(bytes: ByteArray): String =
 /** Throws [PipelineException] with [message] unless [condition] holds. */
 internal inline fun ensure(condition: Boolean, message: () -> String) {
     if (!condition) throw PipelineException(message())
+}
+
+/** Files of [dir] sorted by the number in their name, then by name (1.json < 2.json < 10.json). */
+fun naturalOrder(dir: File): List<File> =
+    dir.listFiles { f -> f.isFile }.orEmpty()
+        .sortedWith(compareBy<File>({ it.nameWithoutExtension.toIntOrNull() ?: Int.MAX_VALUE }, { it.name }))
+
+fun directorySha256(files: List<File>): String {
+    val digest = MessageDigest.getInstance("SHA-256")
+    files.forEach { digest.update(it.readBytes()) }
+    return digest.digest().joinToString("") { "%02x".format(it) }
 }

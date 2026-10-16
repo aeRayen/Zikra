@@ -80,6 +80,26 @@
       "url": "https://download.geonames.org/export/dump/alternateNamesV2.zip",
       "license": "CC-BY-4.0 (attribution: GeoNames, https://www.geonames.org); adapted: filtered to bundled places and languages",
       "retrieved": "2026-10-15"
+    },
+    {
+      "id": "hisnmuslim-ar",
+      "path": "hisnmuslim/ar/",
+      "sha256": "3d5ce8a0611c489ff96e7666e35ce03ea06ef436b6ddd2897ca1996749325e43",
+      "version": "2026-10-15",
+      "publisher": "hisnmuslim.com — Hisn al-Muslim by Dr. Sa'id bin Ali bin Wahf al-Qahtani (Arabic text, 132 chapters, 267 adhkar)",
+      "url": "https://www.hisnmuslim.com/api/ar/",
+      "license": "Owner decision (ADR-027): the book is free and may be copied. Folder hash = SHA-256 of 1.json..132.json concatenated in natural order",
+      "retrieved": "2026-10-15"
+    },
+    {
+      "id": "shamela-hisn-31307",
+      "path": "shamela/hisn-31307.txt",
+      "sha256": "4d023b7c2906fc974699a7dd1bca0d03a2507cb1a069de50c3ea4d529c315073",
+      "version": "2026-10-16",
+      "publisher": "al-Maktaba al-Shamela, book 31307 (numbering matches the printed edition); canonical text derived by `hisn-shamela-text` from the 151 saved pages",
+      "url": "https://shamela.ws/book/31307",
+      "license": "Same book (ADR-027). Used ONLY for the author's references (footnotes) of each dhikr; the displayed dhikr text comes from hisnmuslim.com",
+      "retrieved": "2026-10-16"
     }
   ]
 }

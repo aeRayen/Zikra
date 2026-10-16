@@ -13,6 +13,8 @@ Zikra content pipeline (CONTENT_PACKS_AR.md)
   places  --sources ../content/sources --out <places.sqlite>
   quran-bundle --sources ../content/sources --out <quran.sqlite>
   translation-bundle --sources ../content/sources --out <translation-en.sqlite>
+  hisn-shamela-text --sources ../content/sources --html-dir <saved shamela.ws/book/31307 pages>
+  hisn-review --sources ../content/sources --out <review.md>
   places-extract --sources ../content/sources --alternate-names <GeoNames alternateNamesV2.txt>
 
 Paths are relative to the android/ directory when run with:
@@ -32,6 +34,12 @@ fun main(args: Array<String>) {
             }
             "quran", "english" -> buildSignedPack(command, ::file, options["version"] ?: fail("missing --version"))
             "places", "quran-bundle", "translation-bundle", "places-extract" -> buildBundledData(command, ::file)
+            "hisn-shamela-text" -> HisnPipeline(file("sources")).extractShamelaHisn(file("html-dir"))
+            "hisn-review" -> {
+                val refs = HisnPipeline(file("sources")).hisnReferences()
+                HisnReview.write(parseHisnMuslim(File(file("sources"), "hisnmuslim/ar/")), refs, file("out"))
+                println(refs.groupingBy { it.status }.eachCount())
+            }
             "verify" -> {
                 val manifest = Pipeline.verify(file("pack"), Signing.loadPublic(file("public")))
                 println("OK: ${manifest.area} ${manifest.editionCode} v${manifest.version}")
