@@ -16,6 +16,9 @@ enum class AlarmKind {
 
     /** A wake-up alarm the user set (Phase 5): shown as the next alarm clock by the system. */
     USER_ALARM,
+
+    /** Refreshes home-screen widgets when the next prayer changes (WP 2.17). */
+    WIDGET,
 }
 
 /** One scheduled alarm. [key] is stable per purpose (e.g. "adhan:2026-06-01:FAJR"); [requestCode] is unique. */

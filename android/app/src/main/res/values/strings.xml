@@ -230,6 +230,10 @@
     <string name="about_translation_note">A translation conveys the meanings. It is not the Quran and never replaces the Arabic text.</string>
     <string name="about_translation_open">Visit quranenc.com</string>
 
+    <!-- Home-screen widget (WP 2.17). -->
+    <string name="widget_description">Shows the next prayer and its time</string>
+    <string name="widget_no_location">Open Zikra to choose your location</string>
+
     <!-- App language picker. -->
     <string name="language_title">App language</string>
     <!-- Option that follows the phone's language setting. -->

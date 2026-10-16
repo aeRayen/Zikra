@@ -207,6 +207,10 @@
     <string name="about_translation_note">الترجمة تنقل المعاني، وليست قرآنًا، ولا تحل محل النص العربي أبدًا.</string>
     <string name="about_translation_open">زيارة quranenc.com</string>
 
+    <!-- ويدجت الشاشة الرئيسية (WP 2.17). -->
+    <string name="widget_description">يعرض الصلاة القادمة ووقتها</string>
+    <string name="widget_no_location">افتح «ذِكْرَى» لاختيار موقعك</string>
+
     <string name="language_title">لغة التطبيق</string>
     <string name="language_follow_device">لغة الجهاز</string>
 

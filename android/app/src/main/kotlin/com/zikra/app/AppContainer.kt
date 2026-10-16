@@ -18,6 +18,7 @@ import com.zikra.app.prayer.PrayerTimesSource
 import com.zikra.app.quran.QuranContent
 import com.zikra.app.quran.QuranHomeCards
 import com.zikra.app.quran.QuranUserData
+import com.zikra.app.widget.PrayerWidget
 import com.zikra.core.database.ZikraDatabases
 import com.zikra.core.database.user.UserDatabase
 import com.zikra.core.network.AuthRepository
@@ -37,9 +38,13 @@ import com.zikra.core.settings.PrayerPreferencesStore
 import com.zikra.core.settings.ReaderPreferencesStore
 import com.zikra.platform.alarm.AlarmKind
 import com.zikra.platform.alarm.AlarmRegistrations
+import com.zikra.platform.alarm.ReplanReason
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 import java.io.File
 
 /** Manual dependency wiring for the app process (a DI framework can replace it later, ADR-003). */
@@ -87,6 +92,7 @@ class AppContainer(context: Context) {
     /** Lives as long as the process: observes settings to keep prayer alerts scheduled. */
     val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     val prayerAlerts = PrayerAlerts({ places }, locationStore, prayerPreferences)
+    val prayerWidget = PrayerWidget(PrayerTimesSource({ places }, locationStore, prayerPreferences, Dispatchers.IO))
 
     /** Home cards of every implemented feature (WP 2.8). Add a provider here when a feature lands. */
     fun homeCardProviders(): List<HomeCardProvider> = listOf(
@@ -111,6 +117,8 @@ class ZikraApplication : Application() {
         // Registered even before unlock: an alert may fire right after a reboot (it needs no settings).
         AlarmRegistrations.register(AlarmKind.ADHAN, container.prayerAlerts)
         AlarmRegistrations.register(container.prayerAlerts)
+        AlarmRegistrations.register(AlarmKind.WIDGET, container.prayerWidget)
+        AlarmRegistrations.register(container.prayerWidget)
         // After a reboot the process can start BEFORE the first unlock (direct-boot alarm receivers,
         // ADR-033). Credential-protected storage (session, settings) is unreadable then: wait for unlock.
         if (UserManagerCompat.isUserUnlocked(this)) {
@@ -135,5 +143,11 @@ class ZikraApplication : Application() {
         container.auth.restore()
         PrayerAlertNotifier.ensureChannels(this)
         container.prayerAlerts.observe(this, container.appScope)
+        // The widget follows location and prayer settings too.
+        container.appScope.launch {
+            combine(container.locationStore.location, container.prayerPreferences.preferences) { l, p -> l to p }
+                .distinctUntilChanged()
+                .collect { container.prayerWidget.replan(this@ZikraApplication, ReplanReason.SETTINGS_CHANGED) }
+        }
     }
 }

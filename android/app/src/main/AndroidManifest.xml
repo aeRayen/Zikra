@@ -46,5 +46,17 @@
                 android:name="autoStoreLocales"
                 android:value="true" />
         </service>
+        <!-- Next-prayer home-screen widget (WP 2.17). Only the system sends APPWIDGET_UPDATE. -->
+        <receiver
+            android:name=".widget.PrayerWidgetProvider"
+            android:exported="true"
+            android:label="@string/prayer_next_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_next_prayer_info" />
+        </receiver>
     </application>
 </manifest>
