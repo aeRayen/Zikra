@@ -9,11 +9,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -82,9 +84,20 @@ fun AdhkarIndexScreen(
     onOpen: (chapter: Int) -> Unit,
     onQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    onReminders: () -> Unit = {},
 ) {
     Column(modifier.fillMaxSize()) {
-        TopAppBar(title = { Text(text = stringResource(R.string.adhkar_title)) })
+        TopAppBar(
+            title = { Text(text = stringResource(R.string.adhkar_title)) },
+            actions = {
+                IconButton(onClick = onReminders, modifier = Modifier.testTag(ADHKAR_REMINDERS_BUTTON_TAG)) {
+                    Icon(
+                        Icons.Filled.Notifications,
+                        contentDescription = stringResource(R.string.adhkar_reminders_title),
+                    )
+                }
+            },
+        )
         when (state) {
             AdhkarIndexUiState.Loading -> Unit
             AdhkarIndexUiState.Unavailable -> EmptyState(
@@ -179,5 +192,6 @@ private fun adhkarCount(chapter: AdhkarChapter, numerals: NumeralSystem) =
 
 internal const val ADHKAR_CHAPTERS_TAG = "adhkar_chapters"
 internal const val ADHKAR_SEARCH_TAG = "adhkar_search"
+internal const val ADHKAR_REMINDERS_BUTTON_TAG = "adhkar_reminders_button"
 internal fun chapterTag(chapter: Int) = "adhkar_chapter_$chapter"
 internal fun dailyChapterTag(chapter: Int) = "adhkar_daily_$chapter"

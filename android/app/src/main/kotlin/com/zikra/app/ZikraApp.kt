@@ -63,7 +63,16 @@ import kotlinx.coroutines.launch
 fun ZikraApp(
     widthSizeClass: WindowWidthSizeClass,
     navController: NavHostController = rememberNavController(),
+    openAdhkarChapter: Int? = null,
+    onAdhkarChapterOpened: () -> Unit = {},
 ) {
+    // A tapped adhkar reminder opens its chapter (WP 2.14c).
+    LaunchedEffect(openAdhkarChapter) {
+        if (openAdhkarChapter != null) {
+            navController.navigate(AdhkarChapterRoute(openAdhkarChapter))
+            onAdhkarChapterOpened()
+        }
+    }
     val backStackEntry by navController.currentBackStackEntryAsState()
     val current = backStackEntry?.destination
     val onTab: (TopLevelDestination) -> Unit = { tab -> navController.navigateToTab(tab) }

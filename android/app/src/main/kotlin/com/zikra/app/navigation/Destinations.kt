@@ -48,6 +48,9 @@ data object AdhkarRoute
 data class AdhkarChapterRoute(val chapter: Int)
 
 @Serializable
+data object AdhkarRemindersRoute
+
+@Serializable
 data object MoreRoute
 
 @Serializable
