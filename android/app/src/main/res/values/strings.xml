@@ -296,4 +296,18 @@
     <string name="adhkar_save_failed">This count could not be saved. Check that your phone has free storage.</string>
     <string name="adhkar_sources">Text: hisnmuslim.com. References: the author\'s own footnotes (al-Maktaba al-Shamela, book 31307). Verses: the Tanzil Uthmani text.</string>
     <string name="adhkar_home_label">Today\'s adhkar</string>
+    <!-- Adhkar reminders (WP 2.14c) -->
+    <string name="adhkar_reminders_title">Adhkar reminders</string>
+    <string name="adhkar_reminder_morning">Morning adhkar</string>
+    <string name="adhkar_reminder_evening">Evening adhkar</string>
+    <string name="adhkar_reminder_sleep">Adhkar before sleep</string>
+    <string name="adhkar_reminder_morning_when">Half an hour after Fajr</string>
+    <string name="adhkar_reminder_evening_when">Half an hour after Asr</string>
+    <string name="adhkar_reminder_sleep_when">Every day at %1$s. Tap to change the time.</string>
+    <string name="adhkar_reminder_needs_location">Morning and evening reminders follow the prayer times, so they need your location.</string>
+    <string name="adhkar_reminder_morning_text">It is time for the morning adhkar.</string>
+    <string name="adhkar_reminder_evening_text">It is time for the evening adhkar.</string>
+    <string name="adhkar_reminder_sleep_text">It is time for the adhkar before sleep.</string>
+    <string name="channel_adhkar">Adhkar reminders</string>
+    <string name="channel_adhkar_description">Reminders for the morning, evening and sleep adhkar you turned on.</string>
 </resources>

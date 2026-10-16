@@ -19,6 +19,9 @@ enum class AlarmKind {
 
     /** Refreshes home-screen widgets when the next prayer changes (WP 2.17). */
     WIDGET,
+
+    /** Morning, evening and sleep adhkar reminders (WP 2.14c). */
+    ADHKAR,
 }
 
 /** One scheduled alarm. [key] is stable per purpose (e.g. "adhan:2026-06-01:FAJR"); [requestCode] is unique. */

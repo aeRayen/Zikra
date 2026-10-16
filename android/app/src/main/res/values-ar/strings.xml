@@ -274,4 +274,18 @@
     <string name="adhkar_save_failed">تعذّر حفظ هذا العدّ. تأكد من وجود مساحة فارغة في هاتفك.</string>
     <string name="adhkar_sources">النص: موقع حصن المسلم hisnmuslim.com. المراجع: حواشي المؤلف نفسه (المكتبة الشاملة، الكتاب 31307). الآيات: النص العثماني من Tanzil.</string>
     <string name="adhkar_home_label">أذكار اليوم</string>
+    <!-- تذكيرات الأذكار (الحزمة 2.14-ج) -->
+    <string name="adhkar_reminders_title">تذكيرات الأذكار</string>
+    <string name="adhkar_reminder_morning">أذكار الصباح</string>
+    <string name="adhkar_reminder_evening">أذكار المساء</string>
+    <string name="adhkar_reminder_sleep">أذكار النوم</string>
+    <string name="adhkar_reminder_morning_when">بعد الفجر بنصف ساعة</string>
+    <string name="adhkar_reminder_evening_when">بعد العصر بنصف ساعة</string>
+    <string name="adhkar_reminder_sleep_when">كل يوم الساعة %1$s. اضغط لتغيير الوقت.</string>
+    <string name="adhkar_reminder_needs_location">تذكيرا الصباح والمساء يتبعان مواقيت الصلاة، فيحتاجان إلى موقعك.</string>
+    <string name="adhkar_reminder_morning_text">حان وقت أذكار الصباح.</string>
+    <string name="adhkar_reminder_evening_text">حان وقت أذكار المساء.</string>
+    <string name="adhkar_reminder_sleep_text">حان وقت أذكار النوم.</string>
+    <string name="channel_adhkar">تذكيرات الأذكار</string>
+    <string name="channel_adhkar_description">تذكيرات أذكار الصباح والمساء والنوم التي فعّلتها.</string>
 </resources>

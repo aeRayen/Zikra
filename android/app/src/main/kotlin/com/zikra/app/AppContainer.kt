@@ -10,6 +10,8 @@ import androidx.core.os.UserManagerCompat
 import com.zikra.app.adhan.PrayerAlertNotifier
 import com.zikra.app.adhan.PrayerAlerts
 import com.zikra.app.adhkar.AdhkarHomeCards
+import com.zikra.app.adhkar.AdhkarReminderAlarms
+import com.zikra.app.adhkar.AdhkarReminderNotifier
 import com.zikra.app.auth.KeystoreTokenStore
 import com.zikra.app.home.HomeCardProvider
 import com.zikra.app.home.PrayerHomeCards
@@ -36,6 +38,7 @@ import com.zikra.core.quran.QuranIntegrityException
 import com.zikra.core.quran.QuranText
 import com.zikra.core.quran.QuranTranslation
 import com.zikra.core.settings.AdhkarProgressStore
+import com.zikra.core.settings.AdhkarRemindersStore
 import com.zikra.core.settings.LocationStore
 import com.zikra.core.settings.PrayerPreferencesStore
 import com.zikra.core.settings.ReaderPreferencesStore
@@ -93,6 +96,12 @@ class AppContainer(context: Context) {
     // Today's adhkar counters: saved on every tap (WP 2.14b). Not location data, so it may be backed up.
     val adhkarProgress = AdhkarProgressStore({ File(context.filesDir, ADHKAR_FILE) })
 
+    // Adhkar reminders (WP 2.14c): preferences only, may be backed up; alarms follow them.
+    val adhkarReminders = AdhkarRemindersStore({ File(context.filesDir, ADHKAR_REMINDERS_FILE) })
+    val adhkarReminderAlarms by lazy {
+        AdhkarReminderAlarms({ places }, locationStore, prayerPreferences, adhkarReminders)
+    }
+
     val readerPreferences = ReaderPreferencesStore({ File(context.filesDir, READER_FILE) })
 
     // Prayer choices (method, madhab, adjustments): not location data, so it may be backed up.
@@ -115,6 +124,7 @@ class AppContainer(context: Context) {
         const val PRAYER_FILE = "datastore/${PrayerPreferencesStore.FILE_NAME}"
         const val READER_FILE = "datastore/${ReaderPreferencesStore.FILE_NAME}"
         const val ADHKAR_FILE = "datastore/${AdhkarProgressStore.FILE_NAME}"
+        const val ADHKAR_REMINDERS_FILE = "datastore/${AdhkarRemindersStore.FILE_NAME}"
     }
 }
 
@@ -130,6 +140,8 @@ class ZikraApplication : Application() {
         AlarmRegistrations.register(container.prayerAlerts)
         AlarmRegistrations.register(AlarmKind.WIDGET, container.prayerWidget)
         AlarmRegistrations.register(container.prayerWidget)
+        AlarmRegistrations.register(AlarmKind.ADHKAR, container.adhkarReminderAlarms)
+        AlarmRegistrations.register(container.adhkarReminderAlarms)
         // After a reboot the process can start BEFORE the first unlock (direct-boot alarm receivers,
         // ADR-033). Credential-protected storage (session, settings) is unreadable then: wait for unlock.
         if (UserManagerCompat.isUserUnlocked(this)) {
@@ -154,6 +166,8 @@ class ZikraApplication : Application() {
         container.auth.restore()
         PrayerAlertNotifier.ensureChannels(this)
         container.prayerAlerts.observe(this, container.appScope)
+        AdhkarReminderNotifier.ensureChannel(this)
+        container.adhkarReminderAlarms.observe(this, container.appScope)
         // The widget follows location and prayer settings too.
         container.appScope.launch {
             combine(container.locationStore.location, container.prayerPreferences.preferences) { l, p -> l to p }
