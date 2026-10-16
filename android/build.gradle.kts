@@ -10,3 +10,15 @@ plugins {
     alias(libs.plugins.detekt) apply false
     alias(libs.plugins.roborazzi) apply false
 }
+
+// A failing test prints its full stack trace (CI logs otherwise show only the exception's name).
+subprojects {
+    tasks.withType<Test>().configureEach {
+        testLogging {
+            events(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED)
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+            showCauses = true
+            showStackTraces = true
+        }
+    }
+}
