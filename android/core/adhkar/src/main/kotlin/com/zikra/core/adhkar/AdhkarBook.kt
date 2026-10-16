@@ -25,6 +25,8 @@ data class Dhikr(
     val parts: List<DhikrPart>,
     /** The author's footnotes, verbatim (each starts with its marker, e.g. "(١)"). */
     val references: List<String>,
+    /** Corrections from the independent check of the references (ADR-042), e.g. a wrong hadith number. */
+    val notes: List<String> = emptyList(),
 )
 
 /** Where the adhkar come from; shown on the adhkar screens (ADR-040). */
@@ -62,12 +64,28 @@ class AdhkarBook private constructor(private val db: SQLiteDatabase) : Closeable
             """,
             arrayOf(id.toString()),
         ).use { c -> c.groupByDhikr { it.getString(1) } }
+        val notes = db.rawQuery(
+            """
+            SELECT n.dhikr, n.text FROM dhikr_note n JOIN dhikr d ON d.id = n.dhikr
+            WHERE d.chapter = ? ORDER BY n.dhikr, n.ord
+            """,
+            arrayOf(id.toString()),
+        ).use { c -> c.groupByDhikr { it.getString(1) } }
         return db.rawQuery("SELECT id, repeat FROM dhikr WHERE chapter = ? ORDER BY id", arrayOf(id.toString()))
             .use { c ->
                 buildList {
                     while (c.moveToNext()) {
                         val dhikr = c.getInt(0)
-                        add(Dhikr(dhikr, id, c.getInt(1), parts[dhikr].orEmpty(), references[dhikr].orEmpty()))
+                        add(
+                            Dhikr(
+                                dhikr,
+                                id,
+                                c.getInt(1),
+                                parts[dhikr].orEmpty(),
+                                references[dhikr].orEmpty(),
+                                notes[dhikr].orEmpty(),
+                            ),
+                        )
                     }
                 }
             }

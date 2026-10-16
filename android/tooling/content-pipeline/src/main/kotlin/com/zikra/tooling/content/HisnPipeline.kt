@@ -7,6 +7,8 @@ data class AdhkarBook(
     val adhkar: List<HisnDhikr>,
     val parts: Map<Int, List<DhikrPart>>,
     val references: List<DhikrReference>,
+    /** Corrections found by the independent check (ADR-042), shown next to the author's references. */
+    val notes: Map<Int, List<String>> = emptyMap(),
 )
 
 data class AdhkarSources(val text: PinnedSource, val references: PinnedSource, val quran: PinnedSource)
@@ -53,7 +55,25 @@ class HisnPipeline(private val sourcesDir: File) {
             references = lock.source(Pipeline.SHAMELA_HISN),
             quran = lock.source(Pipeline.QURAN_TEXT),
         )
-        PackWriter.writeAdhkar(out, adhkarBook(), sources)
+        // Fail-closed: every reference the independent check could not confirm has been reviewed (ADR-042).
+        val verified = verifyReferences()
+        verified.ensureComplete()
+        PackWriter.writeAdhkar(out, adhkarBook().copy(notes = verified.review.corrections()), sources)
+    }
+
+    /** Takes the cited hadiths out of the six books downloaded from hadith-api into [booksDir] (ADR-042). */
+    fun extractCitedHadiths(booksDir: File) {
+        val cited = HisnVerification.extract(hisnReferences(), booksDir)
+        HisnVerification.writeCited(cited, File(sourcesDir, lock.source(Pipeline.HADITH_CITED).path))
+    }
+
+    /** Independent check of every reference against the six books and the Tanzil text (ADR-042). */
+    fun verifyReferences(): ReviewedVerification {
+        val cited = HisnVerification.loadCited(lock.verifiedFile(sourcesDir, Pipeline.HADITH_CITED))
+        val names = parseQuranMetadata(lock.verifiedFile(sourcesDir, Pipeline.QURAN_METADATA))
+            .surahs.associate { it.number to it.nameArabic }
+        val review = ManualReview.load(sourcesDir.parentFile)
+        return ReviewedVerification(HisnVerification.verify(adhkarBook(), cited, names), cited, review)
     }
 
     private fun adhkar(): List<HisnDhikr> {

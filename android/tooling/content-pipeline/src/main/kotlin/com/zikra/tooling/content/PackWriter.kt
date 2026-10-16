@@ -148,6 +148,8 @@ object PackWriter {
                   PRIMARY KEY (dhikr, ord));
                 CREATE TABLE dhikr_reference (
                   dhikr INTEGER NOT NULL, ord INTEGER NOT NULL, text TEXT NOT NULL, PRIMARY KEY (dhikr, ord));
+                CREATE TABLE dhikr_note (
+                  dhikr INTEGER NOT NULL, ord INTEGER NOT NULL, text TEXT NOT NULL, PRIMARY KEY (dhikr, ord));
                 """,
             )
             writeInfo(
@@ -170,6 +172,8 @@ object PackWriter {
                     is DhikrPart.Quran -> listOf(id, ord, part.text, part.surah, part.ayah)
                 }
             }
+            val notes = book.notes.flatMap { (id, list) -> list.mapIndexed { i, n -> Triple(id, i, n) } }
+            db.batch("INSERT INTO dhikr_note VALUES (?,?,?)", notes) { (id, ord, text) -> listOf(id, ord, text) }
             val references = book.references.flatMap { r -> r.footnotes.mapIndexed { i, f -> Triple(r.id, i, f) } }
             db.batch("INSERT INTO dhikr_reference VALUES (?,?,?)", references) { (id, ord, text) ->
                 listOf(id, ord, text)

@@ -202,6 +202,14 @@ private fun References(dhikr: Dhikr) {
                 dhikr.references.forEach {
                     Text(text = withoutMarker(it), style = MaterialTheme.typography.bodyMedium)
                 }
+                dhikr.notes.forEach {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.padding(top = 4.dp),
+                    )
+                }
             }
         }
     }
