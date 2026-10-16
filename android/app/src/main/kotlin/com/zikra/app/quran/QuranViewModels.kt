@@ -9,10 +9,13 @@ import com.zikra.core.quran.Surah
 import com.zikra.core.settings.ReaderPreferences
 import com.zikra.core.settings.ReaderPreferencesStore
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -68,8 +71,9 @@ sealed interface ReaderUiState {
 class QuranReaderViewModel(
     private val quran: () -> QuranText,
     private val preferences: ReaderPreferencesStore,
+    private val userData: QuranUserData,
     private val io: CoroutineDispatcher,
-    surahNumber: Int,
+    private val surahNumber: Int,
     startAyah: Int,
 ) : ViewModel() {
     private val state = MutableStateFlow<ReaderUiState>(ReaderUiState.Loading)
@@ -77,6 +81,26 @@ class QuranReaderViewModel(
 
     val display: StateFlow<ReaderPreferences> =
         preferences.data.stateIn(viewModelScope, SharingStarted.Eagerly, ReaderPreferences())
+
+    /** Bookmarked ayah numbers of this surah. */
+    val bookmarks: StateFlow<Set<Int>> = userData.bookmarked
+        .map { refs -> refs.filter { it.surah == surahNumber }.mapTo(HashSet()) { it.ayah } }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptySet())
+
+    private var saveJob: Job? = null
+
+    fun toggleBookmark(ayah: Int) {
+        viewModelScope.launch { withContext(io) { userData.toggle(AyahRef(surahNumber, ayah)) } }
+    }
+
+    /** Remembers the ayah at the top of the screen, at most once per [SAVE_DELAY_MS] of scrolling. */
+    fun onRead(ayah: Int) {
+        saveJob?.cancel()
+        saveJob = viewModelScope.launch {
+            delay(SAVE_DELAY_MS)
+            withContext(io) { userData.saveLastRead(AyahRef(surahNumber, ayah)) }
+        }
+    }
 
     init {
         viewModelScope.launch {
@@ -122,5 +146,6 @@ class QuranReaderViewModel(
     private companion object {
         /** Rounds scales to one decimal so repeated taps never drift (1.0 -> 1.1 -> ... exactly). */
         const val STEPS_PER_UNIT = 10
+        const val SAVE_DELAY_MS = 800L
     }
 }

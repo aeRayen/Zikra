@@ -171,6 +171,8 @@
     <string name="reader_smaller">تصغير الخط</string>
     <string name="reader_bigger">تكبير الخط</string>
     <string name="reader_night">الوضع الليلي</string>
+    <string name="reader_bookmark_add">حفظ الآية %1$s</string>
+    <string name="reader_bookmark_remove">إزالة حفظ الآية %1$s</string>
     <string name="about_text_title">عن هذا النص</string>
     <string name="about_text_source">النص: مشروع تنزيل (tanzil.net)، بالرسم العثماني، الإصدار %1$s.</string>
     <string name="about_text_verbatim">يُعرض كما نُشر تمامًا، حرفًا بحرف. يتحقق منه التطبيق آليًا قبل كل إصدار، وفي كل مرة يفتحه.</string>
@@ -191,6 +193,11 @@
     <string name="quran_search_more">تُعرض أول %1$s من %2$s. اكتب حروفًا أكثر لتضييق البحث.</string>
     <string name="quran_search_none">لا توجد آية تحتوي هذه الحروف. جرّب حروفًا أقل أو صيغة أخرى للكلمة.</string>
     <string name="quran_search_result_ref">%1$s · %2$s</string>
+    <!-- العلامات المرجعية وتابع القراءة (WP 2.12). -->
+    <string name="quran_continue">تابع القراءة</string>
+    <string name="quran_continue_at">%1$s، الآية %2$s</string>
+    <string name="quran_bookmarks">الآيات المحفوظة</string>
+    <string name="quran_bookmarks_empty">لا توجد آيات محفوظة بعد. اضغط علامة الحفظ بجانب أي آية لحفظها.</string>
 
     <string name="language_title">لغة التطبيق</string>
     <string name="language_follow_device">لغة الجهاز</string>

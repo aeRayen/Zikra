@@ -21,6 +21,11 @@ sealed interface HomeCard {
         override val key = "prayer.next"
     }
 
+    /** The last ayah read, to continue from (WP 2.12). */
+    data class ContinueReading(val saved: com.zikra.app.quran.SavedAyah) : HomeCard {
+        override val key = "quran.continue"
+    }
+
     /** Prayer times are implemented but need a location first. */
     data object ChoosePrayerLocation : HomeCard {
         override val key = "prayer.location"

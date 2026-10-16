@@ -15,6 +15,10 @@ import com.zikra.app.home.PrayerHomeCards
 import com.zikra.app.location.AndroidDeviceLocator
 import com.zikra.app.location.DeviceLocator
 import com.zikra.app.prayer.PrayerTimesSource
+import com.zikra.app.quran.QuranHomeCards
+import com.zikra.app.quran.QuranUserData
+import com.zikra.core.database.ZikraDatabases
+import com.zikra.core.database.user.UserDatabase
 import com.zikra.core.network.AuthRepository
 import com.zikra.core.network.GatedTransport
 import com.zikra.core.network.NetworkGate
@@ -53,6 +57,12 @@ class AppContainer(context: Context) {
     val locationStore = LocationStore({ File(context.filesDir, LOCATION_FILE) })
     val deviceLocator: DeviceLocator = AndroidDeviceLocator(context)
 
+    // user.db (bookmarks, reading position, goals): on the device; synced only with consent (ADR-024).
+    val userDatabase: UserDatabase by lazy { ZikraDatabases.user(context) }
+    val quranUserData: QuranUserData by lazy {
+        QuranUserData(userDatabase.bookmarkDao(), userDatabase.readingPositionDao())
+    }
+
     // Bundled Quran text, opened on first use (copies the asset once, checks the structure): IO dispatcher only.
     val quran: QuranText by lazy { QuranText.open(context) }
     val readerPreferences = ReaderPreferencesStore({ File(context.filesDir, READER_FILE) })
@@ -67,6 +77,7 @@ class AppContainer(context: Context) {
     /** Home cards of every implemented feature (WP 2.8). Add a provider here when a feature lands. */
     fun homeCardProviders(): List<HomeCardProvider> = listOf(
         PrayerHomeCards(PrayerTimesSource({ places }, locationStore, prayerPreferences, Dispatchers.IO)),
+        QuranHomeCards(quranUserData, { quran }, Dispatchers.IO),
     )
 
     private companion object {

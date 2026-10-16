@@ -9,6 +9,7 @@ import com.zikra.app.prayer.PrayerMonthDestination
 import com.zikra.app.prayer.PrayerSettingsDestination
 import com.zikra.app.qibla.QiblaDestination
 import com.zikra.app.quran.AboutQuranTextDestination
+import com.zikra.app.quran.QuranBookmarksDestination
 import com.zikra.app.quran.QuranIndexDestination
 import com.zikra.app.quran.QuranReaderDestination
 import com.zikra.app.quran.QuranSearchDestination
@@ -40,6 +41,13 @@ fun NavGraphBuilder.quranGraph(navController: NavHostController) {
             onOpen = { surah, ayah -> navController.navigate(QuranReaderRoute(surah, ayah)) },
             onAbout = { navController.navigate(AboutQuranTextRoute) },
             onSearch = { navController.navigate(QuranSearchRoute) },
+            onBookmarks = { navController.navigate(QuranBookmarksRoute) },
+        )
+    }
+    composable<QuranBookmarksRoute> {
+        QuranBookmarksDestination(
+            onOpen = { surah, ayah -> navController.navigate(QuranReaderRoute(surah, ayah)) },
+            onBack = { navController.popBackStack() },
         )
     }
     composable<QuranSearchRoute> {

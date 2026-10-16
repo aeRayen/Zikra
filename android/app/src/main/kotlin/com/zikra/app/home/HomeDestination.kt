@@ -13,7 +13,7 @@ import com.zikra.app.ui.HomeScreen
 
 /** Navigation entry of «Today». */
 @Composable
-fun HomeDestination(onOpenPrayer: () -> Unit, onChooseLocation: () -> Unit) {
+fun HomeDestination(onOpenPrayer: () -> Unit, onChooseLocation: () -> Unit, onContinueReading: (Int, Int) -> Unit) {
     val container = appContainer()
     val viewModel: HomeViewModel = viewModel(
         factory = viewModelFactory { initializer { HomeViewModel(container.homeCardProviders()) } },
@@ -21,5 +21,10 @@ fun HomeDestination(onOpenPrayer: () -> Unit, onChooseLocation: () -> Unit) {
     val state by viewModel.uiState.collectAsState()
     val languageTag = LocalConfiguration.current.locales[0].toLanguageTag()
     LaunchedEffect(languageTag) { viewModel.setLanguage(languageTag) }
-    HomeScreen(state = state, onOpenPrayer = onOpenPrayer, onChooseLocation = onChooseLocation)
+    HomeScreen(
+        state = state,
+        onOpenPrayer = onOpenPrayer,
+        onChooseLocation = onChooseLocation,
+        onContinueReading = onContinueReading,
+    )
 }

@@ -3,6 +3,7 @@ package com.zikra.app
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -10,7 +11,12 @@ import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.zikra.app.home.HomeCard
+import com.zikra.app.navigation.TopLevelDestination
 import com.zikra.app.ui.CURRENT_LOCATION_TAG
+import com.zikra.app.ui.QURAN_BOOKMARKS_BUTTON_TAG
+import com.zikra.app.ui.bookmarkTag
+import com.zikra.app.ui.savedTag
+import com.zikra.app.ui.surahRowTag
 import com.zikra.app.ui.homeCardTag
 import com.zikra.app.ui.RESULT_TAG
 import com.zikra.app.ui.SEARCH_FIELD_TAG
@@ -54,6 +60,20 @@ class OfflineLaunchTest {
         waitFor(RESULT_TAG)
         rule.onAllNodesWithTag(RESULT_TAG)[0].performClick()
         waitFor(CURRENT_LOCATION_TAG)
+    }
+
+    /** WP 2.12 acceptance: bookmarks work offline (airplane mode), stored on the device. */
+    @Test
+    fun ayahCanBeBookmarkedOffline() {
+        rule.onNodeWithTag(tabTag(TopLevelDestination.QURAN)).performClick()
+        waitFor(surahRowTag(1))
+        rule.onNodeWithTag(surahRowTag(1)).performClick()
+        waitFor(bookmarkTag(1))
+        rule.onNodeWithTag(bookmarkTag(1)).performClick()
+        rule.onNodeWithContentDescription(str(R.string.nav_back)).performClick()
+        waitFor(QURAN_BOOKMARKS_BUTTON_TAG)
+        rule.onNodeWithTag(QURAN_BOOKMARKS_BUTTON_TAG).performClick()
+        waitFor(savedTag(1, 1))
     }
 
     private fun waitFor(tag: String) {
