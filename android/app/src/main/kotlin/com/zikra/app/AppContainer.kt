@@ -13,6 +13,7 @@ import com.zikra.app.adhkar.AdhkarHomeCards
 import com.zikra.app.adhkar.AdhkarReminderAlarms
 import com.zikra.app.adhkar.AdhkarReminderNotifier
 import com.zikra.app.auth.KeystoreTokenStore
+import com.zikra.app.hadith.HadithLibrary
 import com.zikra.app.home.HomeCardProvider
 import com.zikra.app.home.PrayerHomeCards
 import com.zikra.app.location.AndroidDeviceLocator
@@ -34,6 +35,7 @@ import com.zikra.core.network.OkHttpTransport
 import com.zikra.core.network.SessionHolder
 import com.zikra.core.network.SupabaseClient
 import com.zikra.core.network.SupabaseConfig
+import com.zikra.core.packs.PackInstaller
 import com.zikra.core.places.PlaceDirectory
 import com.zikra.core.places.PlaceLookup
 import com.zikra.core.quran.QuranIntegrityException
@@ -104,6 +106,13 @@ class AppContainer(context: Context) {
     val adhkarReminderAlarms by lazy {
         AdhkarReminderAlarms({ places }, locationStore, prayerPreferences, adhkarReminders)
     }
+
+    // Signed content packs (WP 3.4b): public content only, never user data; re-downloadable, so not backed up.
+    private val contentTransport = GatedTransport(NetworkGate(sessions), OkHttpTransport())
+    val packInstaller: PackInstaller by lazy {
+        PackInstaller(File(context.noBackupFilesDir, "packs"), contentTransport, appVersion = BuildConfig.VERSION_NAME)
+    }
+    val hadith = HadithLibrary({ packInstaller }, Dispatchers.IO)
 
     val readerPreferences = ReaderPreferencesStore({ File(context.filesDir, READER_FILE) })
 

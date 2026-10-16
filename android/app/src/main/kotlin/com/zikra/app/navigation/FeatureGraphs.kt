@@ -7,6 +7,10 @@ import androidx.navigation.toRoute
 import com.zikra.app.adhkar.AdhkarChapterDestination
 import com.zikra.app.adhkar.AdhkarIndexDestination
 import com.zikra.app.adhkar.AdhkarRemindersDestination
+import com.zikra.app.hadith.HadithBooksDestination
+import com.zikra.app.hadith.HadithChaptersDestination
+import com.zikra.app.hadith.HadithSearchDestination
+import com.zikra.app.hadith.HadithSectionDestination
 import com.zikra.app.memorization.MemorizationDestination
 import com.zikra.app.prayer.PrayerDestination
 import com.zikra.app.prayer.PrayerMonthDestination
@@ -17,6 +21,7 @@ import com.zikra.app.quran.QuranBookmarksDestination
 import com.zikra.app.quran.QuranIndexDestination
 import com.zikra.app.quran.QuranReaderDestination
 import com.zikra.app.quran.QuranSearchDestination
+import com.zikra.core.hadith.HadithBook
 
 /** Prayer tab and its screens (WP 2.3-2.6). */
 fun NavGraphBuilder.prayerGraph(navController: NavHostController) {
@@ -99,4 +104,29 @@ fun NavGraphBuilder.adhkarGraph(navController: NavHostController) {
             onBack = { navController.popBackStack() },
         )
     }
+}
+
+/** Hadith library, reached from «More» (WP 3.4c). */
+fun NavGraphBuilder.hadithGraph(navController: NavHostController) {
+    fun book(key: String) = HadithBook.entries.first { it.key == key }
+    composable<HadithRoute> {
+        HadithBooksDestination(
+            onOpen = { navController.navigate(HadithBookRoute(it.key)) },
+            onSearch = { navController.navigate(HadithSearchRoute) },
+            onBack = { navController.popBackStack() },
+        )
+    }
+    composable<HadithBookRoute> { entry ->
+        val route = entry.toRoute<HadithBookRoute>()
+        HadithChaptersDestination(
+            book = book(route.book),
+            onOpen = { navController.navigate(HadithSectionRoute(route.book, it)) },
+            onBack = { navController.popBackStack() },
+        )
+    }
+    composable<HadithSectionRoute> { entry ->
+        val route = entry.toRoute<HadithSectionRoute>()
+        HadithSectionDestination(book(route.book), route.section, onBack = { navController.popBackStack() })
+    }
+    composable<HadithSearchRoute> { HadithSearchDestination(onBack = { navController.popBackStack() }) }
 }

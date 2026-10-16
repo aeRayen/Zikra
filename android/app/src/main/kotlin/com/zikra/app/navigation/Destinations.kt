@@ -54,6 +54,18 @@ data object AdhkarRemindersRoute
 data object MemorizationRoute
 
 @Serializable
+data object HadithRoute
+
+@Serializable
+data class HadithBookRoute(val book: String)
+
+@Serializable
+data class HadithSectionRoute(val book: String, val section: Int)
+
+@Serializable
+data object HadithSearchRoute
+
+@Serializable
 data object MoreRoute
 
 @Serializable
