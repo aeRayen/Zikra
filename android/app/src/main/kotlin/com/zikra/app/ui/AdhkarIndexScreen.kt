@@ -146,7 +146,8 @@ private fun ChapterList(state: AdhkarIndexUiState.Ready, onOpen: (Int) -> Unit, 
                 leadingContent = {
                     Text(text = numerals.apply(chapter.id.toString()), style = MaterialTheme.typography.titleMedium)
                 },
-                headlineContent = { Text(text = Bidi.isolate(chapter.title)) },
+                overlineContent = chapter.translatedTitle?.let { { Text(text = Bidi.isolate(chapter.title)) } },
+                headlineContent = { Text(text = Bidi.isolate(displayTitle(chapter))) },
                 supportingContent = { Text(text = adhkarCount(chapter, numerals)) },
                 modifier = Modifier
                     .clickable(role = Role.Button) { onOpen(chapter.id) }
@@ -180,7 +181,10 @@ private fun DailyChapterCard(chapter: AdhkarChapter, numerals: NumeralSystem, on
             .testTag(dailyChapterTag(chapter.id)),
     ) {
         Column(Modifier.padding(ZikraSpacing.screenGutter), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(text = Bidi.isolate(chapter.title), style = MaterialTheme.typography.titleMedium)
+            Text(text = Bidi.isolate(displayTitle(chapter)), style = MaterialTheme.typography.titleMedium)
+            if (chapter.translatedTitle != null) {
+                Text(text = Bidi.isolate(chapter.title), style = MaterialTheme.typography.bodyMedium)
+            }
             Text(text = adhkarCount(chapter, numerals), style = MaterialTheme.typography.bodyMedium)
         }
     }

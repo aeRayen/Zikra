@@ -6,7 +6,13 @@ import android.database.sqlite.SQLiteDatabase
 import com.zikra.core.quran.BundledDatabase
 import java.io.Closeable
 
-data class AdhkarChapter(val id: Int, val title: String, val size: Int)
+data class AdhkarChapter(
+    val id: Int,
+    val title: String,
+    val size: Int,
+    /** The chapter's title in the requested language, when the source has one (ADR-044). */
+    val translatedTitle: String? = null,
+)
 
 /** A piece of a dhikr as displayed. */
 sealed interface DhikrPart {
@@ -16,6 +22,9 @@ sealed interface DhikrPart {
     /** A quoted ayah (or the quoted part of it), in the verified Tanzil Uthmani text. */
     data class Quran(val surah: Int, val ayah: Int, val text: String) : DhikrPart
 }
+
+/** A dhikr in another language: how it is pronounced (when the source gives it) and what it means. */
+data class DhikrMeaning(val transliteration: String?, val meaning: String)
 
 data class Dhikr(
     val id: Int,
@@ -27,6 +36,8 @@ data class Dhikr(
     val references: List<String>,
     /** Corrections from the independent check of the references (ADR-042), e.g. a wrong hadith number. */
     val notes: List<String> = emptyList(),
+    /** In the requested language, only where it was checked to belong to this dhikr (ADR-044). */
+    val translation: DhikrMeaning? = null,
 )
 
 /** Where the adhkar come from; shown on the adhkar screens (ADR-040). */
@@ -34,61 +45,60 @@ data class AdhkarSourceInfo(val textUrl: String, val referencesUrl: String, val 
 
 /**
  * Hisn al-Muslim bundled in the APK (WP 2.14b): 132 chapters, 267 adhkar, every one with its verified
- * references. Opening checks the counts. Disk I/O: off the main thread.
+ * references, and their English meaning (WP 2.14d). Opening checks the counts. Disk I/O: off the main thread.
  */
 class AdhkarBook private constructor(private val db: SQLiteDatabase) : Closeable {
 
     val info: AdhkarSourceInfo = readInfo()
 
-    fun chapters(): List<AdhkarChapter> =
+    /** [language]: BCP 47 base language of the UI; titles in it are added where the source has them. */
+    fun chapters(language: String? = null): List<AdhkarChapter> =
         db.rawQuery(
             """
-            SELECT c.id, c.title, COUNT(d.id) FROM adhkar_chapter c JOIN dhikr d ON d.chapter = c.id
+            SELECT c.id, c.title, COUNT(d.id), t.title FROM adhkar_chapter c JOIN dhikr d ON d.chapter = c.id
+            LEFT JOIN adhkar_chapter_translation t ON t.chapter = c.id AND t.language = ?
             GROUP BY c.id ORDER BY c.id
             """,
-            null,
-        ).use { c -> buildList { while (c.moveToNext()) add(AdhkarChapter(c.getInt(0), c.getString(1), c.getInt(2))) } }
-
-    fun chapter(id: Int): List<Dhikr> {
-        val parts = db.rawQuery(
-            """
-            SELECT p.dhikr, p.text, p.surah, p.ayah FROM dhikr_part p JOIN dhikr d ON d.id = p.dhikr
-            WHERE d.chapter = ? ORDER BY p.dhikr, p.ord
-            """,
-            arrayOf(id.toString()),
-        ).use { c -> c.groupByDhikr { it.part() } }
-        val references = db.rawQuery(
-            """
-            SELECT r.dhikr, r.text FROM dhikr_reference r JOIN dhikr d ON d.id = r.dhikr
-            WHERE d.chapter = ? ORDER BY r.dhikr, r.ord
-            """,
-            arrayOf(id.toString()),
-        ).use { c -> c.groupByDhikr { it.getString(1) } }
-        val notes = db.rawQuery(
-            """
-            SELECT n.dhikr, n.text FROM dhikr_note n JOIN dhikr d ON d.id = n.dhikr
-            WHERE d.chapter = ? ORDER BY n.dhikr, n.ord
-            """,
-            arrayOf(id.toString()),
-        ).use { c -> c.groupByDhikr { it.getString(1) } }
-        return db.rawQuery("SELECT id, repeat FROM dhikr WHERE chapter = ? ORDER BY id", arrayOf(id.toString()))
-            .use { c ->
-                buildList {
-                    while (c.moveToNext()) {
-                        val dhikr = c.getInt(0)
-                        add(
-                            Dhikr(
-                                dhikr,
-                                id,
-                                c.getInt(1),
-                                parts[dhikr].orEmpty(),
-                                references[dhikr].orEmpty(),
-                                notes[dhikr].orEmpty(),
-                            ),
-                        )
-                    }
+            arrayOf(language.orEmpty()),
+        ).use { c ->
+            buildList {
+                while (c.moveToNext()) {
+                    val translated = if (c.isNull(TRANSLATED_TITLE)) null else c.getString(TRANSLATED_TITLE)
+                    add(AdhkarChapter(c.getInt(0), c.getString(1), c.getInt(2), translated))
                 }
             }
+        }
+
+    fun chapter(id: Int, language: String? = null): List<Dhikr> {
+        val chapter = arrayOf(id.toString())
+        val parts = perDhikr(ofChapter("p.dhikr, p.text, p.surah, p.ayah", "dhikr_part p"), chapter) { it.part() }
+        val references = perDhikr(ofChapter("r.dhikr, r.text", "dhikr_reference r"), chapter) { it.getString(1) }
+        val notes = perDhikr(ofChapter("n.dhikr, n.text", "dhikr_note n"), chapter) { it.getString(1) }
+        val meanings = perDhikr(
+            ofChapter("m.dhikr, m.transliteration, m.meaning", "dhikr_translation m", "AND m.language = ?"),
+            chapter + language.orEmpty(),
+        ) { DhikrMeaning(if (it.isNull(1)) null else it.getString(1), it.getString(2)) }
+        return db.rawQuery("SELECT id, repeat FROM dhikr WHERE chapter = ? ORDER BY id", chapter).use { c ->
+            buildList {
+                while (c.moveToNext()) {
+                    val d = c.getInt(0)
+                    val dhikr = Dhikr(d, id, c.getInt(1), parts[d].orEmpty(), references[d].orEmpty())
+                    add(dhikr.copy(notes = notes[d].orEmpty(), translation = meanings[d]?.single()))
+                }
+            }
+        }
+    }
+
+    /** Rows of [sql] (first column: the dhikr), grouped by dhikr in order. */
+    private fun <T> perDhikr(sql: String, args: Array<String>, value: (Cursor) -> T): Map<Int, List<T>> =
+        db.rawQuery(sql, args).use { c -> c.groupByDhikr(value) }
+
+    /** [columns] of [table] (alias first letter) for the adhkar of one chapter, in book order. */
+    private fun ofChapter(columns: String, table: String, filter: String = ""): String {
+        val alias = table.substringAfter(' ')
+        val ord = if (filter.isEmpty()) ", $alias.ord" else ""
+        return "SELECT $columns FROM $table JOIN dhikr d ON d.id = $alias.dhikr WHERE d.chapter = ? $filter " +
+            "ORDER BY $alias.dhikr$ord"
     }
 
     override fun close() = db.close()
@@ -143,6 +153,9 @@ private fun Cursor.part(): DhikrPart = when {
 private const val TEXT = 1
 private const val SURAH = 2
 private const val AYAH = 3
+
+// Column of the chapters query: the translated title.
+private const val TRANSLATED_TITLE = 3
 
 private fun <T> Cursor.groupByDhikr(value: (Cursor) -> T): Map<Int, List<T>> {
     val result = linkedMapOf<Int, MutableList<T>>()

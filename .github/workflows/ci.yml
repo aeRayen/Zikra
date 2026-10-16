@@ -39,7 +39,9 @@ jobs:
       - name: Validate JSON files
         run: |
           set -e
-          for f in $(git ls-files '*.json'); do python3 -c "import json,sys; json.load(open(sys.argv[1], encoding='utf-8-sig'))" "$f" || { echo "Invalid JSON: $f"; exit 1; }; done
+          # Pinned third-party sources stay byte for byte as published (some are malformed, e.g. hisnmuslim en/126);
+          # they are verified by SHA-256 and parsed by the content pipeline instead.
+          for f in $(git ls-files '*.json' ':!content/sources/**'); do python3 -c "import json,sys; json.load(open(sys.argv[1], encoding='utf-8-sig'))" "$f" || { echo "Invalid JSON: $f"; exit 1; }; done
       - name: Protect reference starter kit (read-only)
         if: github.event_name == 'pull_request'
         run: |

@@ -1,0 +1,13 @@
+﻿{
+	"vocation for someone who says: May Allah forgive you": 
+	[
+		{
+			"ID": 197,
+			"ARABIC_TEXT": "((وَلَكَ)).", 
+  		    "LANGUAGE_ARABIC_TRANSLATED_TEXT":"(AAabdullah Ibn Sarjis  said: ‘I went to see the Prophet  and ate from his food and then said to him:(Ghafaral-lahu laka ya rasoolal-lah.) he  replied: (wa-lak))", 
+ 		    "TRANSLATED_TEXT":"(AAabdullah Ibn Sarjis  said: ‘I went to see the Prophet  and ate from his food and then said to him: (May Allah forgive you, O Messenger of Allah.) he  replied: (and you.))", 
+ 		    "REPEAT": 1, 
+            "AUDIO":"http://www.hisnmuslim.com/audio/ar/197.mp3" 
+ 		}
+	]
+}

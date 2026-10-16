@@ -92,6 +92,16 @@
       "retrieved": "2026-10-15"
     },
     {
+      "id": "hisnmuslim-en",
+      "path": "hisnmuslim/en/",
+      "sha256": "f3319603fffda1524508e8fc8c00c7c6c81a16ebda5b43faeeab82130d2978a8",
+      "version": "2026-10-16",
+      "publisher": "hisnmuslim.com — Hisn al-Muslim in English: meaning translation and transliteration of the same 267 adhkar (chapters 1-132)",
+      "url": "https://www.hisnmuslim.com/api/en/",
+      "license": "Same source as the Arabic text (ADR-027, ADR-044). Folder hash = SHA-256 of 1.json..132.json concatenated in natural order",
+      "retrieved": "2026-10-16"
+    },
+    {
       "id": "shamela-hisn-31307",
       "path": "shamela/hisn-31307.txt",
       "sha256": "4d023b7c2906fc974699a7dd1bca0d03a2507cb1a069de50c3ea4d529c315073",

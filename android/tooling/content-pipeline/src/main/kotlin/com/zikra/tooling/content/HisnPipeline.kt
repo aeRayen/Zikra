@@ -9,6 +9,8 @@ data class AdhkarBook(
     val references: List<DhikrReference>,
     /** Corrections found by the independent check (ADR-042), shown next to the author's references. */
     val notes: Map<Int, List<String>> = emptyMap(),
+    /** Meaning and transliteration by language, only for the adhkar they were made for (ADR-044). */
+    val translations: Map<String, List<DhikrTranslation>> = emptyMap(),
 )
 
 data class AdhkarSources(val text: PinnedSource, val references: PinnedSource, val quran: PinnedSource)
@@ -45,7 +47,12 @@ class HisnPipeline(private val sourcesDir: File) {
             simple = parseTanzilText(lock.verifiedFile(sourcesDir, Pipeline.QURAN_SIMPLE)).ayahs,
             uthmani = parseTanzilText(lock.verifiedFile(sourcesDir, Pipeline.QURAN_TEXT)).ayahs,
         )
-        return AdhkarBook(adhkar, adhkar.associate { it.id to quran.parts(it.id, it.text) }, references)
+        return AdhkarBook(
+            adhkar,
+            adhkar.associate { it.id to quran.parts(it.id, it.text) },
+            references,
+            translations = mapOf(ENGLISH to translations(adhkar, Pipeline.HISN_EN)),
+        )
     }
 
     /** adhkar.sqlite bundled in the APK (WP 2.14b). */
@@ -76,6 +83,14 @@ class HisnPipeline(private val sourcesDir: File) {
         return ReviewedVerification(HisnVerification.verify(adhkarBook(), cited, names), cited, review)
     }
 
+    /** The translations that belong to their dhikr; the others are left out, never shown (ADR-044). */
+    private fun translations(adhkar: List<HisnDhikr>, id: String): List<DhikrTranslation> {
+        lock.verifiedDirectory(sourcesDir, id)
+        val all = parseHisnMuslimTranslation(File(sourcesDir, lock.source(id).path))
+        val problems = HisnTranslations.problems(adhkar, all)
+        return all.filter { it.id !in problems }
+    }
+
     private fun adhkar(): List<HisnDhikr> {
         lock.verifiedDirectory(sourcesDir, Pipeline.HISN_AR)
         val adhkar = parseHisnMuslim(File(sourcesDir, lock.source(Pipeline.HISN_AR).path))
@@ -87,5 +102,6 @@ class HisnPipeline(private val sourcesDir: File) {
 
     private companion object {
         const val MIN_PAGES = 150
+        const val ENGLISH = "en"
     }
 }

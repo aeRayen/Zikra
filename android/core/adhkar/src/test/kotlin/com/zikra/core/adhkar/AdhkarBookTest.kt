@@ -58,6 +58,20 @@ class AdhkarBookTest {
     }
 
     @Test
+    fun englishTitlesAndMeaningsWhereTheSourceHasThem() {
+        val chapters = book.chapters("en")
+        val waking0 = chapters.first { it.id == AdhkarBook.WAKING }
+        assertEquals("supplications for when you wake up", waking0.translatedTitle)
+        val waking = book.chapter(AdhkarBook.WAKING, "en").first()
+        assertTrue(requireNotNull(waking.translation).meaning.contains("All praise is for Allah"))
+        assertTrue(requireNotNull(waking.translation).transliteration.orEmpty().contains("Alhamdu"))
+        // Left out where the source does not hold a sound translation (ADR-044).
+        val doubt = book.chapters("en").first { c -> book.chapter(c.id).any { it.id == 133 } }
+        assertEquals(null, book.chapter(doubt.id, "en").first { it.id == 133 }.translation)
+        assertTrue(book.chapters().all { it.translatedTitle == null })
+    }
+
+    @Test
     fun sourcesAreKnownForDisplay() {
         assertTrue(book.info.textUrl.startsWith("https://"))
         assertTrue(book.info.referencesUrl.contains("shamela"))

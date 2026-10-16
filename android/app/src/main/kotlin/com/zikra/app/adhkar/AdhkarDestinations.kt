@@ -3,6 +3,7 @@ package com.zikra.app.adhkar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -19,8 +20,12 @@ import kotlinx.coroutines.Dispatchers
 @Composable
 fun AdhkarIndexDestination(onOpen: (Int) -> Unit, onReminders: () -> Unit) {
     val container = appContainer()
+    val language = LocalConfiguration.current.locales[0].language
     val viewModel: AdhkarIndexViewModel = viewModel(
-        factory = viewModelFactory { initializer { AdhkarIndexViewModel({ container.adhkar }, Dispatchers.IO) } },
+        key = "adhkar-index-$language",
+        factory = viewModelFactory {
+            initializer { AdhkarIndexViewModel({ container.adhkar }, Dispatchers.IO, language) }
+        },
     )
     val state by viewModel.uiState.collectAsState()
     AdhkarIndexScreen(
@@ -34,11 +39,18 @@ fun AdhkarIndexDestination(onOpen: (Int) -> Unit, onReminders: () -> Unit) {
 @Composable
 fun AdhkarChapterDestination(chapter: Int, onBack: () -> Unit) {
     val container = appContainer()
+    val language = LocalConfiguration.current.locales[0].language
     val viewModel: AdhkarChapterViewModel = viewModel(
-        key = "adhkar-$chapter",
+        key = "adhkar-$chapter-$language",
         factory = viewModelFactory {
             initializer {
-                AdhkarChapterViewModel({ container.adhkar }, container.adhkarProgress, Dispatchers.IO, chapter)
+                AdhkarChapterViewModel(
+                    { container.adhkar },
+                    container.adhkarProgress,
+                    Dispatchers.IO,
+                    chapter,
+                    language,
+                )
             }
         },
     )

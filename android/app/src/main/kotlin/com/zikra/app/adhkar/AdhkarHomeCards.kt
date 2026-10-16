@@ -10,8 +10,9 @@ import com.zikra.core.settings.AdhkarProgressStore
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 
 /** Morning and evening adhkar on «Today», with how many are done today (WP 2.14b). */
 class AdhkarHomeCards(
@@ -20,15 +21,14 @@ class AdhkarHomeCards(
     private val io: CoroutineDispatcher,
 ) : HomeCardProvider {
     override fun cards(language: Flow<String>): Flow<List<HomeCard>> {
-        val chapter = flow {
-            val loaded = try {
+        val chapter = language.map { it.substringBefore('-') }.distinctUntilChanged().map { lang ->
+            try {
                 val b = book()
                 val id = AdhkarBook.MORNING_EVENING
-                b.chapters().firstOrNull { it.id == id }?.let { it to b.chapter(id) }
+                b.chapters(lang).firstOrNull { it.id == id }?.let { it to b.chapter(id) }
             } catch (_: AdhkarIntegrityException) {
                 null
             }
-            emit(loaded)
         }.flowOn(io)
         return combine(chapter, progress.counts) { loaded: Pair<AdhkarChapter, List<Dhikr>>?, counts ->
             if (loaded == null) {
