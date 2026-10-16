@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.zikra.android.application)
     alias(libs.plugins.zikra.android.compose)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.roborazzi)
 }
 
 android {
@@ -53,6 +54,11 @@ androidComponents {
     beforeVariants(selector().withBuildType("release")) { it.enableUnitTest = false }
 }
 
+roborazzi {
+    // Golden screenshots of the main screens, recorded on Linux CI and committed (CONTRIBUTING §6).
+    outputDir.set(file("src/test/screenshots"))
+}
+
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
@@ -77,6 +83,8 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
+    testImplementation(libs.roborazzi)
+    testImplementation(libs.roborazzi.compose)
     testImplementation(libs.compose.ui.test.junit4)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.kotlinx.coroutines.test)

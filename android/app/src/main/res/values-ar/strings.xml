@@ -201,6 +201,8 @@
     <!-- ترجمة معاني القرآن (WP 2.13). -->
     <string name="reader_translation_show">إظهار الترجمة</string>
     <string name="reader_translation_hide">إخفاء الترجمة</string>
+    <string name="reader_show_notes">إظهار الحواشي</string>
+    <string name="reader_hide_notes">إخفاء الحواشي</string>
     <string name="reader_translation_credit">ترجمة المعاني: %1$s</string>
     <string name="about_translation_header">ترجمة معاني القرآن</string>
     <string name="about_translation_body">%1$s، الإصدار %2$s. المصدر: %3$s. الشروط: %4$s.</string>
