@@ -100,6 +100,16 @@
       "url": "https://shamela.ws/book/31307",
       "license": "Same book (ADR-027). Used ONLY for the author's references (footnotes) of each dhikr; the displayed dhikr text comes from hisnmuslim.com",
       "retrieved": "2026-10-16"
+    },
+    {
+      "id": "hadith-api-cited",
+      "path": "verification/hadith-cited.json",
+      "sha256": "88fdc37aa30a7eaf0514d022d618f919b5ea9fce8e642d912db59d3083ce8e47",
+      "version": "hadith-api@1 (2026-10-16)",
+      "publisher": "fawazahmed0/hadith-api — Arabic text of the six books (al-Bukhari, Muslim, Abu Dawud, at-Tirmidhi, an-Nasa'i, Ibn Majah); only the hadiths cited by Hisn al-Muslim, extracted by `hadith-cited`",
+      "url": "https://github.com/fawazahmed0/hadith-api",
+      "license": "The Unlicense (public domain). Used ONLY to check the references (ADR-042), never displayed. The SHA-256 of each full upstream file is recorded inside",
+      "retrieved": "2026-10-16"
     }
   ]
 }

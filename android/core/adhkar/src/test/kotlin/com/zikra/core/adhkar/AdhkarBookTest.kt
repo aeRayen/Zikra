@@ -51,6 +51,13 @@ class AdhkarBookTest {
     }
 
     @Test
+    fun correctionsOfTheIndependentCheckAreShownNextToTheReferences() {
+        val sleep = book.chapter(AdhkarBook.SLEEP).first { it.id == 106 }
+        assertTrue(sleep.notes.single().contains("٢٧٢٧"))
+        assertTrue(book.chapter(AdhkarBook.MORNING_EVENING).all { it.notes.isEmpty() })
+    }
+
+    @Test
     fun sourcesAreKnownForDisplay() {
         assertTrue(book.info.textUrl.startsWith("https://"))
         assertTrue(book.info.referencesUrl.contains("shamela"))

@@ -16,6 +16,8 @@ Zikra content pipeline (CONTENT_PACKS_AR.md)
   adhkar-bundle --sources ../content/sources --out <adhkar.sqlite>
   hisn-shamela-text --sources ../content/sources --html-dir <saved shamela.ws/book/31307 pages>
   hisn-review --sources ../content/sources --out <review.md>
+  hadith-cited --sources ../content/sources --books-dir <dir with ara-bukhari.json ... from hadith-api>
+  hisn-verify --sources ../content/sources --out <verification.md>
   places-extract --sources ../content/sources --alternate-names <GeoNames alternateNamesV2.txt>
 
 Paths are relative to the android/ directory when run with:
@@ -39,12 +41,7 @@ fun main(args: Array<String>) {
                 HisnPipeline(file("sources")).buildAdhkarBundle(file("out"))
                 println("Built ${file("out").path}")
             }
-            "hisn-shamela-text" -> HisnPipeline(file("sources")).extractShamelaHisn(file("html-dir"))
-            "hisn-review" -> {
-                val refs = HisnPipeline(file("sources")).hisnReferences()
-                HisnReview.write(parseHisnMuslim(File(file("sources"), "hisnmuslim/ar/")), refs, file("out"))
-                println(refs.groupingBy { it.status }.eachCount())
-            }
+            "hisn-shamela-text", "hisn-review", "hadith-cited", "hisn-verify" -> runHisn(command, ::file)
             "verify" -> {
                 val manifest = Pipeline.verify(file("pack"), Signing.loadPublic(file("public")))
                 println("OK: ${manifest.area} ${manifest.editionCode} v${manifest.version}")
@@ -54,6 +51,26 @@ fun main(args: Array<String>) {
     } catch (e: PipelineException) {
         System.err.println("FAILED: ${e.message}")
         exitProcess(1)
+    }
+}
+
+/** Hisn al-Muslim: references (WP 2.14a) and their independent check (ADR-042). */
+private fun runHisn(command: String, file: (String) -> File) {
+    val pipeline = HisnPipeline(file("sources"))
+    when (command) {
+        "hisn-shamela-text" -> pipeline.extractShamelaHisn(file("html-dir"))
+        "hisn-review" -> {
+            val refs = pipeline.hisnReferences()
+            HisnReview.write(parseHisnMuslim(File(file("sources"), "hisnmuslim/ar/")), refs, file("out"))
+            println(refs.groupingBy { it.status }.eachCount())
+        }
+        "hadith-cited" -> pipeline.extractCitedHadiths(file("books-dir"))
+        else -> {
+            val verified = pipeline.verifyReferences()
+            HisnVerificationReport.write(verified, file("out"))
+            println(verified.results.groupingBy { it.result }.eachCount())
+            println("Open: ${verified.open.size}, stale verdicts: ${verified.stale.size}")
+        }
     }
 }
 

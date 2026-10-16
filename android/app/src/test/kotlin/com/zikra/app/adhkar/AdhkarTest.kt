@@ -121,7 +121,7 @@ class AdhkarTest {
     }
 
     private fun showChapter(adhkar: List<Dhikr>, counts: Map<Int, Int>, counted: MutableList<Int>) {
-        val chapter = book.chapters().first { it.id == AdhkarBook.MORNING_EVENING }
+        val chapter = book.chapters().first { it.id == adhkar.first().chapter }
         rule.setContent {
             ZikraTheme {
                 AdhkarChapterScreen(
@@ -148,6 +148,17 @@ class AdhkarTest {
         assertEquals(listOf(first.id), counted)
         rule.onNodeWithTag(ADHKAR_LIST_TAG).performScrollToNode(hasTestTag(countTag(adhkar[1].id)))
         rule.onNodeWithTag(countTag(adhkar[1].id)).assertIsNotEnabled()
+    }
+
+    @Test
+    fun aCorrectedHadithNumberIsShownUnderTheReference() {
+        val adhkar = book.chapter(AdhkarBook.SLEEP)
+        val fatimah = adhkar.first { it.id == 106 }
+        showChapter(adhkar, emptyMap(), mutableListOf())
+        rule.onNodeWithTag(ADHKAR_LIST_TAG).performScrollToNode(hasTestTag(referenceTag(fatimah.id)))
+        rule.onNodeWithTag(referenceTag(fatimah.id)).performClick()
+        val note = hasText("٢٧٢٧", substring = true) and hasAnyAncestor(hasTestTag(referenceTextTag(fatimah.id)))
+        rule.onNode(note, useUnmergedTree = true).assertExists()
     }
 
     @Test

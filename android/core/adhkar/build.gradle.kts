@@ -1,4 +1,5 @@
 import com.zikra.buildlogic.GenerateBundledDatabase
+import org.gradle.api.tasks.PathSensitivity
 
 // Adhkar bundled in the APK (WP 2.14b). adhkar.sqlite is GENERATED at build time from the pinned
 // Hisn al-Muslim texts, the author's verified references and the Tanzil text of quoted verses
@@ -26,6 +27,10 @@ val generateAdhkar = tasks.register<GenerateBundledDatabase>("generateAdhkarData
     command.set("adhkar-bundle")
     fileName.set("adhkar.sqlite")
     outputDir.set(layout.buildDirectory.dir("generated/adhkar-assets"))
+    // The manual verdicts of the independent check (ADR-042) decide whether the build may proceed.
+    inputs.dir(rootProject.layout.projectDirectory.dir("../content/review"))
+        .withPathSensitivity(PathSensitivity.RELATIVE)
+        .withPropertyName("manualReview")
 }
 
 androidComponents {
