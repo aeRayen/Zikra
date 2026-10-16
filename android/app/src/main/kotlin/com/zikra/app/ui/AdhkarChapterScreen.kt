@@ -40,13 +40,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zikra.app.R
 import com.zikra.app.adhkar.AdhkarChapterUiState
 import com.zikra.core.adhkar.Dhikr
+import com.zikra.core.adhkar.DhikrMeaning
 import com.zikra.core.designsystem.component.EmptyState
 import com.zikra.core.designsystem.theme.ZikraSpacing
 import com.zikra.core.i18n.Bidi
@@ -65,8 +68,14 @@ fun AdhkarChapterScreen(
     Column(modifier.fillMaxSize()) {
         MediumTopAppBar(
             title = {
-                val title = (state as? AdhkarChapterUiState.Ready)?.chapter?.title
-                Text(text = title?.let(Bidi::isolate) ?: stringResource(R.string.adhkar_title))
+                val title = (state as? AdhkarChapterUiState.Ready)?.chapter?.let(::displayTitle)
+                // Some titles are long («Words of remembrance for morning and evening»): two lines at most.
+                Text(
+                    text = title?.let(Bidi::isolate) ?: stringResource(R.string.adhkar_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
             },
             navigationIcon = {
                 IconButton(onClick = actions.onBack) {
@@ -175,6 +184,7 @@ private fun DhikrCard(dhikr: Dhikr, count: Int, numerals: NumeralSystem, onCount
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
+            dhikr.translation?.let { Meaning(dhikr.id, it) }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 val times = numerals.apply(dhikr.repeat.toString())
                 Text(
@@ -237,3 +247,18 @@ private fun CountButton(dhikr: Dhikr, count: Int, numerals: NumeralSystem, onCou
 private const val TEXT_SIZE_SP = 20
 private const val QURAN_SIZE_SP = 23
 private const val LINE_SP = 38
+
+/** Pronunciation in Latin letters (when the source gives it) and the meaning, in the UI language (ADR-044). */
+@Composable
+private fun Meaning(id: Int, meaning: DhikrMeaning) {
+    Column(Modifier.fillMaxWidth().testTag(meaningTag(id)), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        meaning.transliteration?.let {
+            Text(
+                text = it,
+                style = MaterialTheme.typography.bodyMedium.copy(fontStyle = FontStyle.Italic),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Text(text = meaning.meaning, style = MaterialTheme.typography.bodyLarge)
+    }
+}

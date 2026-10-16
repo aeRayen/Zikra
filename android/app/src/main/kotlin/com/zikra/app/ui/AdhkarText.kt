@@ -36,3 +36,8 @@ internal fun dhikrTag(id: Int) = "dhikr_$id"
 internal fun countTag(id: Int) = "dhikr_count_$id"
 internal fun referenceTag(id: Int) = "dhikr_reference_$id"
 internal fun referenceTextTag(id: Int) = "dhikr_reference_text_$id"
+
+/** The title in the UI language when the source has one (first letter capitalised), else the Arabic. */
+internal fun displayTitle(chapter: com.zikra.core.adhkar.AdhkarChapter): String =
+    chapter.translatedTitle?.replaceFirstChar { it.uppercaseChar() } ?: chapter.title
+internal fun meaningTag(id: Int) = "dhikr_meaning_$id"

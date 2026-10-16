@@ -134,6 +134,7 @@ class Pipeline(private val sourcesDir: File) {
         const val GEO_ADMIN1 = "geonames-admin1"
         const val GEO_NAMES = "geonames-names-waves"
         const val HISN_AR = "hisnmuslim-ar"
+        const val HISN_EN = "hisnmuslim-en"
         const val SHAMELA_HISN = "shamela-hisn-31307"
         const val HADITH_CITED = "hadith-api-cited"
         const val QURAN_EDITION = "ar.hafs.uthmani.tanzil"

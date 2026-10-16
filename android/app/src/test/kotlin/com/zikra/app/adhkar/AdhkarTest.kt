@@ -18,7 +18,9 @@ import com.zikra.app.ui.AdhkarChapterActions
 import com.zikra.app.ui.AdhkarChapterScreen
 import com.zikra.app.ui.ayahNumberMark
 import com.zikra.app.ui.countTag
+import com.zikra.app.ui.dhikrTag
 import com.zikra.app.ui.dhikrText
+import com.zikra.app.ui.meaningTag
 import com.zikra.app.ui.referenceTag
 import com.zikra.app.ui.referenceTextTag
 import com.zikra.app.ui.withoutMarker
@@ -75,7 +77,7 @@ class AdhkarTest {
     @Test
     fun indexOffersTheDailyChaptersFirstAndFiltersByTitle() = runTest {
         Dispatchers.setMain(UnconfinedTestDispatcher(testScheduler))
-        val vm = AdhkarIndexViewModel({ book }, UnconfinedTestDispatcher(testScheduler))
+        val vm = AdhkarIndexViewModel({ book }, UnconfinedTestDispatcher(testScheduler), "ar")
         val ready = vm.uiState.await { it is AdhkarIndexUiState.Ready } as AdhkarIndexUiState.Ready
         assertEquals(AdhkarBook.DAILY, ready.daily.map { it.id })
         assertEquals(AdhkarBook.CHAPTER_COUNT, ready.chapters.size)
@@ -93,7 +95,7 @@ class AdhkarTest {
         Dispatchers.setMain(UnconfinedTestDispatcher(testScheduler))
         val io = UnconfinedTestDispatcher(testScheduler)
         val progress = AdhkarProgressStore({ File(tmp.root, "p.json") }, backgroundScope) { LocalDate.of(2026, 10, 16) }
-        val vm = AdhkarChapterViewModel({ book }, progress, io, AdhkarBook.MORNING_EVENING)
+        val vm = AdhkarChapterViewModel({ book }, progress, io, AdhkarBook.MORNING_EVENING, "ar")
         val ready = vm.uiState.await { it is AdhkarChapterUiState.Ready } as AdhkarChapterUiState.Ready
         val thrice = ready.adhkar.first { it.repeat == 3 }
         repeat(4) { vm.count(thrice) }
@@ -101,7 +103,7 @@ class AdhkarTest {
         assertFalse(vm.saveFailed.value)
 
         // The screen is closed and opened again (or the app restarted): the count is still there.
-        val again = AdhkarChapterViewModel({ book }, progress, io, AdhkarBook.MORNING_EVENING)
+        val again = AdhkarChapterViewModel({ book }, progress, io, AdhkarBook.MORNING_EVENING, "ar")
         again.counts.await { it[thrice.id] == 3 }
         again.uiState.await { it is AdhkarChapterUiState.Ready }
         again.reset()
@@ -159,6 +161,18 @@ class AdhkarTest {
         rule.onNodeWithTag(referenceTag(fatimah.id)).performClick()
         val note = hasText("٢٧٢٧", substring = true) and hasAnyAncestor(hasTestTag(referenceTextTag(fatimah.id)))
         rule.onNode(note, useUnmergedTree = true).assertExists()
+    }
+
+    @Test
+    fun inEnglishTheMeaningIsShownUnderTheArabic() {
+        val adhkar = book.chapter(AdhkarBook.MORNING_EVENING, "en")
+        val kursi = adhkar.first { it.id == 75 }
+        assertTrue(requireNotNull(kursi.translation).meaning.isNotBlank())
+        showChapter(adhkar, emptyMap(), mutableListOf())
+        rule.onNodeWithTag(ADHKAR_LIST_TAG).performScrollToNode(hasTestTag(dhikrTag(kursi.id)))
+        rule.onNodeWithTag(meaningTag(kursi.id), useUnmergedTree = true).assertExists()
+        // In Arabic there is nothing to translate.
+        assertTrue(book.chapter(AdhkarBook.MORNING_EVENING, "ar").all { it.translation == null })
     }
 
     @Test

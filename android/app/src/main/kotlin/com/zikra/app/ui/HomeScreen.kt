@@ -157,7 +157,7 @@ private fun DailyAdhkarHomeCard(card: HomeCard.DailyAdhkar, onOpen: (Int) -> Uni
     ) {
         Column(Modifier.padding(ZikraSpacing.screenGutter), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(text = stringResource(R.string.adhkar_home_label), style = MaterialTheme.typography.labelLarge)
-            Text(text = Bidi.isolate(card.chapter.title), style = MaterialTheme.typography.titleMedium)
+            Text(text = Bidi.isolate(displayTitle(card.chapter)), style = MaterialTheme.typography.titleMedium)
             Text(
                 text = stringResource(
                     R.string.adhkar_progress,

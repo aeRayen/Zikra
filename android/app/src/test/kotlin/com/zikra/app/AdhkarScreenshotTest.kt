@@ -43,15 +43,15 @@ class AdhkarScreenshotTest {
     }
 
     private fun index(lang: String) = shot("adhkar_index_$lang") {
-        val chapters = book.chapters()
+        val chapters = book.chapters(lang)
         val daily = AdhkarBook.DAILY.map { id -> chapters.first { it.id == id } }
         ZikraTheme { AdhkarIndexScreen(AdhkarIndexUiState.Ready(daily, chapters), onOpen = {}, onQueryChange = {}) }
     }
 
     /** Morning and evening: Ayat al-Kursi first (a verse in the Tanzil text), then a dhikr said three times. */
     private fun chapter(lang: String) = shot("adhkar_chapter_$lang") {
-        val chapter = book.chapters().first { it.id == AdhkarBook.MORNING_EVENING }
-        val adhkar = book.chapter(chapter.id)
+        val chapter = book.chapters(lang).first { it.id == AdhkarBook.MORNING_EVENING }
+        val adhkar = book.chapter(chapter.id, lang)
         val state = AdhkarChapterUiState.Ready(chapter, adhkar, book.info)
         ZikraTheme { AdhkarChapterScreen(state, counts = mapOf(adhkar[0].id to 1), actions = NoActions) }
     }
@@ -63,6 +63,9 @@ class AdhkarScreenshotTest {
     @Test
     @Config(qualifiers = "ar")
     fun arabicChapter() = chapter("ar")
+
+    @Test
+    fun englishIndex() = index("en")
 
     @Test
     fun englishChapter() = chapter("en")

@@ -150,6 +150,11 @@ object PackWriter {
                   dhikr INTEGER NOT NULL, ord INTEGER NOT NULL, text TEXT NOT NULL, PRIMARY KEY (dhikr, ord));
                 CREATE TABLE dhikr_note (
                   dhikr INTEGER NOT NULL, ord INTEGER NOT NULL, text TEXT NOT NULL, PRIMARY KEY (dhikr, ord));
+                CREATE TABLE adhkar_chapter_translation (
+                  chapter INTEGER NOT NULL, language TEXT NOT NULL, title TEXT NOT NULL, PRIMARY KEY (chapter, language));
+                CREATE TABLE dhikr_translation (
+                  dhikr INTEGER NOT NULL, language TEXT NOT NULL, transliteration TEXT, meaning TEXT NOT NULL,
+                  PRIMARY KEY (dhikr, language));
                 """,
             )
             writeInfo(
@@ -172,11 +177,24 @@ object PackWriter {
                     is DhikrPart.Quran -> listOf(id, ord, part.text, part.surah, part.ayah)
                 }
             }
+            writeTranslations(db, book.translations)
             val notes = book.notes.flatMap { (id, list) -> list.mapIndexed { i, n -> Triple(id, i, n) } }
             db.batch("INSERT INTO dhikr_note VALUES (?,?,?)", notes) { (id, ord, text) -> listOf(id, ord, text) }
             val references = book.references.flatMap { r -> r.footnotes.mapIndexed { i, f -> Triple(r.id, i, f) } }
             db.batch("INSERT INTO dhikr_reference VALUES (?,?,?)", references) { (id, ord, text) ->
                 listOf(id, ord, text)
+            }
+        }
+    }
+
+    private fun writeTranslations(db: Connection, translations: Map<String, List<DhikrTranslation>>) {
+        translations.forEach { (language, list) ->
+            val chapters = list.distinctBy { it.chapter }
+            db.batch("INSERT INTO adhkar_chapter_translation VALUES (?,?,?)", chapters) {
+                listOf(it.chapter, language, it.chapterTitle)
+            }
+            db.batch("INSERT INTO dhikr_translation VALUES (?,?,?,?)", list) {
+                listOf(it.id, language, it.transliteration.ifEmpty { null }, it.meaning)
             }
         }
     }

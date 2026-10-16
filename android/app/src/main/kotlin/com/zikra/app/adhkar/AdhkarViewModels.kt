@@ -35,7 +35,12 @@ sealed interface AdhkarIndexUiState {
 }
 
 /** Chapters of Hisn al-Muslim (WP 2.14b). */
-class AdhkarIndexViewModel(private val book: () -> AdhkarBook, private val io: CoroutineDispatcher) : ViewModel() {
+class AdhkarIndexViewModel(
+    private val book: () -> AdhkarBook,
+    private val io: CoroutineDispatcher,
+    /** Base language of the UI: chapter titles in it are shown where the source has them. */
+    private val language: String,
+) : ViewModel() {
     private val state = MutableStateFlow<AdhkarIndexUiState>(AdhkarIndexUiState.Loading)
     val uiState: StateFlow<AdhkarIndexUiState> = state.asStateFlow()
     private var all: List<AdhkarChapter> = emptyList()
@@ -43,7 +48,7 @@ class AdhkarIndexViewModel(private val book: () -> AdhkarBook, private val io: C
     init {
         viewModelScope.launch {
             state.value = try {
-                all = withContext(io) { book().chapters() }
+                all = withContext(io) { book().chapters(language) }
                 val byId = all.associateBy { it.id }
                 AdhkarIndexUiState.Ready(AdhkarBook.DAILY.mapNotNull { byId[it] }, all)
             } catch (_: AdhkarIntegrityException) {
@@ -56,7 +61,13 @@ class AdhkarIndexViewModel(private val book: () -> AdhkarBook, private val io: C
     fun onQueryChange(query: String) {
         val ready = state.value as? AdhkarIndexUiState.Ready ?: return
         val key = SearchNormalizer.normalize(query)
-        val matching = if (key.isEmpty()) all else all.filter { SearchNormalizer.normalize(it.title).contains(key) }
+        val matching = if (key.isEmpty()) {
+            all
+        } else {
+            all.filter { c ->
+                listOfNotNull(c.title, c.translatedTitle).any { SearchNormalizer.normalize(it).contains(key) }
+            }
+        }
         state.value = ready.copy(chapters = matching, query = query)
     }
 }
@@ -76,6 +87,7 @@ class AdhkarChapterViewModel(
     private val progress: AdhkarProgressStore,
     private val io: CoroutineDispatcher,
     private val chapterId: Int,
+    private val language: String,
 ) : ViewModel() {
     private val state = MutableStateFlow<AdhkarChapterUiState>(AdhkarChapterUiState.Loading)
     val uiState: StateFlow<AdhkarChapterUiState> = state.asStateFlow()
@@ -93,11 +105,11 @@ class AdhkarChapterViewModel(
             state.value = try {
                 withContext(io) {
                     val b = book()
-                    val chapter = b.chapters().firstOrNull { it.id == chapterId }
+                    val chapter = b.chapters(language).firstOrNull { it.id == chapterId }
                     if (chapter == null) {
                         AdhkarChapterUiState.Unavailable
                     } else {
-                        AdhkarChapterUiState.Ready(chapter, b.chapter(chapterId), b.info)
+                        AdhkarChapterUiState.Ready(chapter, b.chapter(chapterId, language), b.info)
                     }
                 }
             } catch (_: AdhkarIntegrityException) {
