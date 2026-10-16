@@ -24,8 +24,10 @@ import com.zikra.core.network.SupabaseClient
 import com.zikra.core.network.SupabaseConfig
 import com.zikra.core.places.PlaceDirectory
 import com.zikra.core.places.PlaceLookup
+import com.zikra.core.quran.QuranText
 import com.zikra.core.settings.LocationStore
 import com.zikra.core.settings.PrayerPreferencesStore
+import com.zikra.core.settings.ReaderPreferencesStore
 import com.zikra.platform.alarm.AlarmKind
 import com.zikra.platform.alarm.AlarmRegistrations
 import kotlinx.coroutines.CoroutineScope
@@ -51,6 +53,10 @@ class AppContainer(context: Context) {
     val locationStore = LocationStore({ File(context.filesDir, LOCATION_FILE) })
     val deviceLocator: DeviceLocator = AndroidDeviceLocator(context)
 
+    // Bundled Quran text, opened on first use (copies the asset once, checks the structure): IO dispatcher only.
+    val quran: QuranText by lazy { QuranText.open(context) }
+    val readerPreferences = ReaderPreferencesStore({ File(context.filesDir, READER_FILE) })
+
     // Prayer choices (method, madhab, adjustments): not location data, so it may be backed up.
     val prayerPreferences = PrayerPreferencesStore({ File(context.filesDir, PRAYER_FILE) })
 
@@ -66,6 +72,7 @@ class AppContainer(context: Context) {
     private companion object {
         const val LOCATION_FILE = "datastore/${LocationStore.FILE_NAME}"
         const val PRAYER_FILE = "datastore/${PrayerPreferencesStore.FILE_NAME}"
+        const val READER_FILE = "datastore/${ReaderPreferencesStore.FILE_NAME}"
     }
 }
 

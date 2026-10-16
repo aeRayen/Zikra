@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.zikra.app.R
 import com.zikra.app.ui.PrayerTabIcon
+import com.zikra.app.ui.QuranTabIcon
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -23,6 +24,15 @@ data object PrayerMonthRoute
 
 @Serializable
 data object QiblaRoute
+
+@Serializable
+data object QuranRoute
+
+@Serializable
+data class QuranReaderRoute(val surah: Int, val ayah: Int = 1)
+
+@Serializable
+data object AboutQuranTextRoute
 
 @Serializable
 data object MoreRoute
@@ -43,7 +53,7 @@ data object SignInRoute
  * Tabs of the bottom bar / navigation rail, in reading order (the first one sits at the start edge,
  * i.e. on the right in Arabic). A feature adds its tab only when it is implemented, so the bar never
  * shows a destination that does nothing (MASTER_BUILD_PROMPT §7, ADR-017).
- * Planned: Quran (Phase 2), Library (Phase 3). At most 5 tabs (DESIGN_SYSTEM_AR.md).
+ * Planned: Library (Phase 3). At most 5 tabs (DESIGN_SYSTEM_AR.md).
  */
 enum class TopLevelDestination(
     val route: Any,
@@ -52,5 +62,6 @@ enum class TopLevelDestination(
 ) {
     TODAY(HomeRoute, R.string.nav_today, Icons.Filled.Home),
     PRAYER(PrayerRoute, R.string.nav_prayer, PrayerTabIcon),
+    QURAN(QuranRoute, R.string.nav_quran, QuranTabIcon),
     MORE(MoreRoute, R.string.nav_more, Icons.Filled.Menu),
 }
