@@ -59,6 +59,7 @@ fun QuranReaderScreen(
     night: Boolean,
     actions: ReaderActions,
     bookmarks: Set<Int> = emptySet(),
+    showTranslation: Boolean = false,
 ) {
     ZikraTheme(darkTheme = night) {
         Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface)) {
@@ -88,6 +89,14 @@ fun QuranReaderScreen(
                         READER_BIGGER_TAG,
                         actions.onBigger
                     )
+                    if ((state as? ReaderUiState.Ready)?.translationInfo != null) {
+                        val label =
+                            if (showTranslation) R.string.reader_translation_hide else R.string.reader_translation_show
+                        IconButton(
+                            onClick = { actions.onToggleTranslation(showTranslation) },
+                            modifier = Modifier.testTag(READER_TRANSLATION_TAG),
+                        ) { Icon(TranslateIcon, contentDescription = stringResource(label)) }
+                    }
                     IconButton(
                         onClick = { actions.onToggleNight(night) },
                         modifier = Modifier.testTag(READER_NIGHT_TAG)
@@ -102,7 +111,7 @@ fun QuranReaderScreen(
                     title = stringResource(R.string.quran_title),
                     message = stringResource(R.string.quran_unavailable),
                 )
-                is ReaderUiState.Ready -> AyahList(state, textScale, bookmarks, actions)
+                is ReaderUiState.Ready -> AyahList(state, textScale, bookmarks, actions, showTranslation)
             }
         }
     }
@@ -121,7 +130,13 @@ private fun titleOf(arabic: String, transliterated: String): String =
     if (LocalConfiguration.current.locales[0].language == "ar") arabic else transliterated
 
 @Composable
-private fun AyahList(state: ReaderUiState.Ready, textScale: Float, bookmarks: Set<Int>, actions: ReaderActions) {
+private fun AyahList(
+    state: ReaderUiState.Ready,
+    textScale: Float,
+    bookmarks: Set<Int>,
+    actions: ReaderActions,
+    showTranslation: Boolean,
+) {
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = state.startIndex)
     // «Continue reading»: report the ayah at the top whenever scrolling settles on a new one.
     LaunchedEffect(listState, state) {
@@ -133,10 +148,18 @@ private fun AyahList(state: ReaderUiState.Ready, textScale: Float, bookmarks: Se
     // The Quran is Arabic: right-to-left even when the app is in English.
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         LazyColumn(Modifier.fillMaxSize().testTag(AYAH_LIST_TAG), state = listState) {
+            if (showTranslation) {
+                state.translationInfo?.let { info ->
+                    item(
+                        key = "credit"
+                    ) { TranslationCredit(info.title) }
+                }
+            }
             itemsIndexed(state.ayahs, key = { _, a -> a.ayah }) { index, ayah ->
                 val previous = state.ayahs.getOrNull(index - 1)
                 if (previous == null || previous.page != ayah.page) PageMarker(ayah, uiNumerals)
                 AyahRow(ayah, textScale, ayah.ayah in bookmarks, actions.onToggleBookmark)
+                if (showTranslation) state.translation[ayah.ayah]?.let { TranslationText(it, textScale) }
             }
         }
     }
@@ -198,5 +221,7 @@ internal const val AYAH_LIST_TAG = "quran_ayah_list"
 internal const val READER_SMALLER_TAG = "reader_smaller"
 internal const val READER_BIGGER_TAG = "reader_bigger"
 internal const val READER_NIGHT_TAG = "reader_night"
+internal const val READER_TRANSLATION_TAG = "reader_translation"
+internal fun translationTag(ayah: Int) = "quran_translation_$ayah"
 internal fun ayahTag(ayah: Int) = "quran_ayah_$ayah"
 internal fun bookmarkTag(ayah: Int) = "quran_bookmark_$ayah"

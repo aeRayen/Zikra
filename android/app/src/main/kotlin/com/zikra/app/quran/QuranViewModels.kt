@@ -5,7 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.zikra.core.quran.Ayah
 import com.zikra.core.quran.QuranIntegrityException
 import com.zikra.core.quran.QuranText
+import com.zikra.core.quran.QuranTranslation
 import com.zikra.core.quran.Surah
+import com.zikra.core.quran.TranslatedAyah
+import com.zikra.core.quran.TranslationInfo
 import com.zikra.core.settings.ReaderPreferences
 import com.zikra.core.settings.ReaderPreferencesStore
 import kotlinx.coroutines.CoroutineDispatcher
@@ -21,6 +24,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
 import kotlin.math.roundToInt
+
+/**
+ * The bundled Quran text and the translation (if it opened). [translation] returns null rather than
+ * throwing, so a damaged translation never hides the Arabic text.
+ */
+class QuranContent(val text: () -> QuranText, val translation: () -> QuranTranslation?)
 
 /** Where a juz starts, for the juz index. */
 data class JuzStart(val juz: Int, val surah: Surah, val ayah: Int)
@@ -64,12 +73,19 @@ sealed interface ReaderUiState {
 
     data object Unavailable : ReaderUiState
 
-    data class Ready(val surah: Surah, val ayahs: List<Ayah>, val startIndex: Int) : ReaderUiState
+    data class Ready(
+        val surah: Surah,
+        val ayahs: List<Ayah>,
+        val startIndex: Int,
+        /** Translation of this surah by ayah number; empty if unavailable. */
+        val translation: Map<Int, TranslatedAyah> = emptyMap(),
+        val translationInfo: TranslationInfo? = null,
+    ) : ReaderUiState
 }
 
 /** One surah, verbatim, starting at [startAyah] (WP 2.10). */
 class QuranReaderViewModel(
-    private val quran: () -> QuranText,
+    private val content: QuranContent,
     private val preferences: ReaderPreferencesStore,
     private val userData: QuranUserData,
     private val io: CoroutineDispatcher,
@@ -106,13 +122,20 @@ class QuranReaderViewModel(
         viewModelScope.launch {
             state.value = try {
                 withContext(io) {
-                    val text = quran()
+                    val text = content.text()
                     val surah = text.surah(surahNumber)
                     if (surah == null) {
                         ReaderUiState.Unavailable
                     } else {
                         val ayahs = text.ayahs(surah.number)
-                        ReaderUiState.Ready(surah, ayahs, (startAyah - 1).coerceIn(0, ayahs.lastIndex))
+                        val tr = content.translation()
+                        ReaderUiState.Ready(
+                            surah = surah,
+                            ayahs = ayahs,
+                            startIndex = (startAyah - 1).coerceIn(0, ayahs.lastIndex),
+                            translation = tr?.surah(surah.number).orEmpty(),
+                            translationInfo = tr?.info,
+                        )
                     }
                 }
             } catch (_: QuranIntegrityException) {
@@ -124,6 +147,8 @@ class QuranReaderViewModel(
     fun bigger() = scaleBy(ReaderPreferences.STEP)
 
     fun smaller() = scaleBy(-ReaderPreferences.STEP)
+
+    fun toggleTranslation(currentlyShown: Boolean) = edit { it.copy(showTranslation = !currentlyShown) }
 
     /** Night on/off; the first toggle leaves «follow the phone». */
     fun toggleNight(currentlyNight: Boolean) = edit { it.copy(night = !currentlyNight) }

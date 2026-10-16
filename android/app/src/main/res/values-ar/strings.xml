@@ -198,6 +198,14 @@
     <string name="quran_continue_at">%1$s، الآية %2$s</string>
     <string name="quran_bookmarks">الآيات المحفوظة</string>
     <string name="quran_bookmarks_empty">لا توجد آيات محفوظة بعد. اضغط علامة الحفظ بجانب أي آية لحفظها.</string>
+    <!-- ترجمة معاني القرآن (WP 2.13). -->
+    <string name="reader_translation_show">إظهار الترجمة</string>
+    <string name="reader_translation_hide">إخفاء الترجمة</string>
+    <string name="reader_translation_credit">ترجمة المعاني: %1$s</string>
+    <string name="about_translation_header">ترجمة معاني القرآن</string>
+    <string name="about_translation_body">%1$s، الإصدار %2$s. المصدر: %3$s. الشروط: %4$s.</string>
+    <string name="about_translation_note">الترجمة تنقل المعاني، وليست قرآنًا، ولا تحل محل النص العربي أبدًا.</string>
+    <string name="about_translation_open">زيارة quranenc.com</string>
 
     <string name="language_title">لغة التطبيق</string>
     <string name="language_follow_device">لغة الجهاز</string>

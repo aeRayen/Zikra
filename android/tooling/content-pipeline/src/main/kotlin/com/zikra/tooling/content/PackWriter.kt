@@ -10,6 +10,8 @@ import java.sql.DriverManager
  * as read from the pinned source; only the separate search_text column is normalized.
  */
 object PackWriter {
+    /** Display names of translation editions, as their publishers name them. */
+    private val TRANSLATION_TITLES = mapOf("en.saheeh.quranenc" to "Saheeh International")
 
     /**
      * [simple]: Tanzil «simple-clean» text (modern spelling), used ONLY for the search index so that
@@ -80,7 +82,8 @@ object PackWriter {
                   PRIMARY KEY (edition, surah, ayah));
                 """,
             )
-            writeInfo(db, source, mapOf("edition" to edition, "language" to language))
+            val title = TRANSLATION_TITLES[edition] ?: edition
+            writeInfo(db, source, mapOf("edition" to edition, "language" to language, "title" to title))
             db.batch("INSERT INTO quran_translation VALUES (?,?,?,?,?,?)", ayahs) { a ->
                 listOf(edition, a.surah, a.ayah, a.text, a.footnotes, SearchNormalizer.normalize(a.text))
             }

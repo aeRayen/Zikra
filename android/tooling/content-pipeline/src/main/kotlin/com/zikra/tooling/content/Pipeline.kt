@@ -24,6 +24,26 @@ class Pipeline(private val sourcesDir: File) {
     }
 
     /**
+     * The English translation bundled inside the APK (WP 2.13a): same pinned QuranEnc source and checks
+     * as the signed pack, protected by the APK signature. Downloadable translations follow (2.13b).
+     */
+    fun buildTranslationBundle(out: File) {
+        writeVerifiedEnglish(out)
+        checkDatabase(out, AREA_TRANSLATION)
+    }
+
+    private fun writeVerifiedEnglish(db: File) {
+        val source = lock.source(EN_SAHEEH)
+        val ayahs = parseQuranEnc(lock.verifiedFile(sourcesDir, EN_SAHEEH), source.version)
+        QuranValidation.checkAyahSequence(
+            positions = ayahs.map { it.surah to it.ayah },
+            texts = ayahs.map { it.text },
+            what = "Translation",
+        )
+        PackWriter.writeTranslation(db, EN_SAHEEH_EDITION, "en", ayahs, source)
+    }
+
+    /**
      * The Quran text bundled inside the APK (WP 2.9): same pinned source and checks as the signed pack;
      * the APK signature protects it, so it carries no manifest.
      */
@@ -53,14 +73,8 @@ class Pipeline(private val sourcesDir: File) {
 
     fun buildEnglishSaheeh(outDir: File, keys: PackKeys, packVersion: String): File {
         val source = lock.source(EN_SAHEEH)
-        val ayahs = parseQuranEnc(lock.verifiedFile(sourcesDir, EN_SAHEEH), source.version)
-        QuranValidation.checkAyahSequence(
-            positions = ayahs.map { it.surah to it.ayah },
-            texts = ayahs.map { it.text },
-            what = "Translation",
-        )
         val db = File(outDir, PACK_FILE)
-        PackWriter.writeTranslation(db, EN_SAHEEH_EDITION, "en", ayahs, source)
+        writeVerifiedEnglish(db)
         return seal(outDir, db, PackSpec(AREA_TRANSLATION, "en", EN_SAHEEH_EDITION, packVersion), source, keys)
     }
 

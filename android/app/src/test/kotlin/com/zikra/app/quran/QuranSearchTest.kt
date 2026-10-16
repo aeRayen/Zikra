@@ -13,6 +13,7 @@ import com.zikra.app.ui.QuranSearchScreen
 import com.zikra.app.ui.searchResultTag
 import com.zikra.core.designsystem.theme.ZikraTheme
 import com.zikra.core.quran.QuranText
+import com.zikra.core.quran.QuranTranslation
 import com.zikra.core.quran.search
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -40,10 +41,13 @@ class QuranSearchTest {
     val rule = createAndroidComposeRule<ComponentActivity>()
 
     private val quran = QuranText.open(ApplicationProvider.getApplicationContext())
+    private val english = QuranTranslation.openEnglish(ApplicationProvider.getApplicationContext())
+    private val content = QuranContent({ quran }, { english })
 
     @After
     fun tearDown() {
         quran.close()
+        english.close()
         Dispatchers.resetMain()
     }
 
@@ -51,13 +55,13 @@ class QuranSearchTest {
     fun typingSearchesAfterTheDebounceAndPairsResultsWithTheirSurah() = runTest {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         Dispatchers.setMain(dispatcher)
-        val vm = QuranSearchViewModel({ quran }, dispatcher)
+        val vm = QuranSearchViewModel(content, dispatcher)
         vm.onQueryChange("الرحم")
         vm.onQueryChange("الرحمن")
         advanceUntilIdle()
         val state = vm.uiState.first { it.results != null }
         assertEquals(quran.search("الرحمن").total, state.total)
-        val (surah, ayah) = requireNotNull(state.results).first()
+        val (surah, ayah) = requireNotNull(state.results).first().let { it.surah to it.ayah }
         assertEquals(1, surah.number)
         assertEquals(1, ayah.ayah)
         vm.onQueryChange("")
@@ -67,9 +71,22 @@ class QuranSearchTest {
     private fun show(query: String, onOpen: (Int, Int) -> Unit = { _, _ -> }) {
         val found = quran.search(query)
         val surahs = quran.surahs().associateBy { it.number }
-        val results = found.ayahs.map { surahs.getValue(it.surah) to it }
+        val results = found.ayahs.map { SearchHit(surahs.getValue(it.surah), it) }
         val state = QuranSearchUiState(query, results = results, total = found.total)
         rule.setContent { ZikraTheme { QuranSearchScreen(state, onQueryChange = {}, onOpen = onOpen, onBack = {}) } }
+    }
+
+    @Test
+    fun latinLettersSearchTheTranslationAndShowTheArabicAyah() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        Dispatchers.setMain(dispatcher)
+        val vm = QuranSearchViewModel(content, dispatcher)
+        vm.onQueryChange("Self-Sustaining")
+        advanceUntilIdle()
+        val hits = requireNotNull(vm.uiState.first { it.results != null }.results)
+        val kursi = hits.first { it.ayah.surah == 2 && it.ayah.ayah == 255 }
+        assertEquals(quran.ayahs(2)[254].text, kursi.ayah.text) // Arabic stays verbatim
+        assertTrue(requireNotNull(kursi.translation).contains("Self-Sustaining"))
     }
 
     @Test

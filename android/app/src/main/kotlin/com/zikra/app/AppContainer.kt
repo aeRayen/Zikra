@@ -15,6 +15,7 @@ import com.zikra.app.home.PrayerHomeCards
 import com.zikra.app.location.AndroidDeviceLocator
 import com.zikra.app.location.DeviceLocator
 import com.zikra.app.prayer.PrayerTimesSource
+import com.zikra.app.quran.QuranContent
 import com.zikra.app.quran.QuranHomeCards
 import com.zikra.app.quran.QuranUserData
 import com.zikra.core.database.ZikraDatabases
@@ -28,7 +29,9 @@ import com.zikra.core.network.SupabaseClient
 import com.zikra.core.network.SupabaseConfig
 import com.zikra.core.places.PlaceDirectory
 import com.zikra.core.places.PlaceLookup
+import com.zikra.core.quran.QuranIntegrityException
 import com.zikra.core.quran.QuranText
+import com.zikra.core.quran.QuranTranslation
 import com.zikra.core.settings.LocationStore
 import com.zikra.core.settings.PrayerPreferencesStore
 import com.zikra.core.settings.ReaderPreferencesStore
@@ -65,6 +68,17 @@ class AppContainer(context: Context) {
 
     // Bundled Quran text, opened on first use (copies the asset once, checks the structure): IO dispatcher only.
     val quran: QuranText by lazy { QuranText.open(context) }
+
+    // Bundled English translation; null if its integrity check fails (the Arabic text is still shown).
+    private val englishTranslation: QuranTranslation? by lazy {
+        try {
+            QuranTranslation.openEnglish(context)
+        } catch (_: QuranIntegrityException) {
+            null
+        }
+    }
+    val quranContent = QuranContent({ quran }, { englishTranslation })
+
     val readerPreferences = ReaderPreferencesStore({ File(context.filesDir, READER_FILE) })
 
     // Prayer choices (method, madhab, adjustments): not location data, so it may be backed up.

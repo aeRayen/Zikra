@@ -219,6 +219,16 @@
     <string name="quran_continue_at">%1$s, ayah %2$s</string>
     <string name="quran_bookmarks">Bookmarks</string>
     <string name="quran_bookmarks_empty">No bookmarks yet. Tap the bookmark beside an ayah to save it.</string>
+    <!-- Translation of the meanings (WP 2.13). -->
+    <string name="reader_translation_show">Show translation</string>
+    <string name="reader_translation_hide">Hide translation</string>
+    <!-- %1$s = translation title, e.g. Saheeh International. -->
+    <string name="reader_translation_credit">Translation of the meanings: %1$s</string>
+    <string name="about_translation_header">Translation of the meanings</string>
+    <!-- %1$s = title, %2$s = version, %3$s = publisher, %4$s = terms as published. -->
+    <string name="about_translation_body">%1$s, version %2$s. Source: %3$s. Terms: %4$s.</string>
+    <string name="about_translation_note">A translation conveys the meanings. It is not the Quran and never replaces the Arabic text.</string>
+    <string name="about_translation_open">Visit quranenc.com</string>
 
     <!-- App language picker. -->
     <string name="language_title">App language</string>
