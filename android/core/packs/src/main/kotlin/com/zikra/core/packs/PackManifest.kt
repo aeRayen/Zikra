@@ -64,7 +64,9 @@ class PackRejected(message: String, cause: Throwable? = null) : Exception(messag
  */
 object PackSignatures {
     /** The content signing key (ADR-014), X.509 base64; keyId 95fdefc5b8026097. Public by design. */
-    const val ZIKRA_CONTENT_KEY = "MCowBQYDK2VwAyEAdL001mdRfveKhZHuvHUPa+L39wY2xxhTIqBFCkXJBX4="
+    // A PUBLIC key (it only verifies signatures): gitleaks reads it as an API key. The private key
+    // never enters the repository (ADR-014).
+    const val ZIKRA_CONTENT_KEY = "MCowBQYDK2VwAyEAdL001mdRfveKhZHuvHUPa+L39wY2xxhTIqBFCkXJBX4=" // gitleaks:allow
 
     private const val KEY_ID_HEX_CHARS = 16
 
