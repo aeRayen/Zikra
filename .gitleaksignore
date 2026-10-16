@@ -3,3 +3,5 @@
 # Format: <commit>:<file>:<rule-id>:<line>
 d530c6cb1832657033243808c72b34f58a6f7808:android/core/common/src/test/kotlin/com/zikra/core/common/logging/RedactorTest.kt:jwt:16
 d530c6cb1832657033243808c72b34f58a6f7808:android/core/common/src/test/kotlin/com/zikra/core/common/logging/RedactorTest.kt:supabase-secret-key:34
+# The content PUBLIC key (verifies pack signatures, public by design; private key never in git), before it got its inline gitleaks:allow (PR #58).
+d8e9717a1796243cc72ce6ec01abba4c103f85f6:android/core/packs/src/main/kotlin/com/zikra/core/packs/PackManifest.kt:generic-api-key:67

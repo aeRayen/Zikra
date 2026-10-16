@@ -21,6 +21,7 @@ androidx-sqlite = "2.4.0"
 sqlcipher = "4.6.1"
 sqlite-jdbc = "3.47.1.0"
 okhttp = "4.12.0"
+bouncycastle = "1.78.1"
 adhan = "0.0.5"
 datastore = "1.1.1"
 icu4j = "76.1"
@@ -59,6 +60,7 @@ androidx-sqlite-ktx = { module = "androidx.sqlite:sqlite-ktx", version.ref = "an
 sqlcipher-android = { module = "net.zetetic:sqlcipher-android", version.ref = "sqlcipher" }
 sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite-jdbc" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+bouncycastle-prov = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
 okhttp-mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "okhttp" }
 adhan = { module = "com.batoulapps.adhan:adhan2", version.ref = "adhan" }
 androidx-datastore-core = { module = "androidx.datastore:datastore-core", version.ref = "datastore" }
