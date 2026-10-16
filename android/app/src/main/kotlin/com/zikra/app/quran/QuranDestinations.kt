@@ -29,7 +29,8 @@ fun QuranIndexDestination(
     onOpen: (Int, Int) -> Unit,
     onAbout: () -> Unit,
     onSearch: () -> Unit,
-    onBookmarks: () -> Unit
+    onBookmarks: () -> Unit,
+    onMemorization: () -> Unit,
 ) {
     val container = appContainer()
     val viewModel: QuranIndexViewModel = viewModel(
@@ -45,6 +46,7 @@ fun QuranIndexDestination(
         onSearch = onSearch,
         onBookmarks = onBookmarks,
         continueAt = continueAt,
+        onMemorization = onMemorization,
     )
 }
 

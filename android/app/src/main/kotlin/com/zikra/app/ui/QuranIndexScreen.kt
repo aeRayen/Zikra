@@ -83,6 +83,7 @@ fun QuranIndexScreen(
     onSearch: () -> Unit = {},
     onBookmarks: () -> Unit = {},
     continueAt: SavedAyah? = null,
+    onMemorization: () -> Unit = {},
 ) {
     var tab by rememberSaveable { mutableIntStateOf(0) }
     Column(modifier.fillMaxSize()) {
@@ -112,6 +113,7 @@ fun QuranIndexScreen(
                         Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                     ) { ContinueReadingCard(continueAt, null, onOpen) }
                 }
+                MemorizationEntry(onMemorization)
                 TabRow(selectedTabIndex = tab) {
                     Tab(
                         selected = tab == 0,
@@ -204,3 +206,15 @@ internal const val QURAN_SEARCH_BUTTON_TAG = "quran_search_button"
 internal const val QURAN_BOOKMARKS_BUTTON_TAG = "quran_bookmarks_button"
 internal fun surahRowTag(number: Int) = "quran_surah_$number"
 internal fun juzRowTag(number: Int) = "quran_juz_$number"
+
+/** The way into memorization and review (WP 3.9). */
+@Composable
+private fun MemorizationEntry(onOpen: () -> Unit) {
+    ListItem(
+        headlineContent = { Text(text = stringResource(R.string.memorization_title)) },
+        supportingContent = { Text(text = stringResource(R.string.memorization_subtitle)) },
+        modifier = Modifier.clickable(role = Role.Button, onClick = onOpen).testTag(MEMORIZATION_ENTRY_TAG),
+    )
+}
+
+internal const val MEMORIZATION_ENTRY_TAG = "quran_memorization"

@@ -69,3 +69,26 @@ interface SyncOutboxDao {
     @Query("UPDATE sync_outbox SET attempts = attempts + 1, last_error = :errorCode WHERE seq = :seq")
     suspend fun recordFailure(seq: Long, errorCode: String)
 }
+
+@Dao
+interface MemorizationDao {
+    @Upsert
+    suspend fun setPlan(plan: MemorizationPlanEntity)
+
+    @Query("SELECT * FROM memorization_plan WHERE id = 'current'")
+    fun observePlan(): Flow<MemorizationPlanEntity?>
+
+    @Upsert
+    suspend fun upsertPages(pages: List<MemorizedPageEntity>)
+
+    /** Live pages only (tombstones are kept for sync but hidden). */
+    @Query("SELECT * FROM memorized_page WHERE deleted = 0 ORDER BY page")
+    fun observePages(): Flow<List<MemorizedPageEntity>>
+
+    @Query("SELECT * FROM memorized_page WHERE page = :page AND deleted = 0")
+    suspend fun page(page: Int): MemorizedPageEntity?
+
+    /** «Not memorized after all»: a tombstone, like bookmarks. */
+    @Query("UPDATE memorized_page SET deleted = 1, dirty = 1, client_updated_at = :now WHERE page IN (:pages)")
+    suspend fun forget(pages: List<Int>, now: Long)
+}

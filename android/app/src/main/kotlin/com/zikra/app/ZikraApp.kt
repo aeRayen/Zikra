@@ -43,6 +43,7 @@ import com.zikra.app.navigation.AdhkarChapterRoute
 import com.zikra.app.navigation.HomeRoute
 import com.zikra.app.navigation.LanguageRoute
 import com.zikra.app.navigation.LocationRoute
+import com.zikra.app.navigation.MemorizationRoute
 import com.zikra.app.navigation.MoreRoute
 import com.zikra.app.navigation.QuranReaderRoute
 import com.zikra.app.navigation.SignInRoute
@@ -95,6 +96,7 @@ private fun ZikraNavHost(navController: NavHostController, modifier: Modifier) {
                 onChooseLocation = { navController.navigate(LocationRoute) },
                 onContinueReading = { surah, ayah -> navController.navigate(QuranReaderRoute(surah, ayah)) },
                 onOpenAdhkar = { navController.navigate(AdhkarChapterRoute(it)) },
+                onOpenMemorization = { navController.navigate(MemorizationRoute) },
             )
         }
         prayerGraph(navController)

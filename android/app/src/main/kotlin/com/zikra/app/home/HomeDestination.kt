@@ -18,6 +18,7 @@ fun HomeDestination(
     onChooseLocation: () -> Unit,
     onContinueReading: (Int, Int) -> Unit,
     onOpenAdhkar: (Int) -> Unit,
+    onOpenMemorization: () -> Unit,
 ) {
     val container = appContainer()
     val viewModel: HomeViewModel = viewModel(
@@ -32,5 +33,6 @@ fun HomeDestination(
         onChooseLocation = onChooseLocation,
         onContinueReading = onContinueReading,
         onOpenAdhkar = onOpenAdhkar,
+        onOpenMemorization = onOpenMemorization,
     )
 }

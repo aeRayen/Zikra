@@ -17,6 +17,8 @@ import com.zikra.app.home.HomeCardProvider
 import com.zikra.app.home.PrayerHomeCards
 import com.zikra.app.location.AndroidDeviceLocator
 import com.zikra.app.location.DeviceLocator
+import com.zikra.app.memorization.MemorizationData
+import com.zikra.app.memorization.MemorizationHomeCards
 import com.zikra.app.prayer.PrayerTimesSource
 import com.zikra.app.quran.QuranContent
 import com.zikra.app.quran.QuranHomeCards
@@ -73,6 +75,7 @@ class AppContainer(context: Context) {
 
     // user.db (bookmarks, reading position, goals): on the device; synced only with consent (ADR-024).
     val userDatabase: UserDatabase by lazy { ZikraDatabases.user(context) }
+    val memorization: MemorizationData by lazy { MemorizationData(userDatabase.memorizationDao()) }
     val quranUserData: QuranUserData by lazy {
         QuranUserData(userDatabase.bookmarkDao(), userDatabase.readingPositionDao())
     }
@@ -117,6 +120,7 @@ class AppContainer(context: Context) {
         PrayerHomeCards(PrayerTimesSource({ places }, locationStore, prayerPreferences, Dispatchers.IO)),
         QuranHomeCards(quranUserData, { quran }, Dispatchers.IO),
         AdhkarHomeCards({ adhkar }, adhkarProgress, Dispatchers.IO),
+        MemorizationHomeCards({ memorization }, Dispatchers.IO),
     )
 
     private companion object {
