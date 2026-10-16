@@ -18,7 +18,21 @@ class Pipeline(private val sourcesDir: File) {
     private val lock = SourceLock.load(sourcesDir)
 
     fun buildQuranText(outDir: File, keys: PackKeys, packVersion: String): File {
-        val source = lock.source(QURAN_TEXT)
+        val db = File(outDir, PACK_FILE)
+        writeVerifiedQuranText(db)
+        return seal(outDir, db, PackSpec(AREA_TEXT, "ar", QURAN_EDITION, packVersion), lock.source(QURAN_TEXT), keys)
+    }
+
+    /**
+     * The Quran text bundled inside the APK (WP 2.9): same pinned source and checks as the signed pack;
+     * the APK signature protects it, so it carries no manifest.
+     */
+    fun buildQuranBundle(out: File) {
+        writeVerifiedQuranText(out)
+        checkDatabase(out, AREA_TEXT)
+    }
+
+    private fun writeVerifiedQuranText(db: File) {
         val text = parseTanzilText(lock.verifiedFile(sourcesDir, QURAN_TEXT))
         val meta = parseQuranMetadata(lock.verifiedFile(sourcesDir, QURAN_METADATA))
         QuranValidation.checkMetadata(meta)
@@ -27,9 +41,7 @@ class Pipeline(private val sourcesDir: File) {
             texts = text.ayahs.map { it.text },
             what = "Quran text",
         )
-        val db = File(outDir, PACK_FILE)
-        PackWriter.writeQuranText(db, QURAN_EDITION, text, meta, source)
-        return seal(outDir, db, PackSpec(AREA_TEXT, "ar", QURAN_EDITION, packVersion), source, keys)
+        PackWriter.writeQuranText(db, QURAN_EDITION, text, meta, lock.source(QURAN_TEXT))
     }
 
     fun buildEnglishSaheeh(outDir: File, keys: PackKeys, packVersion: String): File {
@@ -128,7 +140,7 @@ class Pipeline(private val sourcesDir: File) {
             ensure(sha256Hex(file.readBytes()) == f.sha256) { "SHA-256 mismatch for ${f.path}" }
         }
 
-        private fun checkDatabase(db: File, area: String) {
+        internal fun checkDatabase(db: File, area: String) {
             val table = if (area == AREA_TEXT) "quran_ayah_text" else "quran_translation"
             DriverManager.getConnection("jdbc:sqlite:${db.absolutePath}").use { c ->
                 c.createStatement().use { st ->
