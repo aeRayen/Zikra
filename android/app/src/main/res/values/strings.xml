@@ -222,6 +222,8 @@
     <!-- Translation of the meanings (WP 2.13). -->
     <string name="reader_translation_show">Show translation</string>
     <string name="reader_translation_hide">Hide translation</string>
+    <string name="reader_show_notes">Show notes</string>
+    <string name="reader_hide_notes">Hide notes</string>
     <!-- %1$s = translation title, e.g. Saheeh International. -->
     <string name="reader_translation_credit">Translation of the meanings: %1$s</string>
     <string name="about_translation_header">Translation of the meanings</string>

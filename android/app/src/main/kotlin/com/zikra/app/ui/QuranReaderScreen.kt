@@ -10,16 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -30,9 +26,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -63,48 +57,7 @@ fun QuranReaderScreen(
 ) {
     ZikraTheme(darkTheme = night) {
         Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface)) {
-            TopAppBar(
-                title = {
-                    val surah = (state as? ReaderUiState.Ready)?.surah
-                    Text(text = surah?.let { titleOf(it.nameArabic, it.nameTransliterated) }.orEmpty())
-                },
-                navigationIcon = {
-                    IconButton(onClick = actions.onBack) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.nav_back)
-                        )
-                    }
-                },
-                actions = {
-                    SizeButton(
-                        stringResource(R.string.reader_smaller_glyph),
-                        stringResource(R.string.reader_smaller),
-                        READER_SMALLER_TAG,
-                        actions.onSmaller
-                    )
-                    SizeButton(
-                        stringResource(R.string.reader_bigger_glyph),
-                        stringResource(R.string.reader_bigger),
-                        READER_BIGGER_TAG,
-                        actions.onBigger
-                    )
-                    if ((state as? ReaderUiState.Ready)?.translationInfo != null) {
-                        val label =
-                            if (showTranslation) R.string.reader_translation_hide else R.string.reader_translation_show
-                        IconButton(
-                            onClick = { actions.onToggleTranslation(showTranslation) },
-                            modifier = Modifier.testTag(READER_TRANSLATION_TAG),
-                        ) { Icon(TranslateIcon, contentDescription = stringResource(label)) }
-                    }
-                    IconButton(
-                        onClick = { actions.onToggleNight(night) },
-                        modifier = Modifier.testTag(READER_NIGHT_TAG)
-                    ) {
-                        Icon(PrayerTabIcon, contentDescription = stringResource(R.string.reader_night))
-                    }
-                },
-            )
+            ReaderTopBar(state, night, showTranslation, actions)
             when (state) {
                 ReaderUiState.Loading -> Unit
                 ReaderUiState.Unavailable -> EmptyState(
@@ -116,18 +69,6 @@ fun QuranReaderScreen(
         }
     }
 }
-
-/** «A−» / «A+» are visual; TalkBack reads [spoken]. */
-@Composable
-private fun SizeButton(glyph: String, spoken: String, tag: String, onClick: () -> Unit) {
-    TextButton(onClick = onClick, modifier = Modifier.testTag(tag).semantics { contentDescription = spoken }) {
-        Text(text = glyph, modifier = Modifier.clearAndSetSemantics {})
-    }
-}
-
-@Composable
-private fun titleOf(arabic: String, transliterated: String): String =
-    if (LocalConfiguration.current.locales[0].language == "ar") arabic else transliterated
 
 @Composable
 private fun AyahList(
@@ -202,7 +143,7 @@ private fun AyahRow(ayah: Ayah, textScale: Float, bookmarked: Boolean, onToggle:
 private fun AyahText(ayah: Ayah, textScale: Float) {
     Text(
         // Verbatim text, then the end-of-ayah mark with the number (Arabic-Indic digits, as in the mushaf).
-        text = ayah.text + " " + END_OF_AYAH + NumeralSystem.ARAB.apply(ayah.ayah.toString()),
+        text = ayah.text + " " + ayahNumberMark(ayah.ayah),
         fontFamily = QuranFont,
         fontSize = (BASE_SIZE_SP * textScale).sp,
         lineHeight = (BASE_SIZE_SP * textScale * LINE_HEIGHT).sp,
@@ -214,7 +155,6 @@ private fun AyahText(ayah: Ayah, textScale: Float) {
     )
 }
 
-private const val END_OF_AYAH = '۝'
 private const val BASE_SIZE_SP = 24f
 private const val LINE_HEIGHT = 1.9f
 internal const val AYAH_LIST_TAG = "quran_ayah_list"
@@ -225,3 +165,9 @@ internal const val READER_TRANSLATION_TAG = "reader_translation"
 internal fun translationTag(ayah: Int) = "quran_translation_$ayah"
 internal fun ayahTag(ayah: Int) = "quran_ayah_$ayah"
 internal fun bookmarkTag(ayah: Int) = "quran_bookmark_$ayah"
+
+/**
+ * Ayah number in ornate parentheses ﴿١﴾ with Arabic-Indic digits, as in printed mushafs. Outside the
+ * verbatim text, and plain characters: no font feature needed (the U+06DD enclosure did not render).
+ */
+internal fun ayahNumberMark(number: Int): String = "﴿" + NumeralSystem.ARAB.apply(number.toString()) + "﴾"

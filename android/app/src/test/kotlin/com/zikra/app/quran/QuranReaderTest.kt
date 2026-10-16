@@ -15,6 +15,7 @@ import com.zikra.app.ui.ABOUT_TRANSLATION_TAG
 import com.zikra.app.ui.AboutQuranTextScreen
 import com.zikra.app.ui.QuranReaderScreen
 import com.zikra.app.ui.ReaderActions
+import com.zikra.app.ui.ayahNumberMark
 import com.zikra.app.ui.ayahTag
 import com.zikra.app.ui.translationTag
 import com.zikra.core.database.user.UserDatabase
@@ -145,7 +146,7 @@ class QuranReaderTest {
     fun ayahIsShownVerbatimWithItsEndMark() {
         showReader(1)
         val first = quran.ayahs(1).first()
-        rule.onNodeWithTag(ayahTag(1)).assertTextEquals(first.text + " ۝١")
+        rule.onNodeWithTag(ayahTag(1)).assertTextEquals(first.text + " " + ayahNumberMark(1))
     }
 
     @Test
