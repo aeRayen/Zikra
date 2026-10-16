@@ -144,6 +144,7 @@ class Pipeline(private val sourcesDir: File) {
         const val MANIFEST_FILE = "manifest.signed.json"
         private const val AREA_TEXT = "quran_text"
         private const val AREA_TRANSLATION = "quran_translation"
+        const val AREA_HADITH = "hadith"
 
         /**
          * Verifies a built pack exactly as the app will (CONTENT_PACKS_AR.md §3): signature, file size and
@@ -152,6 +153,17 @@ class Pipeline(private val sourcesDir: File) {
         fun verify(packDir: File, publicKey: PublicKey): Manifest {
             val manifest = Signing.open(Signing.decode(File(packDir, MANIFEST_FILE).readText()), publicKey)
             manifest.files.forEach { checkFile(packDir, it) }
+            if (manifest.area == AREA_HADITH) {
+                val download = manifest.files.single()
+                val unpacked = File.createTempFile("hadith", ".sqlite")
+                try {
+                    HadithPacks.unpack(File(packDir, download.path), download, unpacked)
+                    HadithPacks.check(unpacked, manifest.verification)
+                } finally {
+                    unpacked.delete()
+                }
+                return manifest
+            }
             if (manifest.verification.perSurahAyahCountsSha256 != QuranValidation.perSurahCountsSha256()) {
                 throw PipelineException("Unexpected per-surah structure")
             }

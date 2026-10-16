@@ -14,7 +14,15 @@ import java.security.spec.X509EncodedKeySpec
 import java.util.Base64
 
 @Serializable
-data class PackFile(val path: String, val sizeBytes: Long, val sha256: String)
+data class PackFile(
+    val path: String,
+    val sizeBytes: Long,
+    val sha256: String,
+    /** "gzip" when [path] is compressed for download; the app checks the result against [uncompressedSha256]. */
+    val compression: String? = null,
+    val uncompressedSizeBytes: Long? = null,
+    val uncompressedSha256: String? = null,
+)
 
 @Serializable
 data class PackSource(
@@ -26,7 +34,17 @@ data class PackSource(
 )
 
 @Serializable
-data class PackVerification(val surahCount: Int, val ayahCount: Int, val perSurahAyahCountsSha256: String)
+/**
+ * Structure the app checks after download (CONTENT_PACKS_AR.md §3.6). Quran packs: surahs, ayahs and the
+ * per-surah counts; other areas (hadith, WP 3.4): the number of items and a hash of their keys.
+ */
+data class PackVerification(
+    val surahCount: Int? = null,
+    val ayahCount: Int? = null,
+    val perSurahAyahCountsSha256: String? = null,
+    val itemCount: Int? = null,
+    val itemKeysSha256: String? = null,
+)
 
 /** CONTENT_PACKS_AR.md §2. */
 @Serializable

@@ -74,6 +74,9 @@ class HisnPipeline(private val sourcesDir: File) {
         HisnVerification.writeCited(cited, File(sourcesDir, lock.source(Pipeline.HADITH_CITED).path))
     }
 
+    /** The pinned extract of the six books, with the SHA-256 of each full upstream file (ADR-042, ADR-046). */
+    fun citedHadiths(): CitedHadiths = HisnVerification.loadCited(lock.verifiedFile(sourcesDir, Pipeline.HADITH_CITED))
+
     /** Independent check of every reference against the six books and the Tanzil text (ADR-042). */
     fun verifyReferences(): ReviewedVerification {
         val cited = HisnVerification.loadCited(lock.verifiedFile(sourcesDir, Pipeline.HADITH_CITED))
