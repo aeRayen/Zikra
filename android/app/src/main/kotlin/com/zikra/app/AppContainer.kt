@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.UserManagerCompat
 import com.zikra.app.adhan.PrayerAlertNotifier
 import com.zikra.app.adhan.PrayerAlerts
+import com.zikra.app.adhkar.AdhkarHomeCards
 import com.zikra.app.auth.KeystoreTokenStore
 import com.zikra.app.home.HomeCardProvider
 import com.zikra.app.home.PrayerHomeCards
@@ -19,6 +20,7 @@ import com.zikra.app.quran.QuranContent
 import com.zikra.app.quran.QuranHomeCards
 import com.zikra.app.quran.QuranUserData
 import com.zikra.app.widget.PrayerWidget
+import com.zikra.core.adhkar.AdhkarBook
 import com.zikra.core.database.ZikraDatabases
 import com.zikra.core.database.user.UserDatabase
 import com.zikra.core.network.AuthRepository
@@ -33,6 +35,7 @@ import com.zikra.core.places.PlaceLookup
 import com.zikra.core.quran.QuranIntegrityException
 import com.zikra.core.quran.QuranText
 import com.zikra.core.quran.QuranTranslation
+import com.zikra.core.settings.AdhkarProgressStore
 import com.zikra.core.settings.LocationStore
 import com.zikra.core.settings.PrayerPreferencesStore
 import com.zikra.core.settings.ReaderPreferencesStore
@@ -84,6 +87,12 @@ class AppContainer(context: Context) {
     }
     val quranContent = QuranContent({ quran }, { englishTranslation })
 
+    // Bundled Hisn al-Muslim, opened on first use (copies the asset once, checks the counts): IO dispatcher only.
+    val adhkar: AdhkarBook by lazy { AdhkarBook.open(context) }
+
+    // Today's adhkar counters: saved on every tap (WP 2.14b). Not location data, so it may be backed up.
+    val adhkarProgress = AdhkarProgressStore({ File(context.filesDir, ADHKAR_FILE) })
+
     val readerPreferences = ReaderPreferencesStore({ File(context.filesDir, READER_FILE) })
 
     // Prayer choices (method, madhab, adjustments): not location data, so it may be backed up.
@@ -98,12 +107,14 @@ class AppContainer(context: Context) {
     fun homeCardProviders(): List<HomeCardProvider> = listOf(
         PrayerHomeCards(PrayerTimesSource({ places }, locationStore, prayerPreferences, Dispatchers.IO)),
         QuranHomeCards(quranUserData, { quran }, Dispatchers.IO),
+        AdhkarHomeCards({ adhkar }, adhkarProgress, Dispatchers.IO),
     )
 
     private companion object {
         const val LOCATION_FILE = "datastore/${LocationStore.FILE_NAME}"
         const val PRAYER_FILE = "datastore/${PrayerPreferencesStore.FILE_NAME}"
         const val READER_FILE = "datastore/${ReaderPreferencesStore.FILE_NAME}"
+        const val ADHKAR_FILE = "datastore/${AdhkarProgressStore.FILE_NAME}"
     }
 }
 

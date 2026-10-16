@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.zikra.app.R
+import com.zikra.app.ui.AdhkarTabIcon
 import com.zikra.app.ui.PrayerTabIcon
 import com.zikra.app.ui.QuranTabIcon
 import kotlinx.serialization.Serializable
@@ -41,6 +42,12 @@ data object QuranSearchRoute
 data object QuranBookmarksRoute
 
 @Serializable
+data object AdhkarRoute
+
+@Serializable
+data class AdhkarChapterRoute(val chapter: Int)
+
+@Serializable
 data object MoreRoute
 
 @Serializable
@@ -59,7 +66,8 @@ data object SignInRoute
  * Tabs of the bottom bar / navigation rail, in reading order (the first one sits at the start edge,
  * i.e. on the right in Arabic). A feature adds its tab only when it is implemented, so the bar never
  * shows a destination that does nothing (MASTER_BUILD_PROMPT §7, ADR-017).
- * Planned: Library (Phase 3). At most 5 tabs (DESIGN_SYSTEM_AR.md).
+ * At most 5 tabs (DESIGN_SYSTEM_AR.md): with adhkar the bar is full, so the Library (Phase 3) needs a
+ * place decided then (e.g. under More).
  */
 enum class TopLevelDestination(
     val route: Any,
@@ -69,5 +77,6 @@ enum class TopLevelDestination(
     TODAY(HomeRoute, R.string.nav_today, Icons.Filled.Home),
     PRAYER(PrayerRoute, R.string.nav_prayer, PrayerTabIcon),
     QURAN(QuranRoute, R.string.nav_quran, QuranTabIcon),
+    ADHKAR(AdhkarRoute, R.string.nav_adhkar, AdhkarTabIcon),
     MORE(MoreRoute, R.string.nav_more, Icons.Filled.Menu),
 }

@@ -7,8 +7,9 @@ import java.io.File
 /**
  * Opens a SQLite asset bundled in the APK, copying it out once per install/update (SQLite cannot read
  * compressed assets). Kept in noBackupFilesDir: app data restored from the APK, never backed up.
+ * Shared by every bundled content database (Quran, translation, adhkar).
  */
-internal object BundledDatabase {
+object BundledDatabase {
     fun open(context: Context, asset: String, folder: String): Pair<SQLiteDatabase, File> {
         val app = context.applicationContext
         val stamp = app.packageManager.getPackageInfo(app.packageName, 0).lastUpdateTime

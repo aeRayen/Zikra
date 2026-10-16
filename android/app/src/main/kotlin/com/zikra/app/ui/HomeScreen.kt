@@ -43,6 +43,7 @@ fun HomeScreen(
     onChooseLocation: () -> Unit = {},
     modifier: Modifier = Modifier,
     onContinueReading: (surah: Int, ayah: Int) -> Unit = { _, _ -> },
+    onOpenAdhkar: (chapter: Int) -> Unit = {},
 ) {
     Column(
         modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(ZikraSpacing.screenGutter),
@@ -64,6 +65,7 @@ fun HomeScreen(
                 is HomeCard.NextPrayer -> NextPrayerHomeCard(card, onOpenPrayer)
                 HomeCard.ChoosePrayerLocation -> ChooseLocationHomeCard(onChooseLocation)
                 is HomeCard.ContinueReading -> ContinueReadingCard(card.saved, card, onContinueReading)
+                is HomeCard.DailyAdhkar -> DailyAdhkarHomeCard(card, onOpenAdhkar)
             }
         }
     }
@@ -138,6 +140,31 @@ internal fun ContinueReadingCard(saved: SavedAyah, card: HomeCard?, onOpen: (Int
                     numerals.apply(saved.ayah.ayah.toString())
                 ),
                 style = MaterialTheme.typography.titleMedium,
+            )
+        }
+    }
+}
+
+@Composable
+private fun DailyAdhkarHomeCard(card: HomeCard.DailyAdhkar, onOpen: (Int) -> Unit) {
+    val numerals = NumeralSystem.forLanguage(LocalConfiguration.current.locales[0].language)
+    OutlinedCard(
+        Modifier
+            .fillMaxWidth()
+            .clickable(role = Role.Button) { onOpen(card.chapter.id) }
+            .semantics(mergeDescendants = true) {}
+            .testTag(homeCardTag(card)),
+    ) {
+        Column(Modifier.padding(ZikraSpacing.screenGutter), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(text = stringResource(R.string.adhkar_home_label), style = MaterialTheme.typography.labelLarge)
+            Text(text = Bidi.isolate(card.chapter.title), style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = stringResource(
+                    R.string.adhkar_progress,
+                    numerals.apply(card.done.toString()),
+                    numerals.apply(card.chapter.size.toString()),
+                ),
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
     }

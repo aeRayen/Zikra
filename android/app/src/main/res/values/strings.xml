@@ -271,4 +271,29 @@
     <string name="error_rate_limited">Too many attempts. Please wait a little and try again.</string>
     <string name="error_generic">Something went wrong. Please try again.</string>
     <string name="error_save_failed">Could not save your choice. Check that your phone has free storage, then try again.</string>
+    <!-- Adhkar (WP 2.14b) -->
+    <string name="nav_adhkar">Adhkar</string>
+    <string name="adhkar_title">Adhkar from Hisn al-Muslim</string>
+    <string name="adhkar_daily">Every day</string>
+    <string name="adhkar_all">All chapters</string>
+    <string name="adhkar_search_hint">Search chapter titles</string>
+    <string name="adhkar_no_match">No chapter has this word in its title.</string>
+    <string name="adhkar_unavailable">The adhkar could not be checked on this phone, so they are not shown. Please reinstall the app.</string>
+    <plurals name="adhkar_count">
+        <item quantity="one">%1$s dhikr</item>
+        <item quantity="other">%1$s adhkar</item>
+    </plurals>
+    <plurals name="adhkar_times">
+        <item quantity="one">Once</item>
+        <item quantity="other">%1$s times</item>
+    </plurals>
+    <string name="adhkar_progress">%1$s of %2$s done today</string>
+    <string name="adhkar_count_description">Count: %1$s of %2$s</string>
+    <string name="adhkar_done">Done</string>
+    <string name="adhkar_reset">Start again</string>
+    <string name="adhkar_reference_show">Reference</string>
+    <string name="adhkar_reference_hide">Hide reference</string>
+    <string name="adhkar_save_failed">This count could not be saved. Check that your phone has free storage.</string>
+    <string name="adhkar_sources">Text: hisnmuslim.com. References: the author\'s own footnotes (al-Maktaba al-Shamela, book 31307). Verses: the Tanzil Uthmani text.</string>
+    <string name="adhkar_home_label">Today\'s adhkar</string>
 </resources>

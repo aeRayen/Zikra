@@ -39,6 +39,7 @@ import com.zikra.app.home.HomeDestination
 import com.zikra.app.i18n.AppLocales
 import com.zikra.app.location.LocationDestination
 import com.zikra.app.navigation.AccountRoute
+import com.zikra.app.navigation.AdhkarChapterRoute
 import com.zikra.app.navigation.HomeRoute
 import com.zikra.app.navigation.LanguageRoute
 import com.zikra.app.navigation.LocationRoute
@@ -46,6 +47,7 @@ import com.zikra.app.navigation.MoreRoute
 import com.zikra.app.navigation.QuranReaderRoute
 import com.zikra.app.navigation.SignInRoute
 import com.zikra.app.navigation.TopLevelDestination
+import com.zikra.app.navigation.adhkarGraph
 import com.zikra.app.navigation.prayerGraph
 import com.zikra.app.navigation.quranGraph
 import com.zikra.app.ui.LanguageScreen
@@ -83,10 +85,12 @@ private fun ZikraNavHost(navController: NavHostController, modifier: Modifier) {
                 onOpenPrayer = { navController.navigateToTab(TopLevelDestination.PRAYER) },
                 onChooseLocation = { navController.navigate(LocationRoute) },
                 onContinueReading = { surah, ayah -> navController.navigate(QuranReaderRoute(surah, ayah)) },
+                onOpenAdhkar = { navController.navigate(AdhkarChapterRoute(it)) },
             )
         }
         prayerGraph(navController)
         quranGraph(navController)
+        adhkarGraph(navController)
         composable<MoreRoute> {
             MoreScreen(
                 onOpenLanguage = { navController.navigate(LanguageRoute) },

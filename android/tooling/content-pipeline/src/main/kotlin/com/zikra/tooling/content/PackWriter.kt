@@ -131,6 +131,52 @@ object PackWriter {
             .distinct()
             .joinToString("\n")
 
+    /**
+     * adhkar.sqlite (WP 2.14b): Hisn al-Muslim chapters and adhkar as displayed parts (their own words
+     * verbatim, quoted verses in the Tanzil Uthmani text) and the author's verified references.
+     */
+    fun writeAdhkar(out: File, book: AdhkarBook, sources: AdhkarSources) {
+        connect(out) { db ->
+            db.exec(
+                """
+                CREATE TABLE pack_info (key TEXT PRIMARY KEY NOT NULL, value TEXT NOT NULL);
+                CREATE TABLE adhkar_chapter (id INTEGER PRIMARY KEY NOT NULL, title TEXT NOT NULL);
+                CREATE TABLE dhikr (
+                  id INTEGER PRIMARY KEY NOT NULL, chapter INTEGER NOT NULL, repeat INTEGER NOT NULL);
+                CREATE TABLE dhikr_part (
+                  dhikr INTEGER NOT NULL, ord INTEGER NOT NULL, text TEXT NOT NULL, surah INTEGER, ayah INTEGER,
+                  PRIMARY KEY (dhikr, ord));
+                CREATE TABLE dhikr_reference (
+                  dhikr INTEGER NOT NULL, ord INTEGER NOT NULL, text TEXT NOT NULL, PRIMARY KEY (dhikr, ord));
+                """,
+            )
+            writeInfo(
+                db,
+                sources.text,
+                mapOf(
+                    "references_source_id" to sources.references.id,
+                    "references_source_url" to sources.references.url,
+                    "quran_source_id" to sources.quran.id,
+                    "quran_license" to sources.quran.license,
+                ),
+            )
+            val chapters = book.adhkar.distinctBy { it.chapter }
+            db.batch("INSERT INTO adhkar_chapter VALUES (?,?)", chapters) { listOf(it.chapter, it.chapterTitle) }
+            db.batch("INSERT INTO dhikr VALUES (?,?,?)", book.adhkar) { listOf(it.id, it.chapter, it.repeat) }
+            val parts = book.adhkar.flatMap { d -> book.parts.getValue(d.id).mapIndexed { i, p -> Triple(d.id, i, p) } }
+            db.batch("INSERT INTO dhikr_part VALUES (?,?,?,?,?)", parts) { (id, ord, part) ->
+                when (part) {
+                    is DhikrPart.Words -> listOf(id, ord, part.text, null, null)
+                    is DhikrPart.Quran -> listOf(id, ord, part.text, part.surah, part.ayah)
+                }
+            }
+            val references = book.references.flatMap { r -> r.footnotes.mapIndexed { i, f -> Triple(r.id, i, f) } }
+            db.batch("INSERT INTO dhikr_reference VALUES (?,?,?)", references) { (id, ord, text) ->
+                listOf(id, ord, text)
+            }
+        }
+    }
+
     private fun writeInfo(db: Connection, source: PinnedSource, extra: Map<String, String>) {
         val info = mapOf(
             "source_id" to source.id,

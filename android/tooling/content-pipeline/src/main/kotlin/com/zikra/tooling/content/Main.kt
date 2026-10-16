@@ -13,6 +13,7 @@ Zikra content pipeline (CONTENT_PACKS_AR.md)
   places  --sources ../content/sources --out <places.sqlite>
   quran-bundle --sources ../content/sources --out <quran.sqlite>
   translation-bundle --sources ../content/sources --out <translation-en.sqlite>
+  adhkar-bundle --sources ../content/sources --out <adhkar.sqlite>
   hisn-shamela-text --sources ../content/sources --html-dir <saved shamela.ws/book/31307 pages>
   hisn-review --sources ../content/sources --out <review.md>
   places-extract --sources ../content/sources --alternate-names <GeoNames alternateNamesV2.txt>
@@ -34,6 +35,10 @@ fun main(args: Array<String>) {
             }
             "quran", "english" -> buildSignedPack(command, ::file, options["version"] ?: fail("missing --version"))
             "places", "quran-bundle", "translation-bundle", "places-extract" -> buildBundledData(command, ::file)
+            "adhkar-bundle" -> {
+                HisnPipeline(file("sources")).buildAdhkarBundle(file("out"))
+                println("Built ${file("out").path}")
+            }
             "hisn-shamela-text" -> HisnPipeline(file("sources")).extractShamelaHisn(file("html-dir"))
             "hisn-review" -> {
                 val refs = HisnPipeline(file("sources")).hisnReferences()
